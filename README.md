@@ -15,6 +15,7 @@ const schema = parser.parse(`
     bar Bool
     baz String
   }
+  type MyMap map { String: SimpleStruct }
 `)
 
 console.dir(schema, { depth: Infinity })
@@ -27,7 +28,12 @@ console.dir(schema, { depth: Infinity })
 //          { foo: { type: 'Int' },
 //            bar: { type: 'Bool' },
 //            baz: { type: 'String' } },
-//         representation: { map: {} } } } }```
+//         representation: { map: {} } },
+//      MyMap:
+//       { kind: 'map',
+//         keyType: 'String',
+//         valueType: 'SimpleStruct',
+//         representation: { map: {} } } } }
 ```
 
 **ipld-schema also exports an executable**: if installed with `-g` you will get an `ipldschema2json` command in your `PATH`. Run this with an IPLD Schema file as an argument and it will print JSON to standard out.
@@ -50,6 +56,14 @@ $ ipldschema2json.js simple-struct.ipldsch
 #           "type": "String"
 #         }
 #       },
+#       "representation": {
+#         "map": {}
+#       }
+#     },
+#     "MyMap": {
+#       "kind": "map",
+#       "keyType": "String",
+#       "valueType": "SimpleStruct",
 #       "representation": {
 #         "map": {}
 #       }
