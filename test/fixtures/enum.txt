@@ -1,0 +1,19 @@
+--- schema
+type SimpleEnum enum {
+  | "foo"
+  | "bar"
+  | "baz"
+}
+--- expected
+{
+  "SimpleEnum": {
+    "kind": "enum",
+    "members": {
+      "foo": null,
+      "bar": null,
+      "baz": null
+    },
+    "representation": { "string": {}}
+  }
+}
+---

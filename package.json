@@ -1,0 +1,24 @@
+{
+  "name": "ipld-schema",
+  "version": "0.0.0",
+  "description": "IPLD Schema parser and utilities for JavaScript",
+  "main": "ipld-schema.js",
+  "scripts": {
+    "peg": "pegjs -o parser.js ipld-schema.pegjs",
+    "test": "tap --no-coverage test/*-test.js"
+  },
+  "main": "./parser.js",
+  "bin": {
+    "ipldschema2json": "./bin/ipldschema2json.js"
+  },
+  "author": "Rod <r@va.gg> (http://r.va.gg/)",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "pegjs": "~0.10.0",
+    "tap": "~13.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rvagg/js-ipld-schema.git"
+  }
+}

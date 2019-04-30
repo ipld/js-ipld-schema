@@ -1,0 +1,27 @@
+--- schema
+type UnionEnvelope union {
+  | Int "foo"
+  | Bool "bar"
+  | String "baz"
+} representation envelope {
+  discriminatorKey "bim"
+  contentKey "bam"
+}
+--- expected
+{
+  "UnionEnvelope": {
+    "kind": "union",
+    "representation": {
+      "envelope": {
+        "discriminatorKey": "bim",
+        "contentKey": "bam",
+        "discriminantTable": {
+          "foo": "Int",
+          "bar": "Bool",
+          "baz": "String"
+        }
+      }
+    }
+  }
+}
+---

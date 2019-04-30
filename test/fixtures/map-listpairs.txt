@@ -1,0 +1,14 @@
+--- schema
+type MapAsListpairs map {
+  String: String
+} representation listpairs
+--- expected
+{
+  "MapAsListpairs": {
+    "kind": "map",
+    "keyType": "String",
+    "valueType": "String",
+    "representation": { "listpairs": {} }
+  }
+}
+---

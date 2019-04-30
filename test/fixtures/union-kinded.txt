@@ -1,0 +1,20 @@
+--- schema
+type UnionKinded union {
+  | Foo int
+  | Bar bool
+  | Baz string
+} representation kinded
+--- expected
+{
+  "UnionKinded": {
+    "kind": "union",
+    "representation": {
+      "kinded": {
+        "int": "Foo",
+        "bool": "Bar",
+        "string": "Baz"
+      }
+    }
+  }
+}
+---

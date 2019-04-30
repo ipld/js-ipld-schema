@@ -1,0 +1,20 @@
+--- schema
+type UnionKeyed union {
+  | Int "foo"
+  | Bool "bar"
+  | String "baz"
+} representation keyed
+--- expected
+{
+  "UnionKeyed": {
+    "kind": "union",
+    "representation": {
+      "keyed": {
+        "foo": "Int",
+        "bar": "Bool",
+        "baz": "String"
+      }
+    }
+  }
+}
+---

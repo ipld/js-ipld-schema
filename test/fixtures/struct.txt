@@ -1,0 +1,25 @@
+--- schema
+type SimpleStruct struct {
+  foo Int
+  bar Bool
+  baz String
+}
+--- expected
+{
+  "SimpleStruct": {
+    "kind": "struct",
+    "fields": {
+      "foo": {
+        "type": "Int"
+      },
+      "bar": {
+        "type": "Bool"
+      },
+      "baz": {
+        "type": "String"
+      }
+    },
+    "representation": { "map": {}}
+  }
+}
+---

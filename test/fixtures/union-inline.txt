@@ -1,0 +1,23 @@
+--- schema
+type UnionInline union {
+  | Int "foo"
+  | Bool "bar"
+  | String "baz"
+} representation inline "tag"
+--- expected
+{
+  "UnionInline": {
+    "kind": "union",
+    "representation": {
+      "inline": {
+        "discriminatorKey": "tag",
+        "discriminantTable": {
+          "foo": "Int",
+          "bar": "Bool",
+          "baz": "String"
+        }
+      }
+    }
+  }
+}
+---

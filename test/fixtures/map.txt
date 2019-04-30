@@ -1,0 +1,12 @@
+--- schema
+type SimpleMap map { String : Int }
+--- expected
+{
+  "SimpleMap": {
+    "kind": "map",
+    "keyType": "String",
+    "valueType": "Int",
+    "representation": { "map": {}}
+  }
+}
+---
