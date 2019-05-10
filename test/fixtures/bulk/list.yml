@@ -1,0 +1,9 @@
+schema: |
+  type SimpleList list [ String ]
+expected:
+  {
+    "SimpleList": {
+      "kind": "list",
+      "valueType": "String"
+    }
+  }

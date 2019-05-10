@@ -1,0 +1,58 @@
+schema: |
+  type UnionInline union {
+    | Foo "foo"
+    | Bar "bar"
+  } representation inline "tag"
+  type Foo struct { froz Bool }
+  type Bar struct { bral String }
+expected:
+  {
+    "UnionInline": {
+      "kind": "union",
+      "representation": {
+        "inline": {
+          "discriminatorKey": "tag",
+          "discriminantTable": {
+            "foo": "Foo",
+            "bar": "Bar"
+          }
+        }
+      }
+    },
+    "Foo": {
+      "kind": "struct",
+      "fields": {
+        "froz": {
+          "type": "Bool"
+        }
+      }
+    },
+    "Bar": {
+      "kind": "struct",
+      "fields": {
+        "bral": {
+          "type": "String"
+        }
+      }
+    }
+  }
+blocks:
+  - actual:
+      { "tag": "foo", "froz": true }
+    expected:
+      { "froz": true }
+  - actual:
+      { "tag": "bar", "bral": "zot" }
+    expected:
+      { "bral": "zot" }
+badBlocks:
+  - { "froz": true }
+  - { "bral": "zot" }
+  - { "tag": "foo" }
+  - { "tag": "bar" }
+  - { "tag": "foo", "bral": "zot" }
+  - { "tag": "bar", "froz": true }
+  - { "tag": "foo", "froz": "zot" }
+  - { "tag": "bar", "bral": true }
+  - { }
+

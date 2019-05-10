@@ -1,0 +1,11 @@
+schema: |
+  type MapWithNullable map {String : nullable String}
+expected:
+  {
+    "MapWithNullable": {
+      "kind": "map",
+      "keyType": "String",
+      "valueType": "String",
+      "valueNullable": true
+    }
+  }

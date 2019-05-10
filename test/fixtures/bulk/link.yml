@@ -1,0 +1,8 @@
+schema: |
+  type SimpleLink link
+expected:
+  {
+    "SimpleLink": {
+      "kind": "link"
+    }
+  }

@@ -31,17 +31,19 @@ TypeDef = _ 'type' _ name:TypeName _ definition:Definition _ {
 }
 
 Definition
-  = StringKind { return { kind: 'string' }}
-  / EnumKind _ descriptor:EnumDescriptor? { return descriptor }
-  / UnionKind _ descriptor:UnionDescriptor? { return descriptor }
-  / MapKind _ descriptor:MapDescriptor? { return descriptor }
-  / StructKind _ descriptor:StructDescriptor? { return descriptor }
+  = MapKind _ descriptor:MapDescriptor { return descriptor }
+  / ListKind _ descriptor:ListDescriptor { return descriptor }
+  / EnumKind _ descriptor:EnumDescriptor { return descriptor }
+  / UnionKind _ descriptor:UnionDescriptor { return descriptor }
+  / StructKind _ descriptor:StructDescriptor { return descriptor }
+  / kind:SimpleKind { return kind }
 
 MapKind = "map"
-StringKind = "string"
+ListKind = "list"
 EnumKind = "enum"
 UnionKind = "union"
 StructKind = "struct"
+SimpleKind = kind:BaseType { return { kind } }
 
 ListDescriptor = "[" _ fields:TypeDescriptor _ "]" {
   return extend({ kind: 'list' }, fields)
@@ -69,7 +71,7 @@ UnionDescriptor = "{" values:UnionValue+ "}" _ representation:UnionRepresentatio
     case 'kinded':
       representation = { [representationType]: fields }
       break
-    case 'inline':
+    case 'inline': // TODO: inline unions have to contain certain types that can be inlined, structs, maps?
     case 'envelope':
       representation = { [representationType]: extend(representation, { discriminantTable: fields }) }
       break
@@ -85,21 +87,25 @@ UnionValue
   / _ "|" _ name:TypeName _ kind:BaseType _ { return { [kind]: name } } // kinded
 
 MapDescriptor = "{" _ keyType:TypeName _ ":" _ valueType:TypeDescriptor _ "}" _ representation:MapRepresentation? {
-  let representationType = (representation && representation.type) || 'map'
-  representation = { [representationType]: representation || {} }
-  delete representation[representationType].type
-  return Object.assign({ kind: 'map', keyType }, valueType, { representation })
+  let representationType = (representation && representation.type)
+  if (representationType) {
+    representation = { [representationType]: representation || {} }
+    delete representation[representationType].type
+  }
+  return Object.assign({ kind: 'map', keyType }, valueType, representation ? { representation } : null)
 }
 
 StructDescriptor = "{" values:StructValue* "}" _ representation:StructRepresentation? {
   let fields = values.reduce(extend, {})
-  let representationType = (representation && representation.type) || 'map'
-  representation = { [representationType]: representation || {} }
-  delete representation[representationType].type
-  if (representationType === 'tuple' && !representation.tuple.fieldOrder) {
-    representation.tuple.fieldOrder = Object.keys(fields)
+  let representationType = (representation && representation.type)
+  if (representationType) {
+    representation = { [representationType]: representation || {} }
+    delete representation[representationType].type
+    if (representationType === 'tuple' && !representation.tuple.fieldOrder) {
+      representation.tuple.fieldOrder = Object.keys(fields)
+    }
   }
-  return extend({ kind: 'struct', fields }, { representation })
+  return extend({ kind: 'struct', fields }, representation ? { representation } : null)
 }
 
 // TODO: break these by newline || "}" (non-greedy match)
@@ -163,7 +169,7 @@ MapStringpairsRepresentationOptions
 
 StructRepresentationType
   = "map" _ fields:StructMapRepresentationFields? {
-      return { type: 'map', fields: fields.reduce(extend, {}) }
+      return extend({ type: 'map' }, fields ? { fields: fields.reduce(extend, {}) } : null)
     }
   / "tuple" _ fieldOrder:StructTupleRepresentationFields? { return { type: 'tuple', fieldOrder } }
   / "stringjoin" _ join:StructStringjoinRepresentationFields { return { type: 'stringjoin', join } }

@@ -1,0 +1,44 @@
+type IpldMapRootType struct {
+  config     ConfigType
+  elementMap Int
+  elements   [ ElementType ]
+}
+
+type ConfigType struct {
+  codec      CodecType
+  bitWidth   Int
+  bucketSize Int
+} representation tuple
+
+type IpldMapNodeType struct {
+  depth      Int # may remove this
+  elementMap Int
+  elements   [ ElementType ]
+}
+
+type CodecType string
+
+type ElementType union {
+  | Link   "node"
+  | BucketType "bucket"
+} representation keyed
+
+type BucketType list [ BucketEntryType ]
+
+type BucketEntryType struct {
+  key   KeyType
+  value ValueType
+} representation tuple
+
+type KeyType bytes
+
+type ValueType union {
+	| Bool "bool"
+	| String "string"
+	| Bytes "bytes"
+	| Int "int"
+	| Float "float"
+	| Map "map"
+	| List "list"
+	| Link "link"
+} representation keyed
