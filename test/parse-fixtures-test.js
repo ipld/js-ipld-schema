@@ -40,6 +40,7 @@ fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).map((f) => {
         t.test(`fixture ${f}: bad block validate (${i})`, (t) => {
           let schema = new Schema(fixture.schema)
           t.throws(() => { schema.validate(block, rootType) }, /validation error/i, `validating bad block ${i} in ${testName}`)
+          t.throws(() => { schema.load(block, rootType) }, /validation error/i, `validating bad block ${i} in ${testName}`)
           t.done()
         })
       })
