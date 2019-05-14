@@ -7,3 +7,27 @@ expected:
       "valueType": "String"
     }
   }
+blocks:
+  - actual:
+      [ "a", "b", "c" ]
+    expected:
+      [ "a", "b", "c" ]
+  - actual:
+      [ ]
+    expected:
+      [ ]
+badBlocks:
+  -
+    "fooz"
+  -
+    true
+  -
+    { }
+  -
+    { "foo": true }
+  -
+    [ 100 ]
+  -
+    [ true ]
+  -
+    [ {} ]

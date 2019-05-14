@@ -1,6 +1,11 @@
 const parser = require('./parser')
 const is = require('@sindresorhus/is')
 
+const kindTypes = {
+  String: { kind: 'string' },
+  Int: { kind: 'int' }
+}
+
 class Schema {
   constructor (schemaText) {
     this.descriptor = parser.parse(schemaText).schema
@@ -11,19 +16,33 @@ class Schema {
   }
 
   validate (block, rootType) {
-    validateBlock(this, block, rootType)
+    validateType(this, block, rootType)
   }
+}
+
+function findTypeDescriptor (schema, typeName) {
+  const type = schema.descriptor[typeName] || kindTypes[typeName]
+
+  if (typeof type !== 'object') {
+    throw new Error(`Root type '${typeName}' not found in schema`)
+  }
+
+  return type
 }
 
 function loadBlock (schema, block, typeName) {
   console.log('loading', block, `as schema#${typeName}`)
-  if (typeof schema.descriptor[typeName] !== 'object') {
-    throw new Error(`Root type '${typeName}' not found in schema`)
-  }
+  const type = findTypeDescriptor(schema, typeName)
 
-  const type = schema.descriptor[typeName]
-
-  if (type.kind === 'int' || type.kind === 'string' || type.kind === 'bool') {
+  if (type.kind === 'int' || type.kind === 'float' || type.kind === 'string' || type.kind === 'bool') {
+    return block
+  } else if (type.kind === 'enum') {
+    return block
+  } else if (type.kind === 'list') {
+    // TODO: load complex valueTypes
+    return block
+  } else if (type.kind === 'map') {
+    // TODO: load complex keyType and valueTypes
     return block
   } else if (type.kind === 'struct') {
     let struct = {}
@@ -101,20 +120,29 @@ function loadBoolField (struct, part, fieldName, typeName) {
   struct[fieldName] = !!part[fieldName]
 }
 
-function validateBlock (schema, block, typeName) {
-  if (typeof schema.descriptor[typeName] !== 'object') {
-    throw new Error(`Type '${typeName}' not found in schema`)
-  }
-  const type = schema.descriptor[typeName]
+function validateType (schema, block, typeName) {
+  const type = findTypeDescriptor(schema, typeName)
 
   console.log('validating', block, `against schema#${typeName} (${type.kind})`)
 
   if (type.kind === 'int') {
     validateInt(block, typeName)
+  } else if (type.kind === 'float') {
+    validateFloat(block, typeName)
   } else if (type.kind === 'string') {
     validateString(block, typeName)
   } else if (type.kind === 'bool') {
     validateBool(block, typeName)
+  } else if (type.kind === 'enum') {
+    // TODO: verify type.members exists and is an object with keys
+    validateEnum(block, Object.keys(type.members), typeName)
+  } else if (type.kind === 'list') {
+    // TODO: verify type.valueType exists
+    validateList(schema, block, type.valueType, typeName)
+  } else if (type.kind === 'map') {
+    // TODO: verify type.keyType and type.valueType exists
+    // TODO: verify that type.keyType has a 'string' representation
+    validateMap(schema, block, type.keyType, type.valueType, typeName)
   } else if (type.kind === 'struct') {
     let fields = Object.entries(type.fields) // TODO: ensure we have a "fields"
     for (let [ fieldName, fieldDescriptor ] of fields) {
@@ -148,7 +176,7 @@ function validateBlock (schema, block, typeName) {
       let subTypeName = discriminantTable[discriminator]
       // TODO: for strict validation we'll need to remove the discriminator from a copy
       // before passing it on to be validated as subTypeName
-      validateBlock(schema, block, subTypeName)
+      validateType(schema, block, subTypeName)
     }
 
     if (isKindedUnion(type)) {
@@ -167,7 +195,7 @@ function validateBlock (schema, block, typeName) {
       let discriminator = block[discriminatorKey]
       validateDiscriminator(block, discriminator, discriminantTable, typeName)
       let subTypeName = discriminantTable[discriminator]
-      validateBlock(schema, block[contentKey], subTypeName)
+      validateType(schema, block[contentKey], subTypeName)
     }
 
     return true
@@ -187,6 +215,34 @@ function validateField (part, fieldName, fieldDescriptor, typeName) {
   }
 }
 
+function validateList (schema, block, valueType, typeName) {
+  if (!is.array(block)) {
+    throw new Error(`Schema validation error: expected ${typeName} enum to be a array`)
+  }
+  for (let e of block) {
+    validateType(schema, e, valueType)
+  }
+}
+
+function validateMap (schema, block, keyType, valueType, typeName) {
+  if (!is.object(block) || is.array(block)) {
+    throw new Error(`Schema validation error: expected ${typeName} enum to be an object`)
+  }
+  for (let [ k, v ] of Object.entries(block)) {
+    validateType(schema, k, keyType)
+    validateType(schema, v, valueType)
+  }
+}
+
+function validateEnum (value, members, typeName) {
+  if (!is.string(value)) {
+    throw new Error(`Schema validation error: expected ${typeName} enum to be a string`)
+  }
+  if (!members.includes(value)) {
+    throw new Error(`Schema validation error: ${typeName} not a valid string`)
+  }
+}
+
 function validateIntField (part, fieldName, typeName) {
   // TODO: is it OK for string to int coercion? is a decimal point with 0 OK?
   /* eslint-disable-next-line */
@@ -198,6 +254,12 @@ function validateIntField (part, fieldName, typeName) {
 function validateInt (value, typeName) {
   if (!is.integer(value)) {
     throw new Error(`Schema validation error: expected ${typeName} to be an int`)
+  }
+}
+
+function validateFloat (value, typeName) {
+  if (!is.number(value)) {
+    throw new Error(`Schema validation error: expected ${typeName} to be a number`)
   }
 }
 

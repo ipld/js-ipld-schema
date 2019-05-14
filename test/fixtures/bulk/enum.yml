@@ -16,3 +16,29 @@ expected:
       "representation": { "string": {}}
     }
   }
+blocks:
+  - actual:
+      "foo"
+    expected:
+      "foo"
+  - actual:
+      "bar"
+    expected:
+      "bar"
+  - actual:
+      "baz"
+    expected:
+      "baz"
+badBlocks:
+  -
+    "fooz"
+  -
+    true
+  -
+    100
+  -
+    { }
+  -
+    { "foo": true }
+  -
+    []
