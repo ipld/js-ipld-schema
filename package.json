@@ -5,7 +5,8 @@
   "main": "./ipld-parser.js",
   "scripts": {
     "peg": "pegjs -o parser.js ipld-schema.pegjs",
-    "test": "tap --no-coverage test/*-test.js"
+    "test": "tap test/*-test.js --cov",
+    "coverage": "tap test/*-test.js --cov --coverage-report=html"
   },
   "bin": {
     "ipldschema2json": "./bin/ipldschema2json.js"
