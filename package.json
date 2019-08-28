@@ -2,7 +2,7 @@
   "name": "ipld-schema",
   "version": "0.0.0",
   "description": "IPLD Schema parser and utilities for JavaScript",
-  "main": "./ipld-parser.js",
+  "main": "./ipld-schema.js",
   "scripts": {
     "peg": "pegjs -o parser.js ipld-schema.pegjs",
     "test": "tap test/*-test.js --cov",

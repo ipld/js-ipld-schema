@@ -1,5 +1,5 @@
 schema: |
-  type MapAsListpairs map {
+  type MapAsListpairs {
     String: String
   } representation listpairs
 expected:

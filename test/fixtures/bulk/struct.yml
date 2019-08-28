@@ -18,6 +18,9 @@ expected:
         "baz": {
           "type": "String"
         }
+      },
+      "representation": {
+        "map": {}
       }
     }
   }

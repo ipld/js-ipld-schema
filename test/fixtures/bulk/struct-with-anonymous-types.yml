@@ -45,6 +45,9 @@ expected:
             }
           }
         }
+      },
+      "representation": {
+        "map": {}
       }
     }
   }

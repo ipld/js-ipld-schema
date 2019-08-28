@@ -1,5 +1,6 @@
-const parser = require('./parser')
 const is = require('@sindresorhus/is')
+const parser = require('./parser')
+const { transformError } = require('./util')
 
 const kindTypes = {
   String: { kind: 'string' },
@@ -8,7 +9,7 @@ const kindTypes = {
 
 class Schema {
   constructor (schemaText) {
-    this.descriptor = parser.parse(schemaText).schema
+    this.descriptor = parse(schemaText)
   }
 
   load (block, rootType) {
@@ -31,7 +32,7 @@ function findTypeDescriptor (schema, typeName) {
 }
 
 function loadAndValidateType (load, schema, value, typeName) {
-  console.log('loading', value, `as schema#${typeName}`)
+  // console.log('loading', value, `as schema#${typeName}`)
   const type = findTypeDescriptor(schema, typeName)
 
   if (type.kind === 'int') {
@@ -62,9 +63,9 @@ function loadAndValidateType (load, schema, value, typeName) {
     // TODO: load complex keyType and valueTypes
     return load ? value : true
   } else if (type.kind === 'struct') {
-    let fields = Object.entries(type.fields) // TODO: ensure we have a "fields"
-    let struct = load ? {} : null
-    for (let [ fieldName, fieldDescriptor ] of fields) {
+    const fields = Object.entries(type.fields) // TODO: ensure we have a "fields"
+    const struct = load ? {} : null
+    for (const [fieldName, fieldDescriptor] of fields) {
       loadAndValidateField(struct, value, fieldName, fieldDescriptor, typeName)
     }
     return load ? struct : true
@@ -72,9 +73,9 @@ function loadAndValidateType (load, schema, value, typeName) {
     // TODO: verify `type.representation` exists
     if (isKeyedUnion(type)) {
       let found = false
-      let union = load ? {} : null
-      let fields = Object.entries(type.representation.keyed)
-      for (let [ field, fieldType ] of fields) {
+      const union = load ? {} : null
+      const fields = Object.entries(type.representation.keyed)
+      for (const [field, fieldType] of fields) {
         if (value[field] !== undefined) {
           found = true
           loadAndValidateField(union, value, field, { type: fieldType }, typeName)
@@ -90,13 +91,13 @@ function loadAndValidateType (load, schema, value, typeName) {
 
     if (isInlineUnion(type)) {
       // TODO: verify representation discriminatorKey exists and is a string
-      let discriminatorKey = type.representation.inline.discriminatorKey
+      const discriminatorKey = type.representation.inline.discriminatorKey
       validateDiscriminatorKey(value, discriminatorKey, typeName)
       // TODO: verify and discriminantTable exists and is a {String:String}
-      let discriminantTable = type.representation.inline.discriminantTable
-      let discriminator = value[discriminatorKey]
+      const discriminantTable = type.representation.inline.discriminantTable
+      const discriminator = value[discriminatorKey]
       validateDiscriminator(value, discriminator, discriminantTable, typeName)
-      let subTypeName = discriminantTable[discriminator]
+      const subTypeName = discriminantTable[discriminator]
       // TODO: ensure our discriminator doesn't get included in the loading of subTypeName
       // does it matter if it's a struct and will be ignored?
       return loadAndValidateType(load, schema, value, subTypeName)
@@ -105,22 +106,22 @@ function loadAndValidateType (load, schema, value, typeName) {
     if (isKindedUnion(type)) {
       // TODO: only works for primitive types, not objets or arrays that should be copied
       // or further parsed
-      let allowedKinds = Object.keys(type.representation.kinded)
+      const allowedKinds = Object.keys(type.representation.kinded)
       validateKinded(value, allowedKinds, typeName)
       return load ? value : true
     }
 
     if (isEnvelopeUnion(type)) {
       // TODO: verify representation discriminatorKey exists and is a string
-      let discriminatorKey = type.representation.envelope.discriminatorKey
+      const discriminatorKey = type.representation.envelope.discriminatorKey
       validateDiscriminatorKey(value, discriminatorKey, typeName)
-      let contentKey = type.representation.envelope.contentKey
+      const contentKey = type.representation.envelope.contentKey
       validateContentKey(value, contentKey, typeName)
       // TODO: verify and discriminantTable exists and is a {String:String}
-      let discriminantTable = type.representation.envelope.discriminantTable
-      let discriminator = value[discriminatorKey]
+      const discriminantTable = type.representation.envelope.discriminantTable
+      const discriminator = value[discriminatorKey]
       validateDiscriminator(value, discriminator, discriminantTable, typeName)
-      let subTypeName = discriminantTable[discriminator]
+      const subTypeName = discriminantTable[discriminator]
       return loadAndValidateType(load, schema, value[contentKey], subTypeName)
     }
   }
@@ -143,7 +144,7 @@ function validateList (schema, block, valueType, typeName) {
   if (!is.array(block)) {
     throw new Error(`Schema validation error: expected ${typeName} enum to be a array`)
   }
-  for (let e of block) {
+  for (const e of block) {
     loadAndValidateType(false, schema, e, valueType)
   }
 }
@@ -152,7 +153,7 @@ function validateMap (schema, block, keyType, valueType, typeName) {
   if (!is.object(block) || is.array(block)) {
     throw new Error(`Schema validation error: expected ${typeName} enum to be an object`)
   }
-  for (let [ k, v ] of Object.entries(block)) {
+  for (const [k, v] of Object.entries(block)) {
     loadAndValidateType(false, schema, k, keyType)
     loadAndValidateType(false, schema, v, valueType)
   }
@@ -243,7 +244,7 @@ function validateDiscriminator (part, discriminator, discriminantTable, typeName
 }
 
 function validateKinded (block, allowedKinds, typeName) {
-  for (let kind of allowedKinds) {
+  for (const kind of allowedKinds) {
     if (kind === 'int') {
       if (is.integer(block)) {
         return
@@ -289,4 +290,13 @@ function isKindedUnion (type) {
   return typeof type.representation.kinded === 'object'
 }
 
+function parse (text) {
+  try {
+    return parser.parse(text).schema
+  } catch (err) {
+    throw transformError(err)
+  }
+}
+
 module.exports = Schema
+module.exports.parse = parse

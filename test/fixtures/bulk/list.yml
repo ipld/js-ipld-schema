@@ -1,5 +1,5 @@
 schema: |
-  type SimpleList list [ String ]
+  type SimpleList [ String ]
 expected:
   {
     "SimpleList": {

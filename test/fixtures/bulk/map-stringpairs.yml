@@ -1,5 +1,5 @@
 schema: |
-  type MapAsStringpairs map {
+  type MapAsStringpairs {
     String: String
   } representation stringpairs {
     innerDelim "="

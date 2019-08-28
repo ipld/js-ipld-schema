@@ -12,8 +12,7 @@ expected:
         "foo": null,
         "bar": null,
         "baz": null
-      },
-      "representation": { "string": {}}
+      }
     }
   }
 blocks:

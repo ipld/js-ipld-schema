@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const yaml = require('js-yaml')
-const { test } = require('tap')
+const tap = require('tap')
 const Schema = require('../ipld-schema')
 
 fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).map((f) => {
@@ -9,14 +9,14 @@ fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).map((f) => {
     return
   }
 
-  test(`fixture ${f}`, async (t) => {
+  tap.test(`fixture ${f}`, async (t) => {
     const yamlContent = await fs.promises.readFile(path.join(__dirname, 'fixtures/bulk', f), 'utf8')
     const fixture = yaml.load(yamlContent)
     const testName = `fixture ${f}`
     const rootType = Object.keys(fixture.expected)[0]
 
     t.test(`${testName}: schema parse`, (t) => {
-      let schema = new Schema(fixture.schema)
+      const schema = new Schema(fixture.schema)
       t.deepEqual(schema.descriptor, fixture.expected, `parsing ${testName}`)
       t.done()
     })
@@ -24,10 +24,10 @@ fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).map((f) => {
     if (fixture.blocks) {
       fixture.blocks.forEach((block, i) => {
         t.test(`fixture ${f}: block validate (${i})`, (t) => {
-          let schema = new Schema(fixture.schema)
+          const schema = new Schema(fixture.schema)
           t.doesNotThrow(() => { schema.validate(block.actual, rootType) }, `validating good block ${i} in ${testName}`)
           if (block.expected) {
-            let loaded = schema.load(block.actual, rootType)
+            const loaded = schema.load(block.actual, rootType)
             t.strictSame(loaded, block.expected)
           }
           t.done()
@@ -38,7 +38,7 @@ fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).map((f) => {
     if (fixture.badBlocks) {
       fixture.badBlocks.forEach((block, i) => {
         t.test(`fixture ${f}: bad block validate (${i})`, (t) => {
-          let schema = new Schema(fixture.schema)
+          const schema = new Schema(fixture.schema)
           t.throws(() => { schema.validate(block, rootType) }, /validation error/i, `validating bad block ${i} in ${testName}`)
           t.throws(() => { schema.load(block, rootType) }, /validation error/i, `validating bad block ${i} in ${testName}`)
           t.done()

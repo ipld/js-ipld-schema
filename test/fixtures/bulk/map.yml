@@ -1,5 +1,5 @@
 schema: |
-  type SimpleMap map { String : Int }
+  type SimpleMap { String : Int }
 expected:
   {
     "SimpleMap": {

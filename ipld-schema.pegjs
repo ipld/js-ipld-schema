@@ -2,6 +2,8 @@
 
 // Utility functions
 {
+  const defaultRepresentation = { map: {} }
+
   function extend (o1, o2) {
     // we only use a 2-argument form and this also lets us supply `extend` as an argument
     // to Array#reduce and not worry about the additional reducer arguments
@@ -31,8 +33,8 @@ TypeDef = _ 'type' _ name:TypeName _ definition:Definition _ {
 }
 
 Definition
-  = MapKind _ descriptor:MapDescriptor { return descriptor }
-  / ListKind _ descriptor:ListDescriptor { return descriptor }
+  = descriptor:MapDescriptor { return descriptor } // "map" assumed if goes straight to a {}
+  / descriptor:ListDescriptor { return descriptor } // "list" assumed if goes straight to a []
   / EnumKind _ descriptor:EnumDescriptor { return descriptor }
   / UnionKind _ descriptor:UnionDescriptor { return descriptor }
   / StructKind _ descriptor:StructDescriptor { return descriptor }
@@ -56,8 +58,7 @@ TypeDescriptor = options:TypeOption* _ valueType:(TypeName / ListDescriptor) {
 EnumDescriptor = "{" values:EnumValue+ "}" {
   return {
     kind: 'enum',
-    members: values.reduce(extend, {}),
-    representation: { string: {} }
+    members: values.reduce(extend, {})
   }
 }
 
@@ -97,20 +98,33 @@ MapDescriptor = "{" _ keyType:TypeName _ ":" _ valueType:TypeDescriptor _ "}" _ 
 
 StructDescriptor = "{" values:StructValue* "}" _ representation:StructRepresentation? {
   let fields = values.reduce(extend, {})
+  // field representation options can come in from parens following field definitions, we need
+  // to lift them out into the 'representation' object
+  const representationFields = Object.entries(fields).reduce((p, fieldEntry) => {
+    if (fieldEntry[1].representationOptions) {
+      p[fieldEntry[0]] = fieldEntry[1].representationOptions
+      delete fieldEntry[1].representationOptions
+    }
+    return p
+  }, {})
+  if (Object.keys(representationFields).length) {
+    representation = extend(representation || defaultRepresentation, { fields: representationFields })
+  }
   let representationType = (representation && representation.type)
   if (representationType) {
+    // restructure from { type: 'foo', bar: 'baz' } to { foo: { bar: 'baz' } }
     representation = { [representationType]: representation || {} }
     delete representation[representationType].type
     if (representationType === 'tuple' && !representation.tuple.fieldOrder) {
       representation.tuple.fieldOrder = Object.keys(fields)
     }
   }
-  return extend({ kind: 'struct', fields }, representation ? { representation } : null)
+  return extend({ kind: 'struct', fields }, { representation: representation || defaultRepresentation })
 }
 
 // TODO: break these by newline || "}" (non-greedy match)
-StructValue = _ key:StringName _ options:StructFieldOption* _ type:StructType _ {
-  return { [key]: options.reduce(extend, { type }) }
+StructValue = _ key:StringName _ options:StructFieldOption* _ type:StructType _ representationOptions:StructFieldRepresentationOptions? _ {
+  return { [key]: options.reduce(extend, extend({ type }, representationOptions ? { representationOptions } : null)) }
 }
 
 StructFieldOption
@@ -125,6 +139,10 @@ StructType
   = type:StringName { return type }
   / MapDescriptor
   / ListDescriptor
+
+StructFieldRepresentationOptions = "(" _ "implicit" _ implicit:QuotedString _ ")" {
+  return { default: coerceValue(implicit) }
+}
 
 UnionRepresentation = "representation" _ representation:UnionRepresentationType _ {
   return representation
@@ -141,11 +159,15 @@ StructRepresentation = "representation" _ representation:StructRepresentationTyp
 UnionRepresentationType
   = "keyed" { return { type: 'keyed' } }
   / "kinded" { return { type: 'kinded' } }
-  / "inline" _ discriminatorKey:QuotedString { return { type: 'inline', discriminatorKey } }
+  / "inline" _ descriptor:UnionInlineKeyDefinition { return descriptor }
   / "envelope" _ descriptor:UnionEnvelopeKeyDefinition { return descriptor }
 
+UnionInlineKeyDefinition = "{" _ ("discriminatorKey" / "discriminantKey") _ discriminatorKey:QuotedString _ "}" {
+  return { type: 'inline', discriminatorKey }
+}
+
 // TODO: break these by newline || "}" (non-greedy match)
-UnionEnvelopeKeyDefinition = "{" _ "discriminatorKey" _ discriminatorKey:QuotedString _ "contentKey" _ contentKey:QuotedString _ "}" {
+UnionEnvelopeKeyDefinition = "{" _ ("discriminatorKey" / "discriminantKey") _ discriminatorKey:QuotedString _ "contentKey" _ contentKey:QuotedString _ "}" {
   return { type: 'envelope', discriminatorKey, contentKey }
 }
 

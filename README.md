@@ -2,74 +2,90 @@
 
 [IPLD](http://ipld.io/) Schema Implementation: parser and utilities
 
-_This is a work in progress and IPLD Schemas are a work in progress. Don't expect this to be useful. See https://github.com/ipld/specs/pull/113 for ongoing IPLD Schema spec definition and https://github.com/ipld/go-ipld-prime/tree/master/typed/declaration for some of the original IPLD Schema spec material._
+IPLD Schemas are a work in progress but are already useful. Read more about IPLD Schemas at https://github.com/ipld/specs/tree/master/schemas
+
+This project is also a work in progress, but should parse schemas as they are defined at the time of last publish.
 
 ## Usage
 
 ```js
-const parser = require('ipld-schema')
+const Schema = require('ipld-schema')
 
-const schema = parser.parse(`
+let schema = new Schema(`
   type SimpleStruct struct {
     foo Int
     bar Bool
     baz String
   }
-  type MyMap map { String: SimpleStruct }
+  type MyMap { String: SimpleStruct }
 `)
 
-console.dir(schema, { depth: Infinity })
+console.dir(schema.descriptor, { depth: Infinity })
 
 // →
-// { schema:
-//    { SimpleStruct:
-//       { kind: 'struct',
-//         fields:
-//          { foo: { type: 'Int' },
-//            bar: { type: 'Bool' },
-//            baz: { type: 'String' } },
-//         representation: { map: {} } },
-//      MyMap:
-//       { kind: 'map',
-//         keyType: 'String',
-//         valueType: 'SimpleStruct',
-//         representation: { map: {} } } } }
+// {
+//   SimpleStruct: {
+//     kind: 'struct',
+//     fields: {
+//       foo: { type: 'Int' },
+//       bar: { type: 'Bool' },
+//       baz: { type: 'String' }
+//     },
+//     representation: { map: {} }
+//   },
+//   MyMap: { kind: 'map', keyType: 'String', valueType: 'SimpleStruct' }
+// }
 ```
+
+**`Schema#validate(block, rootType)`** can be used to validate an in-memory block representation against the schema defined by the `schema` object. It will throw an error if the block does not match the schema provided.
+
+Continuing from the previous example:
+
+```js
+const myMap = {
+  one: { foo: 100, bar: true, baz: 'one' },
+  two: { foo: -100, bar: false, baz: 'two' },
+  three: { foo: 1, bar: true, baz: 'three' },
+}
+
+// validate that 'one' is of type 'SimpleStruct'
+schema.validate(myMap.one, 'SimpleStruct')
+
+// validate that the whole 'myMap' object is of type 'MyMap'
+schema.validate(myMap, 'MyMap')
+```
+
 
 **ipld-schema also exports an executable**: if installed with `-g` you will get an `ipldschema2json` command in your `PATH`. Run this with an IPLD Schema file as an argument and it will print JSON to standard out.
 
 ```
 $ ipldschema2json.js simple-struct.ipldsch
-# →
-# {
-#   "schema": {
-#     "SimpleStruct": {
-#       "kind": "struct",
-#       "fields": {
-#         "foo": {
-#           "type": "Int"
-#         },
-#         "bar": {
-#           "type": "Bool"
-#         },
-#         "baz": {
-#           "type": "String"
-#         }
-#       },
-#       "representation": {
-#         "map": {}
-#       }
-#     },
-#     "MyMap": {
-#       "kind": "map",
-#       "keyType": "String",
-#       "valueType": "SimpleStruct",
-#       "representation": {
-#         "map": {}
-#       }
-#     }
-#   }
-# }
+{
+ "schema": {
+  "SimpleStruct": {
+   "kind": "struct",
+   "fields": {
+    "foo": {
+     "type": "Int"
+    },
+    "bar": {
+     "type": "Bool"
+    },
+    "baz": {
+     "type": "String"
+    }
+   },
+   "representation": {
+    "map": {}
+   }
+  },
+  "MyMap": {
+   "kind": "map",
+   "keyType": "String",
+   "valueType": "SimpleStruct"
+  }
+ }
+}
 ```
 
 ## License and Copyright

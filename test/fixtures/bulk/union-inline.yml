@@ -2,7 +2,9 @@ schema: |
   type UnionInline union {
     | Foo "foo"
     | Bar "bar"
-  } representation inline "tag"
+  } representation inline {
+    discriminantKey "tag"
+  }
   type Foo struct { froz Bool }
   type Bar struct { bral String }
 expected:
@@ -25,6 +27,9 @@ expected:
         "froz": {
           "type": "Bool"
         }
+      },
+      "representation": {
+        "map": {}
       }
     },
     "Bar": {
@@ -33,6 +38,9 @@ expected:
         "bral": {
           "type": "String"
         }
+      },
+      "representation": {
+        "map": {}
       }
     }
   }

@@ -1,5 +1,5 @@
 schema: |
-  type MapWithNullable map {String : nullable String}
+  type MapWithNullable {String : nullable String}
 expected:
   {
     "MapWithNullable": {

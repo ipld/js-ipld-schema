@@ -2,6 +2,7 @@
 
 const fs = require('fs')
 const parser = require('../parser')
+const { transformError } = require('../util')
 
 let args = process.argv.slice(2)
 let indent = ' '
@@ -31,11 +32,7 @@ let representation
 try {
   representation = parser.parse(schemaText)
 } catch (e) {
-  if (e.location) {
-    console.error(`Error parsing schema @ line:${e.location.start.line} col:${e.location.start.column}:`, e.message)
-  } else {
-    console.error(e)
-  }
+  console.error(transformError(e).message)
   process.exit(1)
 }
 
