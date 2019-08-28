@@ -16,13 +16,13 @@
   "devDependencies": {
     "js-yaml": "~3.13.1",
     "pegjs": "~0.10.0",
-    "tap": "~13.1.0"
+    "tap": "~14.6.1"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/rvagg/js-ipld-schema.git"
   },
   "dependencies": {
-    "@sindresorhus/is": "~0.16.0"
+    "@sindresorhus/is": "~1.0.0"
   }
 }
