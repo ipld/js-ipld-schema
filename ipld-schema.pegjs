@@ -141,7 +141,7 @@ StructType
   / ListDescriptor
 
 StructFieldRepresentationOptions = "(" _ "implicit" _ implicit:QuotedString _ ")" {
-  return { default: coerceValue(implicit) }
+  return { implicit: coerceValue(implicit) }
 }
 
 UnionRepresentation = "representation" _ representation:UnionRepresentationType _ {
@@ -162,13 +162,13 @@ UnionRepresentationType
   / "inline" _ descriptor:UnionInlineKeyDefinition { return descriptor }
   / "envelope" _ descriptor:UnionEnvelopeKeyDefinition { return descriptor }
 
-UnionInlineKeyDefinition = "{" _ ("discriminatorKey" / "discriminantKey") _ discriminatorKey:QuotedString _ "}" {
-  return { type: 'inline', discriminatorKey }
+UnionInlineKeyDefinition = "{" _ ("discriminantKey" / "discriminantKey") _ discriminantKey:QuotedString _ "}" {
+  return { type: 'inline', discriminantKey }
 }
 
 // TODO: break these by newline || "}" (non-greedy match)
-UnionEnvelopeKeyDefinition = "{" _ ("discriminatorKey" / "discriminantKey") _ discriminatorKey:QuotedString _ "contentKey" _ contentKey:QuotedString _ "}" {
-  return { type: 'envelope', discriminatorKey, contentKey }
+UnionEnvelopeKeyDefinition = "{" _ ("discriminantKey" / "discriminantKey") _ discriminantKey:QuotedString _ "contentKey" _ contentKey:QuotedString _ "}" {
+  return { type: 'envelope', discriminantKey, contentKey }
 }
 
 MapRepresentationType
@@ -190,19 +190,17 @@ MapStringpairsRepresentationOptions
   / _ "entryDelim" _ entryDelim:QuotedString { return { entryDelim } }
 
 StructRepresentationType
-  = "map" _ fields:StructMapRepresentationFields? {
-      return extend({ type: 'map' }, fields ? { fields: fields.reduce(extend, {}) } : null)
-    }
+  = "map" { return { type: 'map' } }
   / "tuple" _ fieldOrder:StructTupleRepresentationFields? { return { type: 'tuple', fieldOrder } }
   / "stringjoin" _ join:StructStringjoinRepresentationFields { return { type: 'stringjoin', join } }
   / "stringpairs" _ representation:MapStringpairsRepresentation { return representation }
   / "listpairs" { return { type: 'listpairs' } }
 
 // TODO: break these by newline || "}" (non-greedy match)
-StructMapRepresentationFields = "{" _ fields:StructMapRepresentationField* _ "}" { return fields }
+StructMapRepresentationFields = "{" _ "}"
 
-StructMapRepresentationField = "field" _ field:StringName _ isDefault:"default" _ defaultValue:QuotedString _ {
-  return { [field]: extend({}, isDefault ? { default: coerceValue(defaultValue) } : null) }
+StructMapRepresentationField = "field" _ field:StringName _ isImplicit:"implicit" _ implicitValue:QuotedString _ {
+  return { [field]: extend({}, isImplicit ? { implicit: coerceValue(implicitValue) } : null) }
 }
 
 StructTupleRepresentationFields = "{" _ fieldOrder:StructTupleRepresentationFieldOrder?  _ "}" {

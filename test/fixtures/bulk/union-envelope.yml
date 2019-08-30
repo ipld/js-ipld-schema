@@ -4,7 +4,7 @@ schema: |
     | Bar "bar"
     | Baz "baz"
   } representation envelope {
-    discriminatorKey "bim"
+    discriminantKey "bim"
     contentKey "bam"
   }
   type Foo int
@@ -16,7 +16,7 @@ expected:
       "kind": "union",
       "representation": {
         "envelope": {
-          "discriminatorKey": "bim",
+          "discriminantKey": "bim",
           "contentKey": "bam",
           "discriminantTable": {
             "foo": "Foo",

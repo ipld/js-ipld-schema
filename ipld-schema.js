@@ -90,15 +90,15 @@ function loadAndValidateType (load, schema, value, typeName) {
     }
 
     if (isInlineUnion(type)) {
-      // TODO: verify representation discriminatorKey exists and is a string
-      const discriminatorKey = type.representation.inline.discriminatorKey
-      validateDiscriminatorKey(value, discriminatorKey, typeName)
+      // TODO: verify representation discriminantKey exists and is a string
+      const discriminantKey = type.representation.inline.discriminantKey
+      validatediscriminantKey(value, discriminantKey, typeName)
       // TODO: verify and discriminantTable exists and is a {String:String}
       const discriminantTable = type.representation.inline.discriminantTable
-      const discriminator = value[discriminatorKey]
-      validateDiscriminator(value, discriminator, discriminantTable, typeName)
-      const subTypeName = discriminantTable[discriminator]
-      // TODO: ensure our discriminator doesn't get included in the loading of subTypeName
+      const discriminant = value[discriminantKey]
+      validatediscriminant(value, discriminant, discriminantTable, typeName)
+      const subTypeName = discriminantTable[discriminant]
+      // TODO: ensure our discriminant doesn't get included in the loading of subTypeName
       // does it matter if it's a struct and will be ignored?
       return loadAndValidateType(load, schema, value, subTypeName)
     }
@@ -112,16 +112,16 @@ function loadAndValidateType (load, schema, value, typeName) {
     }
 
     if (isEnvelopeUnion(type)) {
-      // TODO: verify representation discriminatorKey exists and is a string
-      const discriminatorKey = type.representation.envelope.discriminatorKey
-      validateDiscriminatorKey(value, discriminatorKey, typeName)
+      // TODO: verify representation discriminantKey exists and is a string
+      const discriminantKey = type.representation.envelope.discriminantKey
+      validatediscriminantKey(value, discriminantKey, typeName)
       const contentKey = type.representation.envelope.contentKey
       validateContentKey(value, contentKey, typeName)
       // TODO: verify and discriminantTable exists and is a {String:String}
       const discriminantTable = type.representation.envelope.discriminantTable
-      const discriminator = value[discriminatorKey]
-      validateDiscriminator(value, discriminator, discriminantTable, typeName)
-      const subTypeName = discriminantTable[discriminator]
+      const discriminant = value[discriminantKey]
+      validatediscriminant(value, discriminant, discriminantTable, typeName)
+      const subTypeName = discriminantTable[discriminant]
       return loadAndValidateType(load, schema, value[contentKey], subTypeName)
     }
   }
@@ -225,9 +225,9 @@ function validateBool (value, typeName) {
   }
 }
 
-function validateDiscriminatorKey (part, discriminatorKey, typeName) {
-  if (typeof part[discriminatorKey] !== 'string') {
-    throw new Error(`Schema validation error: discriminator key '${discriminatorKey}' of ${typeName} is not a String`)
+function validatediscriminantKey (part, discriminantKey, typeName) {
+  if (typeof part[discriminantKey] !== 'string') {
+    throw new Error(`Schema validation error: discriminant key '${discriminantKey}' of ${typeName} is not a String`)
   }
 }
 
@@ -237,9 +237,9 @@ function validateContentKey (part, contentKey, typeName) {
   }
 }
 
-function validateDiscriminator (part, discriminator, discriminantTable, typeName) {
-  if (typeof discriminantTable[discriminator] !== 'string') {
-    throw new Error(`Schema validation error: discriminator '${discriminator}' of ${typeName} does not exist in the discriminator table`)
+function validatediscriminant (part, discriminant, discriminantTable, typeName) {
+  if (typeof discriminantTable[discriminant] !== 'string') {
+    throw new Error(`Schema validation error: discriminant '${discriminant}' of ${typeName} does not exist in the discriminant table`)
   }
 }
 

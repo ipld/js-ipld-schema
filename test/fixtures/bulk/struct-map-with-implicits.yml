@@ -1,15 +1,12 @@
 schema: |
-  type StructAsMapWithDefault struct {
-    foo Int
-    bar Bool
+  type StructAsMapWithImplicits struct {
+    foo Int (implicit "0")
+    bar Bool (implicit "false")
     baz String
-  } representation map {
-    field foo default "0"
-    field bar default "false"
-  }
+  } representation map
 expected:
   {
-    "StructAsMapWithDefault": {
+    "StructAsMapWithImplicits": {
       "kind": "struct",
       "fields": {
         "foo": {
@@ -25,8 +22,8 @@ expected:
       "representation": {
         "map": {
           "fields": {
-            "foo": { "default": 0 },
-            "bar": { "default": false }
+            "foo": { "implicit": 0 },
+            "bar": { "implicit": false }
           }
         }
       }
