@@ -225,7 +225,7 @@ function peg$parse(input, options) {
           return p
         }, {})
         if (Object.keys(representationFields).length) {
-          representation = extend(representation || defaultRepresentation, { fields: representationFields })
+          representation = extend(representation || defaultStructRepresentation(), { fields: representationFields })
         }
         let representationType = (representation && representation.type)
         if (representationType) {
@@ -236,7 +236,7 @@ function peg$parse(input, options) {
             representation.tuple.fieldOrder = Object.keys(fields)
           }
         }
-        return extend({ kind: 'struct', fields }, { representation: representation || defaultRepresentation })
+        return extend({ kind: 'struct', fields }, { representation: representation || defaultStructRepresentation() })
       },
       peg$c38 = function(key, options, type, representationOptions) {
         return { [key]: options.reduce(extend, extend({ type }, representationOptions ? { representationOptions } : null)) }
@@ -3065,7 +3065,9 @@ function peg$parse(input, options) {
   }
 
 
-    const defaultRepresentation = { map: {} }
+    function defaultStructRepresentation () {
+      return { map: {} }
+    }
 
     function extend (o1, o2) {
       // we only use a 2-argument form and this also lets us supply `extend` as an argument

@@ -2,7 +2,9 @@
 
 // Utility functions
 {
-  const defaultRepresentation = { map: {} }
+  function defaultStructRepresentation () {
+    return { map: {} }
+  }
 
   function extend (o1, o2) {
     // we only use a 2-argument form and this also lets us supply `extend` as an argument
@@ -108,7 +110,7 @@ StructDescriptor = "{" values:StructValue* "}" _ representation:StructRepresenta
     return p
   }, {})
   if (Object.keys(representationFields).length) {
-    representation = extend(representation || defaultRepresentation, { fields: representationFields })
+    representation = extend(representation || defaultStructRepresentation(), { fields: representationFields })
   }
   let representationType = (representation && representation.type)
   if (representationType) {
@@ -119,7 +121,7 @@ StructDescriptor = "{" values:StructValue* "}" _ representation:StructRepresenta
       representation.tuple.fieldOrder = Object.keys(fields)
     }
   }
-  return extend({ kind: 'struct', fields }, { representation: representation || defaultRepresentation })
+  return extend({ kind: 'struct', fields }, { representation: representation || defaultStructRepresentation() })
 }
 
 // TODO: break these by newline || "}" (non-greedy match)
