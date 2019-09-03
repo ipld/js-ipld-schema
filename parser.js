@@ -224,17 +224,24 @@ function peg$parse(input, options) {
           }
           return p
         }, {})
-        if (Object.keys(representationFields).length) {
-          representation = extend(representation || defaultStructRepresentation(), { fields: representationFields })
-        }
         let representationType = (representation && representation.type)
         if (representationType) {
           // restructure from { type: 'foo', bar: 'baz' } to { foo: { bar: 'baz' } }
           representation = { [representationType]: representation || {} }
           delete representation[representationType].type
-          if (representationType === 'tuple' && !representation.tuple.fieldOrder) {
+          /* auto-fill fieldOrder? if (representationType === 'tuple' && !representation.tuple.fieldOrder) {
             representation.tuple.fieldOrder = Object.keys(fields)
+          } */
+        }
+        // handle inline field representation data
+        if (Object.keys(representationFields).length) {
+          if (!representation) {
+            representation = defaultStructRepresentation()
           }
+          if (!representation.map) {
+            throw new Error('field modifiers only valid for struct map representation')
+          }
+          representation.map.fields = representationFields
         }
         return extend({ kind: 'struct', fields }, { representation: representation || defaultStructRepresentation() })
       },
@@ -305,7 +312,7 @@ function peg$parse(input, options) {
       peg$c86 = function(entryDelim) { return { entryDelim } },
       peg$c87 = "tuple",
       peg$c88 = peg$literalExpectation("tuple", false),
-      peg$c89 = function(fieldOrder) { return { type: 'tuple', fieldOrder } },
+      peg$c89 = function(fieldOrder) { return extend({ type: 'tuple' }, fieldOrder ? { fieldOrder } : null) },
       peg$c90 = "stringjoin",
       peg$c91 = peg$literalExpectation("stringjoin", false),
       peg$c92 = function(join) { return { type: 'stringjoin', join } },

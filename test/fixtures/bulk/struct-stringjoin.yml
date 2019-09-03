@@ -6,7 +6,7 @@ schema: |
   } representation stringjoin {
     join ":"
   }
-expected:
+expected: |
   {
     "StructAsStringjoin": {
       "kind": "struct",

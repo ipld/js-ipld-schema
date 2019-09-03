@@ -1,42 +1,42 @@
 schema: |
   type SimpleFloat float
-expected:
+expected: |
   {
     "SimpleFloat": {
       "kind": "float"
     }
   }
 blocks:
-  - actual:
+  - actual: |
       100.1
-    expected:
+    expected: |
       100.1
-  - actual:
+  - actual: |
       0.1
-    expected:
+    expected: |
       0.1
-  - actual:
+  - actual: |
       100
-    expected:
+    expected: |
       100.0
-  - actual:
+  - actual: |
       -1.1
-    expected:
+    expected: |
       -1.1
-  - actual:
+  - actual: |
       -1
-    expected:
+    expected: |
       -1
 badBlocks:
-  -
+  - |
     "fooz"
-  -
+  - |
     true
-  -
+  - |
     { }
-  -
+  - |
     { "foo": true }
-  -
+  - |
     []
-  -
+  - |
     [ 100 ]

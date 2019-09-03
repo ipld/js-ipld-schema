@@ -4,9 +4,9 @@ schema: |
     bar Bool
     baz String
   } representation tuple {
-    fieldOrder [ "baz", "bar", "foo" ]
+    fieldOrder ["baz", "bar", "foo"]
   }
-expected:
+expected: |
   {
     "StructAsTupleWithCustomFieldorder": {
       "kind": "struct",

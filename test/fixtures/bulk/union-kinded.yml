@@ -1,14 +1,24 @@
 schema: |
+  type Bar bool
+  type Baz string
+  type Foo int
   type UnionKinded union {
     | Foo int
     | Bar bool
     | Baz string
   } representation kinded
-  type Foo int
-  type Bar bool
-  type Baz string
-expected:
+root: UnionKinded
+expected: |
   {
+    "Bar": {
+      "kind": "bool"
+    },
+    "Baz": {
+      "kind": "string"
+    },
+    "Foo": {
+      "kind": "int"
+    },
     "UnionKinded": {
       "kind": "union",
       "representation": {
@@ -18,34 +28,31 @@ expected:
           "string": "Baz"
         }
       }
-    },
-    "Foo": {
-      "kind": "int"
-    },
-    "Bar": {
-      "kind": "bool"
-    },
-    "Baz": {
-      "kind": "string"
     }
   }
 blocks:
-  - actual:
+  - actual: |
       100
-    expected:
+    expected: |
       100
-  - actual:
+  - actual: |
       true
-    expected:
+    expected: |
       true
-  - actual:
+  - actual: |
       "this here is baz"
-    expected:
+    expected: |
       "this here is baz"
 badBlocks:
-  - 100.1
-  - { "foo": 100 }
-  - { "bar": true }
-  - { "baz": "don't match" }
-  - { }
-  - [ 1, 2, 3 ]
+  - |
+    100.1
+  - |
+    { "foo": 100 }
+  - |
+    { "bar": true }
+  - |
+    { "baz": "don't match" }
+  - |
+    { }
+  - |
+    [ 1, 2, 3 ]

@@ -1,6 +1,6 @@
 schema: |
-  type MapWithNullable {String : nullable String}
-expected:
+  type MapWithNullable {String:nullable String}
+expected: |
   {
     "MapWithNullable": {
       "kind": "map",

@@ -4,7 +4,7 @@ schema: |
     | "bar"
     | "baz"
   }
-expected:
+expected: |
   {
     "SimpleEnum": {
       "kind": "enum",
@@ -16,28 +16,28 @@ expected:
     }
   }
 blocks:
-  - actual:
+  - actual: |
       "foo"
-    expected:
+    expected: |
       "foo"
-  - actual:
+  - actual: |
       "bar"
-    expected:
+    expected: |
       "bar"
-  - actual:
+  - actual: |
       "baz"
-    expected:
+    expected: |
       "baz"
 badBlocks:
-  -
+  - |
     "fooz"
-  -
+  - |
     true
-  -
+  - |
     100
-  -
+  - |
     { }
-  -
+  - |
     { "foo": true }
-  -
+  - |
     []

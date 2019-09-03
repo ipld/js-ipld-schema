@@ -7,7 +7,7 @@ schema: |
     innerDelim "="
     entryDelim ","
   }
-expected:
+expected: |
   {
     "StructAsStringpairs": {
       "kind": "struct",

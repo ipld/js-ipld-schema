@@ -1,29 +1,34 @@
 schema: |
   type StructAsMapWithImplicits struct {
-    foo Int (implicit "0")
     bar Bool (implicit "false")
+    boom String (implicit "yay")
     baz String
-  } representation map
-expected:
+    foo Int (implicit "0")
+  }
+expected: |
   {
     "StructAsMapWithImplicits": {
       "kind": "struct",
       "fields": {
-        "foo": {
-          "type": "Int"
-        },
         "bar": {
           "type": "Bool"
         },
+        "boom": {
+          "type": "String"
+        },
         "baz": {
           "type": "String"
+        },
+        "foo": {
+          "type": "Int"
         }
       },
       "representation": {
         "map": {
           "fields": {
-            "foo": { "implicit": 0 },
-            "bar": { "implicit": false }
+            "bar": { "implicit": false },
+            "boom": { "implicit": "yay" },
+            "foo": { "implicit": 0 }
           }
         }
       }

@@ -1,6 +1,6 @@
 schema: |
-  type SimpleList [ String ]
-expected:
+  type SimpleList [String]
+expected: |
   {
     "SimpleList": {
       "kind": "list",
@@ -8,26 +8,26 @@ expected:
     }
   }
 blocks:
-  - actual:
+  - actual: |
       [ "a", "b", "c" ]
-    expected:
+    expected: |
       [ "a", "b", "c" ]
-  - actual:
+  - actual: |
       [ ]
-    expected:
+    expected: |
       [ ]
 badBlocks:
-  -
+  - |
     "fooz"
-  -
+  - |
     true
-  -
+  - |
     { }
-  -
+  - |
     { "foo": true }
-  -
+  - |
     [ 100 ]
-  -
+  - |
     [ true ]
-  -
+  - |
     [ {} ]

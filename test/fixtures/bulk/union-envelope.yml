@@ -1,4 +1,7 @@
 schema: |
+  type Bar bool
+  type Baz string
+  type Foo int
   type UnionEnvelope union {
     | Foo "foo"
     | Bar "bar"
@@ -7,11 +10,18 @@ schema: |
     discriminantKey "bim"
     contentKey "bam"
   }
-  type Foo int
-  type Bar bool
-  type Baz string
-expected:
+root: UnionEnvelope
+expected: |
   {
+    "Bar": {
+      "kind": "bool"
+    },
+    "Baz": {
+      "kind": "string"
+    },
+    "Foo": {
+      "kind": "int"
+    },
     "UnionEnvelope": {
       "kind": "union",
       "representation": {
@@ -25,39 +35,41 @@ expected:
           }
         }
       }
-    },
-    "Foo": {
-      "kind": "int"
-    },
-    "Bar": {
-      "kind": "bool"
-    },
-    "Baz": {
-      "kind": "string"
     }
   }
 blocks:
-  - actual:
+  - actual: |
       { "bim": "foo", "bam": 100 }
-    expected:
+    expected: |
       100
-  - actual:
+  - actual: |
       { "bim": "bar", "bam": true }
-    expected:
+    expected: |
       true
-  - actual:
+  - actual: |
       { "bim": "baz", "bam": "here be baz" }
-    expected:
+    expected: |
       "here be baz"
 badBlocks:
-  - { "bim": "foo" }
-  - { "bim": "bar" }
-  - { "bim": "baz" }
-  - { "bim": "foo", "bam": "zot" }
-  - { "bim": "bar", "bam": 100 }
-  - { "bim": "baz", "bam": true }
-  - 100
-  - true
-  - "here be string"
-  - { }
-  - [ ]
+  - |
+    { "bim": "foo" }
+  - |
+    { "bim": "bar" }
+  - |
+    { "bim": "baz" }
+  - |
+    { "bim": "foo", "bam": "zot" }
+  - |
+    { "bim": "bar", "bam": 100 }
+  - |
+    { "bim": "baz", "bam": true }
+  - |
+    100
+  - |
+    true
+  - |
+    "here be string"
+  - |
+    { }
+  - |
+    [ ]

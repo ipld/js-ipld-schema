@@ -109,17 +109,24 @@ StructDescriptor = "{" values:StructValue* "}" _ representation:StructRepresenta
     }
     return p
   }, {})
-  if (Object.keys(representationFields).length) {
-    representation = extend(representation || defaultStructRepresentation(), { fields: representationFields })
-  }
   let representationType = (representation && representation.type)
   if (representationType) {
     // restructure from { type: 'foo', bar: 'baz' } to { foo: { bar: 'baz' } }
     representation = { [representationType]: representation || {} }
     delete representation[representationType].type
-    if (representationType === 'tuple' && !representation.tuple.fieldOrder) {
+    /* auto-fill fieldOrder? if (representationType === 'tuple' && !representation.tuple.fieldOrder) {
       representation.tuple.fieldOrder = Object.keys(fields)
+    } */
+  }
+  // handle inline field representation data
+  if (Object.keys(representationFields).length) {
+    if (!representation) {
+      representation = defaultStructRepresentation()
     }
+    if (!representation.map) {
+      throw new Error('field modifiers only valid for struct map representation')
+    }
+    representation.map.fields = representationFields
   }
   return extend({ kind: 'struct', fields }, { representation: representation || defaultStructRepresentation() })
 }
@@ -193,7 +200,7 @@ MapStringpairsRepresentationOptions
 
 StructRepresentationType
   = "map" { return { type: 'map' } }
-  / "tuple" _ fieldOrder:StructTupleRepresentationFields? { return { type: 'tuple', fieldOrder } }
+  / "tuple" _ fieldOrder:StructTupleRepresentationFields? { return extend({ type: 'tuple' }, fieldOrder ? { fieldOrder } : null) }
   / "stringjoin" _ join:StructStringjoinRepresentationFields { return { type: 'stringjoin', join } }
   / "stringpairs" _ representation:MapStringpairsRepresentation { return representation }
   / "listpairs" { return { type: 'listpairs' } }

@@ -1,36 +1,36 @@
 schema: |
   type SimpleInt int
-expected:
+expected: |
   {
     "SimpleInt": {
       "kind": "int"
     }
   }
 blocks:
-  - actual:
+  - actual: |
       100
-    expected:
+    expected: |
       100
-  - actual:
+  - actual: |
       0
-    expected:
+    expected: |
       0
-  - actual:
+  - actual: |
       -100
-    expected:
+    expected: |
       -100
 badBlocks:
-  -
+  - |
     100.1
-  -
+  - |
     "fooz"
-  -
+  - |
     true
-  -
+  - |
     { }
-  -
+  - |
     { "foo": true }
-  -
+  - |
     []
-  -
+  - |
     [ 100 ]

@@ -4,7 +4,7 @@ schema: |
     bar Bool
     baz String
   }
-expected:
+expected: |
   {
     "SimpleStruct": {
       "kind": "struct",
@@ -25,67 +25,67 @@ expected:
     }
   }
 blocks:
-  - actual:
+  - actual: |
       {
         "foo": 100,
         "bar": true,
         "baz": "this is baz yo"
       }
-    expected:
+    expected: |
       {
         "foo": 100,
         "bar": true,
         "baz": "this is baz yo"
       }
-  - actual:
-      # is this OK? string-to-int
+  - actual: # is this OK? string-to-int
+      |
       {
         "foo": "100",
         "bar": true,
         "baz": "this is baz yo"
       }
-    expected:
+    expected: |
       {
         "foo": 100,
         "bar": true,
         "baz": "this is baz yo"
       }
-  - actual:
-      # is this OK? float-to-int
+  - actual: # is this OK? float-to-int
+      |
       {
         "foo": 100.0,
         "bar": true,
         "baz": "this is baz yo"
       }
-    expected:
+    expected: |
       {
         "foo": 100,
         "bar": true,
         "baz": "this is baz yo"
       }
 badBlocks:
-  -
+  - |
     {
       "foo": 100
     }
-  -
+  - |
     {
       "foo": 100,
       "bar": true
     }
-  -
+  - |
     {
       "foo": "str",
       "bar": true,
       "baz": "this is baz yo"
     }
-  -
+  - |
     {
       "foo": 100,
       "bar": 100,
       "baz": "this is baz yo"
     }
-  -
+  - |
     {
       "foo": 100,
       "bar": true,

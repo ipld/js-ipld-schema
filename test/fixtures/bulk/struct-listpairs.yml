@@ -4,7 +4,7 @@ schema: |
     bar Bool
     baz String
   } representation listpairs
-expected:
+expected: |
   {
     "StructAsListpairs": {
       "kind": "struct",

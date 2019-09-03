@@ -1,13 +1,18 @@
 schema: |
+  type Bar struct {
+    bral String
+  }
+  type Foo struct {
+    froz Bool
+  }
   type UnionInline union {
     | Foo "foo"
     | Bar "bar"
   } representation inline {
     discriminantKey "tag"
   }
-  type Foo struct { froz Bool }
-  type Bar struct { bral String }
-expected:
+root: UnionInline
+expected: |
   {
     "UnionInline": {
       "kind": "union",
@@ -45,22 +50,31 @@ expected:
     }
   }
 blocks:
-  - actual:
+  - actual: |
       { "tag": "foo", "froz": true }
-    expected:
+    expected: |
       { "froz": true }
-  - actual:
+  - actual: |
       { "tag": "bar", "bral": "zot" }
-    expected:
+    expected: |
       { "bral": "zot" }
 badBlocks:
-  - { "froz": true }
-  - { "bral": "zot" }
-  - { "tag": "foo" }
-  - { "tag": "bar" }
-  - { "tag": "foo", "bral": "zot" }
-  - { "tag": "bar", "froz": true }
-  - { "tag": "foo", "froz": "zot" }
-  - { "tag": "bar", "bral": true }
-  - { }
+  - |
+    { "froz": true }
+  - |
+    { "bral": "zot" }
+  - |
+    { "tag": "foo" }
+  - |
+    { "tag": "bar" }
+  - |
+    { "tag": "foo", "bral": "zot" }
+  - |
+    { "tag": "bar", "froz": true }
+  - |
+    { "tag": "foo", "froz": "zot" }
+  - |
+    { "tag": "bar", "bral": true }
+  - |
+    { }
 

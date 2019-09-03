@@ -1,8 +1,6 @@
 schema: |
-  type MapAsListpairs {
-    String: String
-  } representation listpairs
-expected:
+  type MapAsListpairs {String:String} representation listpairs
+expected: |
   {
     "MapAsListpairs": {
       "kind": "map",

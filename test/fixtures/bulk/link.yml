@@ -1,6 +1,6 @@
 schema: |
   type SimpleLink link
-expected:
+expected: |
   {
     "SimpleLink": {
       "kind": "link"

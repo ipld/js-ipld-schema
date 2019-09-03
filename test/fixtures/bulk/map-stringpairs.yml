@@ -1,11 +1,9 @@
 schema: |
-  type MapAsStringpairs {
-    String: String
-  } representation stringpairs {
+  type MapAsStringpairs {String:String} representation stringpairs {
     innerDelim "="
     entryDelim ","
   }
-expected:
+expected: |
   {
     "MapAsStringpairs": {
       "kind": "map",

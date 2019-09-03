@@ -2,10 +2,10 @@ schema: |
   type StructWithAnonymousTypes struct {
     fooField optional {String:String}
     barField nullable {String:String}
-    bazField {String : nullable String}
+    bazField {String:nullable String}
     wozField {String:[nullable String]}
   }
-expected:
+expected: |
   {
     "StructWithAnonymousTypes": {
       "kind": "struct",
