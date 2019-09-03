@@ -149,9 +149,13 @@ StructType
   / MapDescriptor
   / ListDescriptor
 
-StructFieldRepresentationOptions = "(" _ "implicit" _ implicit:QuotedString _ ")" {
-  return { implicit: coerceValue(implicit) }
+StructFieldRepresentationOptions = "(" _ options:StructFieldRepresentationOption* _ ")" {
+  return options.reduce(extend, {})
 }
+
+StructFieldRepresentationOption
+  = "implicit" _ implicit:QuotedString _ { return { implicit: coerceValue(implicit) } }
+  / "rename" _ rename:QuotedString _ { return { rename } }
 
 UnionRepresentation = "representation" _ representation:UnionRepresentationType _ {
   return representation
