@@ -5,7 +5,7 @@ const parser = require('../parser')
 const { transformError } = require('../util')
 
 let args = process.argv.slice(2)
-let indent = ' '
+let indent = '  '
 
 function usageAndExit () {
   console.error('Usage: ipldschema2json [-t] <schema.ipldsch>')
