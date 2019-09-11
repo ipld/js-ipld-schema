@@ -1,5 +1,5 @@
 schema: |
-  type SimpleLink link
+  type SimpleLink &Any
 expected: |
   {
     "SimpleLink": {
