@@ -37,6 +37,7 @@ TypeDef = _ 'type' _ name:TypeName _ definition:Definition _ {
 Definition
   = descriptor:MapDescriptor { return descriptor } // "map" assumed if goes straight to a {}
   / descriptor:ListDescriptor { return descriptor } // "list" assumed if goes straight to a []
+  / descriptor:LinkDescriptor { return descriptor } // "link" assumed if goes straight to a &
   / EnumKind _ descriptor:EnumDescriptor { return descriptor }
   / UnionKind _ descriptor:UnionDescriptor { return descriptor }
   / StructKind _ descriptor:StructDescriptor { return descriptor }
@@ -53,8 +54,13 @@ ListDescriptor = "[" _ fields:TypeDescriptor _ "]" {
   return extend({ kind: 'list' }, fields)
 }
 
-TypeDescriptor = options:TypeOption* _ valueType:(TypeName / ListDescriptor) {
+// TODO: generalise this TypeName / MapDescriptor / ListDescriptor / LinkDescriptor combo, it's used elsewhere
+TypeDescriptor = options:TypeOption* _ valueType:(TypeName / MapDescriptor / ListDescriptor / LinkDescriptor) {
   return options.reduce(extend, { valueType })
+}
+
+LinkDescriptor = "&" expectedType:TypeName {
+  return extend({ kind: 'link' }, expectedType !== 'Any' ? { expectedType } : null)
 }
 
 EnumDescriptor = "{" values:EnumValue+ "}" {
@@ -85,9 +91,9 @@ UnionDescriptor = "{" values:UnionValue+ "}" _ representation:UnionRepresentatio
   return extend({ kind: 'union' }, { representation })
 }
 
-UnionValue
-  = _ "|" _ type:TypeName _ name:QuotedString _ { return { [name]: type } } // keyed and envelope
-  / _ "|" _ name:TypeName _ kind:BaseType _ { return { [kind]: name } } // kinded
+// TODO: tighten these up, kinded doesn't get quoted kinds, keyed and envelope does, this allows a kinded
+// union to pass through with quoted strings, it's currently just a messy duplication
+UnionValue = _ "|" _ type:(TypeName / LinkDescriptor) _ name:(QuotedString / BaseType) _ { return { [name]: type } } // keyed and envelope
 
 MapDescriptor = "{" _ keyType:TypeName _ ":" _ valueType:TypeDescriptor _ "}" _ representation:MapRepresentation? {
   let representationType = (representation && representation.type)
@@ -148,6 +154,7 @@ StructType
   = type:StringName { return type }
   / MapDescriptor
   / ListDescriptor
+  / LinkDescriptor
 
 StructFieldRepresentationOptions = "(" _ options:StructFieldRepresentationOption* _ ")" {
   return options.reduce(extend, {})
