@@ -205,7 +205,7 @@ MapStringpairsRepresentationOptions
 StructRepresentationType
   = "map" { return { type: 'map' } }
   / "tuple" _ fieldOrder:StructTupleRepresentationFields? { return extend({ type: 'tuple' }, fieldOrder ? { fieldOrder } : null) }
-  / "stringjoin" _ join:StructStringjoinRepresentationFields { return { type: 'stringjoin', join } }
+  / "stringjoin" _ fields:StructStringjoinRepresentationFields { return extend({ type: 'stringjoin' }, fields ) }
   / "stringpairs" _ representation:MapStringpairsRepresentation { return representation }
   / "listpairs" { return { type: 'listpairs' } }
 
@@ -220,12 +220,29 @@ StructTupleRepresentationFields = "{" _ fieldOrder:StructTupleRepresentationFiel
   return fieldOrder
 }
 
-StructTupleRepresentationFieldOrder = "fieldOrder" _ fields:QuotedStringArray {
+StructTupleRepresentationFieldOrder = "fieldOrder" _ fieldOrder:QuotedStringArray {
+  return fieldOrder
+}
+
+// TODO: break these by newline || "}" (non-greedy match)
+StructStringjoinRepresentationFields = "{" fields:StructStringjoinRepresentationField+ "}" {
+  fields = fields.reduce(extend, {})
+  if (!fields.join) {
+    throw new Error('stringjoin representation needs a "join" specifier')
+  }
   return fields
 }
 
-StructStringjoinRepresentationFields = "{" _ "join" _ join:QuotedString  _ "}" {
-  return join
+StructStringjoinRepresentationField
+  = StructStringjoinRepresentationField_Join
+  / StructStringjoinRepresentationField_FieldOrder
+
+StructStringjoinRepresentationField_Join = _ "join" _ join:QuotedString _ {
+  return { join }
+}
+
+StructStringjoinRepresentationField_FieldOrder = _ "fieldOrder" _ fieldOrder:QuotedStringArray _ {
+  return { fieldOrder }
 }
 
 QuotedStringArray = "[" _ firstElement:QuotedString? subsequentElements:(_ "," _ s:QuotedString _ { return s })* _ "]" {
