@@ -9,7 +9,8 @@
     "coverage": "tap test/*-test.js --cov --coverage-report=html"
   },
   "bin": {
-    "ipldschema2json": "./bin/ipldschema2json.js"
+    "ipldschema2json": "./bin/ipldschema2json.js",
+    "ipld-schema": "./cli.js"
   },
   "author": "Rod <r@va.gg> (http://r.va.gg/)",
   "license": "Apache-2.0",
@@ -23,6 +24,8 @@
     "url": "https://github.com/rvagg/js-ipld-schema.git"
   },
   "dependencies": {
-    "@sindresorhus/is": "~1.0.0"
+    "@sindresorhus/is": "~1.0.0",
+    "get-stdin": "^7.0.0",
+    "yargs": "^14.0.0"
   }
 }
