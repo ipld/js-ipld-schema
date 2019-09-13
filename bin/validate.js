@@ -59,7 +59,7 @@ async function validate (files) {
     try {
       parser.parse(contents)
     } catch (err) {
-      throw new Error(transformError(err).message) // discard useless extra info
+      throw new Error(`Could not validate ${filename}: ${transformError(err).message}`) // discard useless extra info
     }
     console.error(`Validated ${filename} ...`)
   }
