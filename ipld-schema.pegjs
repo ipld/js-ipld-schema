@@ -74,26 +74,34 @@ EnumValue = _ "|" _ name:QuotedString _ { return { [name]: null } }
 
 UnionDescriptor = "{" values:UnionValue+ "}" _ representation:UnionRepresentation {
   let fields = values.reduce(extend, {})
-  let representationType = representation.type
-  switch (representationType) {
-    case 'keyed':
-    case 'kinded':
-      representation = { [representationType]: fields }
-      break
-    case 'inline': // TODO: inline unions have to contain certain types that can be inlined, structs, maps?
-    case 'envelope':
-      representation = { [representationType]: extend(representation, { discriminantTable: fields }) }
-      break
-    default:
-      throw new Error('Unsupported')
+  if (!representation.byteprefix && Object.values(values).find((v) => typeof v === 'number') > -1) {
+    throw new Error(`${Object.keys(representation)[0]} union representations do not support integer discriminators`)
   }
-  delete representation[representationType].type
-  return extend({ kind: 'union' }, { representation })
+  if (representation.keyed) {
+    representation.keyed = fields
+  } else if (representation.kinded) {
+    representation.kinded = fields
+  } else if (representation.byteprefix) {
+    representation.byteprefix = fields
+  } else if (representation.inline) {
+    representation.inline.discriminantTable = fields
+  } else if (representation.envelope) {
+    representation.envelope.discriminantTable = fields
+  } else {
+    throw new Error('Unsupported union type') // we shouldn't get here if we're coded right
+  }
+  return { kind: 'union', representation }
 }
 
 // TODO: tighten these up, kinded doesn't get quoted kinds, keyed and envelope does, this allows a kinded
 // union to pass through with quoted strings, it's currently just a messy duplication
-UnionValue = _ "|" _ type:(TypeName / LinkDescriptor) _ name:(QuotedString / BaseType) _ { return { [name]: type } } // keyed and envelope
+// also .. byteprefix unions get ints
+UnionValue = _ "|" _ type:(TypeName / LinkDescriptor) _ name:(QuotedString / BaseType / Integer) _ {
+  if (typeof name === 'number') { // byteprefix allows this
+    return { [type]: name }
+  }
+  return { [name]: type }
+}
 
 MapDescriptor = "{" _ keyType:TypeName _ ":" _ valueType:TypeDescriptor _ "}" _ representation:MapRepresentation? {
   let representationType = (representation && representation.type)
@@ -177,18 +185,19 @@ StructRepresentation = "representation" _ representation:StructRepresentationTyp
 }
 
 UnionRepresentationType
-  = "keyed" { return { type: 'keyed' } }
-  / "kinded" { return { type: 'kinded' } }
+  = "keyed" { return { keyed: {} } }
+  / "kinded" { return { kinded: {} } }
+  / "byteprefix" { return { byteprefix: {} } } // TODO: check kind reprs for union types are all bytes
   / "inline" _ descriptor:UnionInlineKeyDefinition { return descriptor }
   / "envelope" _ descriptor:UnionEnvelopeKeyDefinition { return descriptor }
 
 UnionInlineKeyDefinition = "{" _ ("discriminantKey" / "discriminantKey") _ discriminantKey:QuotedString _ "}" {
-  return { type: 'inline', discriminantKey }
+  return { inline: { discriminantKey } }
 }
 
 // TODO: break these by newline || "}" (non-greedy match)
 UnionEnvelopeKeyDefinition = "{" _ ("discriminantKey" / "discriminantKey") _ discriminantKey:QuotedString _ "contentKey" _ contentKey:QuotedString _ "}" {
-  return { type: 'envelope', discriminantKey, contentKey }
+  return { envelope: { discriminantKey, contentKey } }
 }
 
 MapRepresentationType
@@ -267,6 +276,8 @@ TypeName = first:[A-Z] remainder:[a-zA-Z0-9_]* { return first + remainder.join('
 QuotedString = "\"" chars:[^"]+ "\"" { return chars.join('') }
 
 StringName = chars:[a-zA-Z0-9_]+ { return chars.join('') }
+
+Integer = chars:[0-9]+ { return parseInt(chars.join(''), 10) }
 
 BaseType
   = "bool"
