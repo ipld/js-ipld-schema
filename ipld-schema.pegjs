@@ -28,10 +28,38 @@
   }
 }
 
-Root = types:TypeDef+ { return { types: types.reduce(extend, {}) } }
+Root = roots:RootConstructs+ {
+  // merge 'type' and 'advanced' structures into one {types:{}, advanced:{}}
+  return roots.reduce((o1, o2) => {
+    if (o2.types) {
+      if (!o1.types) {
+        o1.types = {}
+      }
+      Object.assign(o1.types, o2.types)
+    } else if (o2.advanced) {
+      if (!o1.advanced) {
+        o1.advanced = {}
+      }
+      Object.assign(o1.advanced, o2.advanced)
+    }
+    return o1
+  }, {})
+}
+
+RootConstructs
+  = types:TypeDef { return { types } }
+  / advanced:AdvancedDef { return { advanced } }
 
 TypeDef = _ 'type' _ name:TypeName _ definition:Definition _ {
   return { [name]: definition }
+}
+
+AdvancedDef = _ 'advanced' _ name:TypeName _ {
+  return { [name]: { kind: 'advanced' } }
+}
+
+AdvancedRepresentation = name:TypeName {
+  return { advanced: { name } }
 }
 
 Definition
@@ -41,6 +69,7 @@ Definition
   / EnumKind _ descriptor:EnumDescriptor { return descriptor }
   / UnionKind _ descriptor:UnionDescriptor { return descriptor }
   / StructKind _ descriptor:StructDescriptor { return descriptor }
+  / BytesKind _ descriptor:BytesDescriptor { return descriptor }
   / kind:SimpleKind { return kind }
 
 MapKind = "map"
@@ -48,10 +77,12 @@ ListKind = "list"
 EnumKind = "enum"
 UnionKind = "union"
 StructKind = "struct"
+BytesKind = "bytes"
+
 SimpleKind = kind:BaseType { return { kind } }
 
-ListDescriptor = "[" _ fields:TypeDescriptor _ "]" {
-  return extend({ kind: 'list' }, fields)
+ListDescriptor = "[" _ fields:TypeDescriptor _ "]" _ representation:ListRepresentation? {
+  return Object.assign({ kind: 'list' }, fields, representation ? { representation } : null)
 }
 
 // TODO: generalise this TypeName / MapDescriptor / ListDescriptor / LinkDescriptor combo, it's used elsewhere
@@ -180,6 +211,10 @@ MapRepresentation = "representation" _ representation:MapRepresentationType _ {
   return representation
 }
 
+ListRepresentation = "representation" _ representation:ListRepresentationType _ {
+  return representation
+}
+
 StructRepresentation = "representation" _ representation:StructRepresentationType _ {
   return representation
 }
@@ -204,6 +239,7 @@ MapRepresentationType
   = "map" { return { type: 'map' } }
   / "listpairs" { return { type: 'listpairs' } }
   / "stringpairs" _ representation:MapStringpairsRepresentation { return representation }
+  / "advanced" _ representation:AdvancedRepresentation { return representation }
 
 // TODO: break these by newline || "}" (non-greedy match)
 MapStringpairsRepresentation = "{" _ options:MapStringpairsRepresentationOptions* _ "}" {
@@ -217,6 +253,8 @@ MapStringpairsRepresentation = "{" _ options:MapStringpairsRepresentationOptions
 MapStringpairsRepresentationOptions
   = _ "innerDelim" _ innerDelim:QuotedString { return { innerDelim } }
   / _ "entryDelim" _ entryDelim:QuotedString { return { entryDelim } }
+
+ListRepresentationType = "advanced" _ representation:AdvancedRepresentation { return representation }
 
 StructRepresentationType
   = "map" { return { type: 'map' } }
@@ -260,6 +298,8 @@ StructStringjoinRepresentationField_Join = _ "join" _ join:QuotedString _ {
 StructStringjoinRepresentationField_FieldOrder = _ "fieldOrder" _ fieldOrder:QuotedStringArray _ {
   return { fieldOrder }
 }
+
+BytesDescriptor = "representation" _ "advanced" _ representation:AdvancedRepresentation { return { kind: 'bytes', representation } }
 
 QuotedStringArray = "[" _ firstElement:QuotedString? subsequentElements:(_ "," _ s:QuotedString _ { return s })* _ "]" {
   if (!firstElement) {

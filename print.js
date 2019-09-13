@@ -5,6 +5,27 @@ function print (schema, indent = '  ') {
 
   let str = ''
 
+  str += printAdvanced(schema, indent)
+  str += printTypes(schema, indent)
+
+  return str
+}
+
+function printAdvanced (schema, indent) {
+  let str = ''
+
+  if (typeof schema.advanced === 'object') {
+    for (const advanced of Object.keys(schema.advanced)) {
+      str += `advanced ${advanced}\n\n`
+    }
+  }
+
+  return str
+}
+
+function printTypes (schema, indent) {
+  let str = ''
+
   for (const [type, defn] of Object.entries(schema.types)) {
     if (typeof defn.kind !== 'string') {
       throw new Error(`Invalid schema ${type} doesn't have a kind`)
@@ -20,9 +41,15 @@ function printType (defn, indent) {
   if (['map', 'list', 'link'].includes(defn.kind)) {
     return printTypeTerm(defn, indent)
   }
+
   if (['struct', 'union', 'enum'].includes(defn.kind)) {
     return `${defn.kind} ${printTypeTerm(defn, indent)}`
   }
+
+  if (defn.kind === 'bytes' && defn.representation && typeof defn.representation.advanced === 'object') {
+    return `bytes ${advancedRepresentation(defn.representation.advanced)}`
+  }
+
   return defn.kind
 }
 
@@ -32,7 +59,6 @@ function printTypeTerm (defn, indent) {
   }
 
   if (typeof printTypeTerm[defn.kind] !== 'function') {
-    console.log('blurp', defn)
     throw new Error(`Invalid schema unsupported kind (${defn.kind})`)
   }
 
@@ -58,9 +84,18 @@ printTypeTerm.map = function map (defn, indent) {
       str += ' representation listpairs'
     } else if (typeof defn.representation.stringpairs === 'object') {
       str += stringpairs(indent, 'map', defn.representation.stringpairs)
+    } else if (typeof defn.representation.advanced === 'object') {
+      str += ` ${advancedRepresentation(defn.representation.advanced)}`
     }
   }
   return str
+}
+
+function advancedRepresentation (representation) {
+  if (typeof representation.name !== 'string') {
+    throw new Error('Invalid schema, advanced representation requires a name')
+  }
+  return `representation advanced ${representation.name}`
 }
 
 printTypeTerm.list = function list (defn) {
@@ -69,7 +104,15 @@ printTypeTerm.list = function list (defn) {
   }
 
   const nullable = defn.valueNullable === true ? 'nullable ' : ''
-  return `[${nullable}${printTypeTerm(defn.valueType)}]`
+  let str = `[${nullable}${printTypeTerm(defn.valueType)}]`
+
+  if (defn.representation) {
+    if (typeof defn.representation.advanced === 'object') {
+      str += ` ${advancedRepresentation(defn.representation.advanced)}`
+    }
+  }
+
+  return str
 }
 
 printTypeTerm.struct = function struct (defn, indent) {
@@ -135,6 +178,8 @@ printTypeTerm.struct = function struct (defn, indent) {
       }
     } else if (typeof defn.representation.stringpairs === 'object') {
       str += stringpairs(indent, 'struct', defn.representation.stringpairs)
+    } else if (typeof defn.representation.advanced === 'object') {
+      str += ` ${advancedRepresentation(defn.representation.advanced)}`
     }
   }
 
