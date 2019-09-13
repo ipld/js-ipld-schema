@@ -5,18 +5,19 @@
   "main": "./ipld-schema.js",
   "scripts": {
     "peg": "pegjs -o parser.js ipld-schema.pegjs",
-    "test": "tap test/*-test.js --cov",
+    "lint": "standard *.js test/*.js bin/*.js",
+    "test": "npm run lint && tap test/*-test.js --cov",
     "coverage": "tap test/*-test.js --cov --coverage-report=html"
   },
   "bin": {
-    "ipldschema2json": "./bin/ipldschema2json.js",
-    "ipld-schema": "./cli.js"
+    "ipld-schema": "./bin/cli.js"
   },
   "author": "Rod <r@va.gg> (http://r.va.gg/)",
   "license": "Apache-2.0",
   "devDependencies": {
     "js-yaml": "~3.13.1",
     "pegjs": "~0.10.0",
+    "standard": "~14.2.0",
     "tap": "~14.6.1"
   },
   "repository": {
@@ -27,5 +28,10 @@
     "@sindresorhus/is": "~1.0.0",
     "get-stdin": "^7.0.0",
     "yargs": "^14.0.0"
+  },
+  "standard": {
+    "ignore": [
+      "parser.js"
+    ]
   }
 }
