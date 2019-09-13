@@ -112,7 +112,7 @@ MapDescriptor = "{" _ keyType:TypeName _ ":" _ valueType:TypeDescriptor _ "}" _ 
   return Object.assign({ kind: 'map', keyType }, valueType, representation ? { representation } : null)
 }
 
-StructDescriptor = "{" values:StructValue* "}" _ representation:StructRepresentation? {
+StructDescriptor = "{" _ values:StructValue* _ "}" _ representation:StructRepresentation? {
   let fields = values.reduce(extend, {})
   // field representation options can come in from parens following field definitions, we need
   // to lift them out into the 'representation' object
