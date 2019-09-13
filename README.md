@@ -55,37 +55,81 @@ schema.validate(myMap.one, 'SimpleStruct')
 schema.validate(myMap, 'MyMap')
 ```
 
+## Command line
 
-**ipld-schema also exports an executable**: if installed with `-g` you will get an `ipldschema2json` command in your `PATH`. Run this with an IPLD Schema file as an argument and it will print JSON to standard out.
+**ipld-schema also exports an executable**: if installed with `-g` you will get an `ipld-schema` command in your `PATH`.
+
+This executable has two commands that operate on files or stdin.
+
+  * `ipld-schema validate [files...]`
+  * `ipld-schema to-json [-t] [file]`
+
+### Validation
+
+The `validate` command will take an `.ipldsch` or `.md` file and validate its schema contents.
 
 ```
-$ ipldschema2json.js simple-struct.ipldsch
+$ ipld-schema validate simple-struct.ipldsch
+Validated simple-struct.ipldsch ...
+```
+
+or
+
+```
+$ ipld-schema validate README.md
+Validated README.md ...
+```
+
+`ipld-schema validate` for Markdown files will extract any \`\`\` code blocks using the `ipldsch` or `sh` language codes.
+
+Alternatively, you can provide IPLD schema data via stdin:
+
+```
+$ cat simple-struct.ipldsch | ipld-schema validate
+Validated <stdin> ...
+```
+
+### JSONification
+
+The `to-json` command will take an .ipldsch` file and print a JSON form of its schema representation.
+
+```
+$ ipld-schema to-json simple-struct.ipldsch
 {
- "schema": {
-  "SimpleStruct": {
-   "kind": "struct",
-   "fields": {
-    "foo": {
-     "type": "Int"
+  "schema": {
+    "SimpleStruct": {
+      "kind": "struct",
+      "fields": {
+        "foo": {
+          "type": "Int"
+        },
+        "bar": {
+          "type": "Bool"
+        },
+        "baz": {
+          "type": "String"
+        }
+      },
+      "representation": {
+        "map": {}
+      }
     },
-    "bar": {
-     "type": "Bool"
-    },
-    "baz": {
-     "type": "String"
+    "MyMap": {
+      "kind": "map",
+      "keyType": "String",
+      "valueType": "SimpleStruct"
     }
-   },
-   "representation": {
-    "map": {}
-   }
-  },
-  "MyMap": {
-   "kind": "map",
-   "keyType": "String",
-   "valueType": "SimpleStruct"
   }
- }
 }
+```
+
+Provide a `-t` to print with tabs instead of two-spaces.
+
+`ipld-schema to-json` also accepts input via stdin:
+
+```
+$ cat simple-struct.ipldsch | ipld-schema to-json
+...
 ```
 
 ## License and Copyright
