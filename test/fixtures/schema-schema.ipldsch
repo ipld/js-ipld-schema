@@ -8,7 +8,8 @@
 ## There are some additional rules that should be applied:
 ##   - Type names should by convention begin with a capital letter;
 ##   - Type names must be all printable characters (no whitespace);
-##   - Type names must not contain punctuation (dashes, dots, etc).
+##   - Type names must not contain punctuation other than underscores
+##     (dashes, dots, etc.).
 ##
 ## Type names are strings meant for human consumption at a local scope.
 ## When making a Schema, note that the TypeName is the key of the map:
@@ -135,6 +136,18 @@ type RepresentationKind enum {
 	| "link"
 }
 
+## AnyScalar defines a union of the basic non-complex kinds.
+##
+## Useful defining usage of IPLD nodes that do compose from other nodes.
+##
+type AnyScalar union {
+	| Bool bool
+	| String string
+	| Bytes bytes
+	| Int int
+	| Float float
+} representation kinded
+
 ## TypeBool describes a simple boolean type.
 ## It has no details.
 ##
@@ -167,7 +180,56 @@ type TypeMap struct {
 	keyType TypeName # additionally, the referenced type must be reprkind==string.
 	valueType TypeTerm
 	valueNullable Bool (implicit "false")
+	representation MapRepresentation
 } representation map
+
+## MapRepresentation describes how a map type should be mapped onto
+## its IPLD Data Model representation.  By default a map is a map in the
+## Data Model but other kinds can be configured.
+##
+type MapRepresentation union {
+	| MapRepresentation_Map "map"
+	| MapRepresentation_StringPairs "stringpairs"
+	| MapRepresentation_ListPairs "listpairs"
+} representation keyed
+
+## MapRepresentation_Map describes that a map should be encoded as
+## a map in the Data Model
+##
+type MapRepresentation_Map struct {}
+
+## MapRepresentation_StringPairs describes that a map should be encoded as a
+## string of delimited "k/v" entries, e.g. "k1=v1,k2=v2".
+## The separating delimiter may be specified with "entryDelim", and the k/v
+## delimiter may be specified with "innerDelim". So a "k=v" naive
+## comma-separated form would use an "innerDelim" of "=" and an "entryDelim"
+## of ",".
+##
+## This serial representation is limited: the domain of keys must
+## exclude the "innerDelim" and values and keys must exclude ",".
+## There is no facility for escaping, such as in escaped CSV.
+## This also leads to a further restriction that this representation is only
+## valid for maps whose keys and values may all be encoded to string form
+## without conflicts in delimiter character. It is recommended, therefore,
+## that its use be limited to maps containing values with the basic data
+## model kinds that exclude multiple values (i.e. no maps, lists, and therefore
+## structs or unions).
+##
+type MapRepresentation_StringPairs struct {
+	innerDelim String
+	entryDelim String
+}
+
+## MapRepresentation_ListPairs describes that a map should be encoded as a
+## list in the IPLD Data Model. This list comprises a sub-list for each entry,
+## in the form: [[k1,v1],[k2,v2]].
+##
+## This representation type is similar to StructRepresentation_Tuple except
+## it includes the keys. This is critical for maps since the keys are not
+## defined in the schema (hence "tuple" representation isn't available for
+## maps).
+##
+type MapRepresentation_ListPairs struct {}
 
 ## TypeList describes a list.
 ## The values of the list have some specific type of their own.
@@ -179,10 +241,25 @@ type TypeList struct {
 
 ## TypeLink describes a hash linking to another object (a CID).
 ##
-## REVIEW: this currently has no details... but possibly it should have a
-## type hint for what we expect when resolving the link?
+## A link also has an "expectedType" that provides a hinting mechanism
+## suggesting what we should find if we were to follow the link. This
+## cannot be strictly enforced by a node or block-level schema
+## validation but may be enforced elsewhere in an application relying on
+## a schema.
 ##
-type TypeLink struct {}
+## The expectedType is specified with the `&Any` link shorthand, where
+## `Any` may be replaced with a specific type.
+##
+## Unlike other kinds, we use `&Type` to denote a link Type rather than
+## `Link`. In this usage, we replace `Type` the expected Type, with `&Any`
+## being shorthand for "a link which may resolve to a type of any kind".
+##
+## `expectedType` is a String, but it should validate as "Any" or a TypeName
+## found somewhere in the schema.
+##
+type TypeLink struct {
+	expectedType String (implicit "Any")
+}
 
 ## TypeUnion describes a union (sometimes called a "sum type", or
 ## more verbosely, a "discriminated union").
@@ -280,9 +357,23 @@ type UnionRepresentation_Inline struct {
 ## also exist).
 ##
 type TypeStruct struct {
-	fields {String:StructField}
+	fields {FieldName:StructField}
 	representation StructRepresentation
 }
+
+## FieldName is an alias of string.
+##
+## There are some additional rules that should be applied:
+##   - Field names should by convention begin with a lower-case letter;
+##   - Field names must be all printable characters (no whitespace);
+##   - Field names must not contain punctuation other than underscores
+##     (dashes, dots, etc.).
+##
+## Field names are strings meant for human consumption at a local scope.
+## When making a Schema, note that the FieldName is the key of the map:
+## a FieldName must be unique within the Schema.
+##
+type FieldName string
 
 ## StructField describes the properties of each field declared by a TypeStruct.
 ##
@@ -359,19 +450,30 @@ type InlineDefn union {
 ## StructRepresentation describes how a struct type should be mapped onto
 ## its IPLD Data Model representation.  Typically, maps are the representation
 ## kind, but other kinds and details can be configured.
+##
 type StructRepresentation union {
 	| StructRepresentation_Map "map"
 	| StructRepresentation_Tuple "tuple"
+	| StructRepresentation_StringPairs "stringpairs"
+	| StructRepresentation_StringJoin "stringjoin"
+	| StructRepresentation_ListPairs "listpairs"
 } representation keyed
 
 ## StructRepresentation_Map describes a way to map a struct type onto a map
-## representation.  For example, fields may be aliased,
-## or implicit values associated.
+## representation. Field serialization options may optionally be configured to
+## enable mapping serialized keys using the 'rename' option, or implicit values
+## specified where the field is omitted from the serialized form using the
+## 'implicit' option.
+##
+## See StructRepresentation_Map_FieldDetails for details on the 'rename' and
+## 'implicit' options.
+##
 type StructRepresentation_Map struct {
-	fields optional {String:StructRepresentation_Map_FieldDetails}
+	fields optional {FieldName:StructRepresentation_Map_FieldDetails}
 }
+
 ## StructRepresentation_Map_FieldDetails describes additional properties of a
-## struct field when represented as a map.  For example, fields may be aliased,
+## struct field when represented as a map.  For example, fields may be renamed,
 ## or implicit values associated.
 ##
 ## If an implicit value is defined, then during marshalling, if the actual value
@@ -386,14 +488,14 @@ type StructRepresentation_Map struct {
 ## By contrast, the cardinality of membership of a field with an implicit value
 ## remains unchanged; there is serial state which can map to an undefined value.
 ##
-## Note that 'alias' supports exactly one string, and not a list: this is
-## intentional.  The alias feature is meant to allow serial representations
+## Note that 'rename' supports exactly one string, and not a list: this is
+## intentional.  The rename feature is meant to allow serial representations
 ## to use a different key string than the schema type definition field name;
 ## it is not intended to be used for migration purposes.
 ##
 type StructRepresentation_Map_FieldDetails struct {
-	alias optional String
-	implicit optional Any # Review: may be better to introduce a small kinded union here which has the essential scalars as members.
+	rename optional String
+	implicit optional AnyScalar
 }
 
 ## StructRepresentation_Tuple describes a way to map a struct type into a list
@@ -402,12 +504,61 @@ type StructRepresentation_Map_FieldDetails struct {
 ## Tuple representations are less flexible than map representations:
 ## field order can be specified in order to override the order defined
 ## in the type, but optionals and implicits are not (currently) supported.
+## A `fieldOrder` list must include quoted strings (FieldName is a string
+## type) which are coerced to the names of the struct fields. e.g.:
+##   fieldOrder ["Foo", "Bar", "Baz"]
+##
 type StructRepresentation_Tuple struct {
-	fieldOrder optional [String]
+	fieldOrder optional [FieldName]
 }
+
+## StructRepresentation_StringPairs describes that a struct should be encoded
+## as a string of delimited "k/v" entries, e.g. "k1=v1,k2=v2".
+## The separating delimiter may be specified with "entryDelim", and the k/v
+## delimiter may be specified with "innerDelim". So a "k=v" naive
+## comma-separated form would use an "innerDelim" of "=" and an "entryDelim"
+## of ",".
+##
+## Serialization a struct with stringpairs works the same way as serializing
+## a map with stringpairs and the same character limitations exist. See
+## MapRepresentation_StringPairs for more details on these limitations.
+##
+type StructRepresentation_StringPairs struct {
+	innerDelim String
+	entryDelim String
+}
+
+## StructRepresentation_StringJoin describes a way to encode a struct to
+## a string in the IPLD Data Model. Similar to tuple representation, the
+## keys are dropped as they may be inferred from the struct definition.
+## values are concatenated, in order, and separated by a "join" delimiter.
+## For example, specifying ":" as the "join": "v1,v2,v3".
+##
+## stringjoin is necessarily restrictive and therefore only valid for structs
+## whose values may all be encoded to string form without conflicts in "join"
+## character. It is recommended, therefore, that its use be limited to structs
+## containing values with the basic data model kinds that exclude multiple
+## values (i.e. no maps, lists, and therefore structs or unions).
+##
+type StructRepresentation_StringJoin struct {
+	join String
+	fieldOrder optional [FieldName]
+}
+
+## StructRepresentation_ListPairs describes that a struct, should be encoded as
+## a list in the IPLD Data Model. This list comprises a sub-list for each
+## entry, in the form: [[k1,v1],[k2,v2]].
+##
+## This representation type encodes in the same way as
+## MapStructRepresentation_Tuple. It is also similar to
+## StructRepresentation_Tuple except it includes the keys in nested lists.
+## A tuple representation for a struct will encode more compact than listpairs.
+##
+type StructRepresentation_ListPairs struct {}
 
 ## TypeEnum describes a type which has a known, pre-defined set of possible
 ## values.  Each of the values must be representable a string.
+##
 type TypeEnum struct {
 	members {String:Null}
 }

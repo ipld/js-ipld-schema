@@ -62,7 +62,9 @@ schema.validate(myMap, 'MyMap')
 This executable has two commands that operate on files or stdin.
 
   * `ipld-schema validate [files...]`
-  * `ipld-schema to-json [-t] [file]`
+  * `ipld-schema to-json [-t] [files...]`
+
+Both commands take either .ipldsch or .md files. When using .md files, `ipld-schema` will extract any \`\`\` code blocks using the `ipldsch` or `sh` language codes.
 
 ### Validation
 
@@ -80,8 +82,6 @@ $ ipld-schema validate README.md
 Validated README.md ...
 ```
 
-`ipld-schema validate` for Markdown files will extract any \`\`\` code blocks using the `ipldsch` or `sh` language codes.
-
 Alternatively, you can provide IPLD schema data via stdin:
 
 ```
@@ -91,7 +91,7 @@ Validated <stdin> ...
 
 ### JSONification
 
-The `to-json` command will take an .ipldsch` file and print a JSON form of its schema representation.
+The `to-json` command will take one or more .ipldsch or .md files and print a JSON form of the schemas found within.
 
 ```
 $ ipld-schema to-json simple-struct.ipldsch

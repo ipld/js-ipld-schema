@@ -1,41 +1,40 @@
 #!/usr/bin/env node
 
-const fs = require('fs').promises
-fs.constants = require('fs').constants
-const getStdin = require('get-stdin')
 const parser = require('../parser')
 const { transformError } = require('../util')
+const collectInput = require('./collect-input')
 
 let indent = '  '
 
-async function toJSON (file, options) {
-  file = file[0]
-
+async function toJSON (files, options) {
   if (options.tabs) {
     indent = '\t'
   }
 
-  let contents
+  const input = await collectInput(files)
 
-  if (!file) {
-    contents = await getStdin()
-    if (!contents) {
-      throw new Error('No input provided via stdin')
+  let schema
+  for (const { filename, contents } of input) {
+    try {
+      const parsed = parser.parse(contents)
+      if (!schema) {
+        schema = parsed
+      } else {
+        for (const [type, defn] of Object.entries(parsed.schema)) {
+          if (schema.schema[type]) {
+            console.error(`Error: duplicate type "${type}" found in schema(s)`)
+            return process.exit(1)
+          }
+          schema.schema[type] = defn
+        }
+      }
+    } catch (err) {
+      console.error(`Error parsing ${filename}: ${transformError(err).message}`)
+      process.exit(1)
     }
-  } else {
-    contents = await fs.readFile(file, 'utf8')
   }
 
-  let representation
-
-  try {
-    representation = parser.parse(contents)
-  } catch (e) {
-    console.error(transformError(e).message)
-    process.exit(1)
-  }
-
-  console.log(JSON.stringify(representation, null, indent))
+  console.log(JSON.stringify(schema, null, indent))
 }
 
 module.exports = toJSON
