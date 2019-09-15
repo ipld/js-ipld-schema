@@ -66,6 +66,18 @@
 				"link": null
 			}
 		},
+		"AnyScalar": {
+			"kind": "union",
+			"representation": {
+				"kinded": {
+					"bool": "Bool",
+					"string": "String",
+					"bytes": "Bytes",
+					"int": "Int",
+					"float": "Float"
+				}
+			}
+		},
 		"TypeBool": {
 			"kind": "struct",
 			"fields": {},
@@ -112,6 +124,9 @@
 				},
 				"valueNullable": {
 					"type": "Bool"
+				},
+				"representation": {
+					"type": "MapRepresentation"
 				}
 			},
 			"representation": {
@@ -122,6 +137,44 @@
 						}
 					}
 				}
+			}
+		},
+		"MapRepresentation": {
+			"kind": "union",
+			"representation": {
+				"keyed": {
+					"map": "MapRepresentation_Map",
+					"stringpairs": "MapRepresentation_StringPairs",
+					"listpairs": "MapRepresentation_ListPairs"
+				}
+			}
+		},
+		"MapRepresentation_Map": {
+			"kind": "struct",
+			"fields": {},
+			"representation": {
+				"map": {}
+			}
+		},
+		"MapRepresentation_StringPairs": {
+			"kind": "struct",
+			"fields": {
+				"innerDelim": {
+					"type": "String"
+				},
+				"entryDelim": {
+					"type": "String"
+				}
+			},
+			"representation": {
+				"map": {}
+			}
+		},
+		"MapRepresentation_ListPairs": {
+			"kind": "struct",
+			"fields": {},
+			"representation": {
+				"map": {}
 			}
 		},
 		"TypeList": {
@@ -146,9 +199,19 @@
 		},
 		"TypeLink": {
 			"kind": "struct",
-			"fields": {},
+			"fields": {
+				"expectedType": {
+					"type": "String"
+				}
+			},
 			"representation": {
-				"map": {}
+				"map": {
+					"fields": {
+						"expectedType": {
+							"implicit": "Any"
+						}
+					}
+				}
 			}
 		},
 		"TypeUnion": {
@@ -228,7 +291,7 @@
 				"fields": {
 					"type": {
 						"kind": "map",
-						"keyType": "String",
+						"keyType": "FieldName",
 						"valueType": "StructField"
 					}
 				},
@@ -239,6 +302,9 @@
 			"representation": {
 				"map": {}
 			}
+		},
+		"FieldName": {
+			"kind": "string"
 		},
 		"StructField": {
 			"kind": "struct",
@@ -292,7 +358,10 @@
 			"representation": {
 				"keyed": {
 					"map": "StructRepresentation_Map",
-					"tuple": "StructRepresentation_Tuple"
+					"tuple": "StructRepresentation_Tuple",
+					"stringpairs": "StructRepresentation_StringPairs",
+					"stringjoin": "StructRepresentation_StringJoin",
+					"listpairs": "StructRepresentation_ListPairs"
 				}
 			}
 		},
@@ -302,7 +371,7 @@
 				"fields": {
 					"type": {
 						"kind": "map",
-						"keyType": "String",
+						"keyType": "FieldName",
 						"valueType": "StructRepresentation_Map_FieldDetails"
 					},
 					"optional": true
@@ -315,12 +384,12 @@
 		"StructRepresentation_Map_FieldDetails": {
 			"kind": "struct",
 			"fields": {
-				"alias": {
+				"rename": {
 					"type": "String",
 					"optional": true
 				},
 				"implicit": {
-					"type": "Any",
+					"type": "AnyScalar",
 					"optional": true
 				}
 			},
@@ -334,11 +403,50 @@
 				"fieldOrder": {
 					"type": {
 						"kind": "list",
-						"valueType": "String"
+						"valueType": "FieldName"
 					},
 					"optional": true
 				}
 			},
+			"representation": {
+				"map": {}
+			}
+		},
+		"StructRepresentation_StringPairs": {
+			"kind": "struct",
+			"fields": {
+				"innerDelim": {
+					"type": "String"
+				},
+				"entryDelim": {
+					"type": "String"
+				}
+			},
+			"representation": {
+				"map": {}
+			}
+		},
+		"StructRepresentation_StringJoin": {
+			"kind": "struct",
+			"fields": {
+				"join": {
+					"type": "String"
+				},
+				"fieldOrder": {
+					"type": {
+						"kind": "list",
+						"valueType": "FieldName"
+					},
+					"optional": true
+				}
+			},
+			"representation": {
+				"map": {}
+			}
+		},
+		"StructRepresentation_ListPairs": {
+			"kind": "struct",
+			"fields": {},
 			"representation": {
 				"map": {}
 			}
