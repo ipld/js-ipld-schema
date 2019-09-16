@@ -2,9 +2,11 @@ schema: |
   type SimpleList [String]
 expected: |
   {
-    "SimpleList": {
-      "kind": "list",
-      "valueType": "String"
+    "schema": {
+      "SimpleList": {
+        "kind": "list",
+        "valueType": "String"
+      }
     }
   }
 blocks:

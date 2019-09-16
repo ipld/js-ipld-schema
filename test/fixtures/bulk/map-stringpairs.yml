@@ -5,14 +5,16 @@ schema: |
   }
 expected: |
   {
-    "MapAsStringpairs": {
-      "kind": "map",
-      "keyType": "String",
-      "valueType": "String",
-      "representation": {
-        "stringpairs": {
-          "innerDelim": "=",
-          "entryDelim": ","
+    "schema": {
+      "MapAsStringpairs": {
+        "kind": "map",
+        "keyType": "String",
+        "valueType": "String",
+        "representation": {
+          "stringpairs": {
+            "innerDelim": "=",
+            "entryDelim": ","
+          }
         }
       }
     }

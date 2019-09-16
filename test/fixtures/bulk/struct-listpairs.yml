@@ -6,19 +6,22 @@ schema: |
   } representation listpairs
 expected: |
   {
-    "StructAsListpairs": {
-      "kind": "struct",
-      "fields": {
-        "foo": {
-          "type": "Int"
+    "schema": {
+      "StructAsListpairs": {
+        "kind": "struct",
+        "fields": {
+          "foo": {
+            "type": "Int"
+          },
+          "bar": {
+            "type": "Bool"
+          },
+          "baz": {
+            "type": "String"
+          }
         },
-        "bar": {
-          "type": "Bool"
-        },
-        "baz": {
-          "type": "String"
-        }
-      },
-      "representation": { "listpairs": {} }
+        "representation": { "listpairs": {} }
+      }
     }
   }
+

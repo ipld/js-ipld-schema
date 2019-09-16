@@ -6,12 +6,14 @@ schema: |
   }
 expected: |
   {
-    "SimpleEnum": {
-      "kind": "enum",
-      "members": {
-        "foo": null,
-        "bar": null,
-        "baz": null
+    "schema": {
+      "SimpleEnum": {
+        "kind": "enum",
+        "members": {
+          "foo": null,
+          "bar": null,
+          "baz": null
+        }
       }
     }
   }

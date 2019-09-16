@@ -2,7 +2,9 @@ schema: |
   type SimpleBytes bytes
 expected: |
   {
-    "SimpleBytes": {
-      "kind": "bytes"
+    "schema": {
+      "SimpleBytes": {
+        "kind": "bytes"
+      }
     }
   }

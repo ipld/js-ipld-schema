@@ -2,8 +2,10 @@ schema: |
   type SimpleFloat float
 expected: |
   {
-    "SimpleFloat": {
-      "kind": "float"
+    "schema": {
+      "SimpleFloat": {
+        "kind": "float"
+      }
     }
   }
 blocks:

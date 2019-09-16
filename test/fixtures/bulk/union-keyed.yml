@@ -6,13 +6,15 @@ schema: |
   } representation keyed
 expected: |
   {
-    "UnionKeyed": {
-      "kind": "union",
-      "representation": {
-        "keyed": {
-          "bar": "Bool",
-          "foo": "Int",
-          "baz": "String"
+    "schema": {
+      "UnionKeyed": {
+        "kind": "union",
+        "representation": {
+          "keyed": {
+            "bar": "Bool",
+            "foo": "Int",
+            "baz": "String"
+          }
         }
       }
     }

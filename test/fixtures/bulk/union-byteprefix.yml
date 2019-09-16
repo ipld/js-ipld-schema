@@ -1,6 +1,8 @@
 schema: |
   type Bls12_381Signature bytes
+
   type Secp256k1Signature bytes
+
   type Signature union {
     | Secp256k1Signature 0
     | Bls12_381Signature 1
@@ -8,18 +10,20 @@ schema: |
 root: Signature
 expected: |
   {
-    "Bls12_381Signature": {
-      "kind": "bytes"
-    },
-    "Secp256k1Signature": {
-      "kind": "bytes"
-    },
-    "Signature": {
-      "kind": "union",
-      "representation": {
-        "byteprefix": {
-          "Secp256k1Signature": 0,
-          "Bls12_381Signature": 1
+    "schema": {
+      "Bls12_381Signature": {
+        "kind": "bytes"
+      },
+      "Secp256k1Signature": {
+        "kind": "bytes"
+      },
+      "Signature": {
+        "kind": "union",
+        "representation": {
+          "byteprefix": {
+            "Secp256k1Signature": 0,
+            "Bls12_381Signature": 1
+          }
         }
       }
     }

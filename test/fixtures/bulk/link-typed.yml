@@ -1,14 +1,17 @@
 schema: |
   type FooLink &Foo
+
   type Foo bytes
 root: FooLink
 expected: |
   {
-    "FooLink": {
-      "kind": "link",
-      "expectedType": "Foo"
-    },
-    "Foo": {
-      "kind": "bytes"
+    "schema": {
+      "FooLink": {
+        "kind": "link",
+        "expectedType": "Foo"
+      },
+      "Foo": {
+        "kind": "bytes"
+      }
     }
   }
