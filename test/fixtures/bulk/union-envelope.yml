@@ -1,7 +1,10 @@
 schema: |
   type Bar bool
+
   type Baz string
+
   type Foo int
+
   type UnionEnvelope union {
     | Foo "foo"
     | Bar "bar"
@@ -13,25 +16,27 @@ schema: |
 root: UnionEnvelope
 expected: |
   {
-    "Bar": {
-      "kind": "bool"
-    },
-    "Baz": {
-      "kind": "string"
-    },
-    "Foo": {
-      "kind": "int"
-    },
-    "UnionEnvelope": {
-      "kind": "union",
-      "representation": {
-        "envelope": {
-          "discriminantKey": "bim",
-          "contentKey": "bam",
-          "discriminantTable": {
-            "foo": "Foo",
-            "bar": "Bar",
-            "baz": "Baz"
+    "schema": {
+      "Bar": {
+        "kind": "bool"
+      },
+      "Baz": {
+        "kind": "string"
+      },
+      "Foo": {
+        "kind": "int"
+      },
+      "UnionEnvelope": {
+        "kind": "union",
+        "representation": {
+          "envelope": {
+            "discriminantKey": "bim",
+            "contentKey": "bam",
+            "discriminantTable": {
+              "foo": "Foo",
+              "bar": "Bar",
+              "baz": "Baz"
+            }
           }
         }
       }

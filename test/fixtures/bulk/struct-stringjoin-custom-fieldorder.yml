@@ -9,27 +9,29 @@ schema: |
   }
 expected: |
   {
-    "StructAsStringjoin": {
-      "kind": "struct",
-      "fields": {
-        "foo": {
-          "type": "Int"
+    "schema": {
+      "StructAsStringjoin": {
+        "kind": "struct",
+        "fields": {
+          "foo": {
+            "type": "Int"
+          },
+          "bar": {
+            "type": "Bool"
+          },
+          "baz": {
+            "type": "String"
+          }
         },
-        "bar": {
-          "type": "Bool"
-        },
-        "baz": {
-          "type": "String"
-        }
-      },
-      "representation": {
-        "stringjoin": {
-          "fieldOrder": [
-            "baz",
-            "bar",
-            "foo"
-          ],
-          "join": ":"
+        "representation": {
+          "stringjoin": {
+            "fieldOrder": [
+              "baz",
+              "bar",
+              "foo"
+            ],
+            "join": ":"
+          }
         }
       }
     }

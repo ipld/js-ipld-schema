@@ -2,9 +2,11 @@ schema: |
   type Bar struct {
     bral String
   }
+
   type Foo struct {
     froz Bool
   }
+
   type UnionInline union {
     | Foo "foo"
     | Bar "bar"
@@ -14,38 +16,40 @@ schema: |
 root: UnionInline
 expected: |
   {
-    "UnionInline": {
-      "kind": "union",
-      "representation": {
-        "inline": {
-          "discriminantKey": "tag",
-          "discriminantTable": {
-            "foo": "Foo",
-            "bar": "Bar"
+    "schema": {
+      "UnionInline": {
+        "kind": "union",
+        "representation": {
+          "inline": {
+            "discriminantKey": "tag",
+            "discriminantTable": {
+              "foo": "Foo",
+              "bar": "Bar"
+            }
           }
         }
-      }
-    },
-    "Foo": {
-      "kind": "struct",
-      "fields": {
-        "froz": {
-          "type": "Bool"
+      },
+      "Foo": {
+        "kind": "struct",
+        "fields": {
+          "froz": {
+            "type": "Bool"
+          }
+        },
+        "representation": {
+          "map": {}
         }
       },
-      "representation": {
-        "map": {}
-      }
-    },
-    "Bar": {
-      "kind": "struct",
-      "fields": {
-        "bral": {
-          "type": "String"
+      "Bar": {
+        "kind": "struct",
+        "fields": {
+          "bral": {
+            "type": "String"
+          }
+        },
+        "representation": {
+          "map": {}
         }
-      },
-      "representation": {
-        "map": {}
       }
     }
   }

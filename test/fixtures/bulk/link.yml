@@ -2,7 +2,9 @@ schema: |
   type SimpleLink &Any
 expected: |
   {
-    "SimpleLink": {
-      "kind": "link"
+    "schema": {
+      "SimpleLink": {
+        "kind": "link"
+      }
     }
   }

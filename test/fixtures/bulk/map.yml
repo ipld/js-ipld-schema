@@ -2,10 +2,12 @@ schema: |
   type SimpleMap {String:Int}
 expected: |
   {
-    "SimpleMap": {
-      "kind": "map",
-      "keyType": "String",
-      "valueType": "Int"
+    "schema": {
+      "SimpleMap": {
+        "kind": "map",
+        "keyType": "String",
+        "valueType": "Int"
+      }
     }
   }
 blocks:

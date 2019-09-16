@@ -52,7 +52,7 @@ async function collectInput (files) {
 
   input = input.filter(({ filename, contents }) => {
     if (!contents) {
-      console.error(`Ignoring "${filename}" (no IPLD Schema contents)`)
+      console.error(`Ignoring "${filename}" (no IPLD Schema content)`)
       return false
     }
     return true

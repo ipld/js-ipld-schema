@@ -2,6 +2,15 @@
 
 const validate = require('./validate')
 const toJSON = require('./to-json')
+const toSchema = require('./to-schema')
+
+const toOpts = {
+  tabs: {
+    alias: 't',
+    type: 'boolean',
+    describe: 'print with tabs instead of spaces'
+  }
+}
 
 const yargs = require('yargs')
   .scriptName('ipld-schema')
@@ -10,13 +19,10 @@ const yargs = require('yargs')
     'Accepts .ipldsch and .md files, if none are passed will read from stdin, returns exit code 0 on successful validation')
   .command('to-json',
     'Accepts .ipldsch files, if none are passed will read from stdin, prints the JSON form of the schema',
-    {
-      tabs: {
-        alias: 't',
-        type: 'boolean',
-        describe: 'print with tabs instead of spaces'
-      }
-    })
+    toOpts)
+  .command('to-schema',
+    'Accepts .ipldsch and .md files, if none are passed will read from stdin, prints the canonical IPLD Schema form of the schema',
+    toOpts)
   .showHelpOnFail()
   .demandCommand(1, 'must provide a valid command')
   .help()
@@ -35,6 +41,9 @@ switch (yargs.argv._[0]) {
     break
   case 'to-json':
     runCommand(toJSON)
+    break
+  case 'to-schema':
+    runCommand(toSchema)
     break
   default:
     yargs.showHelp()

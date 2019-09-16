@@ -1,40 +1,44 @@
 schema: |
   type Bar {String:&Baz}
+
   type Baz struct {
     boom String
     foo &Foo
   }
+
   type Foo [Int]
 root: Foo
 expected: |
   {
-    "Bar": {
-      "keyType": "String",
-      "kind": "map",
-      "valueType": {
-        "kind": "link",
-        "expectedType": "Baz"
-      }
-    },
-    "Baz": {
-      "fields": {
-        "boom": {
-          "type": "String"
-        },
-        "foo": {
-          "type": {
-            "kind": "link",
-            "expectedType": "Foo"
-          }
+    "schema": {
+      "Bar": {
+        "keyType": "String",
+        "kind": "map",
+        "valueType": {
+          "kind": "link",
+          "expectedType": "Baz"
         }
       },
-      "kind": "struct",
-      "representation": {
-        "map": {}
+      "Baz": {
+        "fields": {
+          "boom": {
+            "type": "String"
+          },
+          "foo": {
+            "type": {
+              "kind": "link",
+              "expectedType": "Foo"
+            }
+          }
+        },
+        "kind": "struct",
+        "representation": {
+          "map": {}
+        }
+      },
+      "Foo": {
+        "kind": "list",
+        "valueType": "Int"
       }
-    },
-    "Foo": {
-      "kind": "list",
-      "valueType": "Int"
     }
   }

@@ -2,8 +2,10 @@ schema: |
   type SimpleInt int
 expected: |
   {
-    "SimpleInt": {
-      "kind": "int"
+    "schema": {
+      "SimpleInt": {
+        "kind": "int"
+      }
     }
   }
 blocks:

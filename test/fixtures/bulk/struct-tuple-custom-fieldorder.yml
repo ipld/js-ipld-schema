@@ -8,26 +8,28 @@ schema: |
   }
 expected: |
   {
-    "StructAsTupleWithCustomFieldorder": {
-      "kind": "struct",
-      "fields": {
-        "foo": {
-          "type": "Int"
+    "schema": {
+      "StructAsTupleWithCustomFieldorder": {
+        "kind": "struct",
+        "fields": {
+          "foo": {
+            "type": "Int"
+          },
+          "bar": {
+            "type": "Bool"
+          },
+          "baz": {
+            "type": "String"
+          }
         },
-        "bar": {
-          "type": "Bool"
-        },
-        "baz": {
-          "type": "String"
-        }
-      },
-      "representation": {
-        "tuple": {
-          "fieldOrder": [
-            "baz",
-            "bar",
-            "foo"
-          ]
+        "representation": {
+          "tuple": {
+            "fieldOrder": [
+              "baz",
+              "bar",
+              "foo"
+            ]
+          }
         }
       }
     }

@@ -22,7 +22,7 @@ class Schema {
 }
 
 function findTypeDescriptor (schema, typeName) {
-  const type = schema.descriptor[typeName] || kindTypes[typeName]
+  const type = schema.descriptor.schema[typeName] || kindTypes[typeName]
 
   if (typeof type !== 'object') {
     throw new Error(`Root type '${typeName}' not found in schema`)
@@ -292,7 +292,7 @@ function isKindedUnion (type) {
 
 function parse (text) {
   try {
-    return parser.parse(text).schema
+    return parser.parse(text)
   } catch (err) {
     throw transformError(err)
   }

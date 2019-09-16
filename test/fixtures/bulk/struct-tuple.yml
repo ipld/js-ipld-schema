@@ -1,4 +1,3 @@
-
 schema: |
   type StructTuple struct {
     foo Int
@@ -7,21 +6,23 @@ schema: |
   } representation tuple
 expected: |
   {
-    "StructTuple": {
-      "kind": "struct",
-      "fields": {
-        "foo": {
-          "type": "Int"
+    "schema": {
+      "StructTuple": {
+        "kind": "struct",
+        "fields": {
+          "foo": {
+            "type": "Int"
+          },
+          "bar": {
+            "type": "Bool"
+          },
+          "baz": {
+            "type": "String"
+          }
         },
-        "bar": {
-          "type": "Bool"
-        },
-        "baz": {
-          "type": "String"
+        "representation": {
+          "tuple": {}
         }
-      },
-      "representation": {
-        "tuple": {}
       }
     }
   }

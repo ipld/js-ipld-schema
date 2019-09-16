@@ -7,28 +7,30 @@ schema: |
   }
 expected: |
   {
-    "StructAsMapWithImplicits": {
-      "kind": "struct",
-      "fields": {
-        "bar": {
-          "type": "Bool"
+    "schema": {
+      "StructAsMapWithImplicits": {
+        "kind": "struct",
+        "fields": {
+          "bar": {
+            "type": "Bool"
+          },
+          "boom": {
+            "type": "String"
+          },
+          "baz": {
+            "type": "String"
+          },
+          "foo": {
+            "type": "Int"
+          }
         },
-        "boom": {
-          "type": "String"
-        },
-        "baz": {
-          "type": "String"
-        },
-        "foo": {
-          "type": "Int"
-        }
-      },
-      "representation": {
-        "map": {
-          "fields": {
-            "bar": { "implicit": false },
-            "boom": { "implicit": "yay" },
-            "foo": { "implicit": 0 }
+        "representation": {
+          "map": {
+            "fields": {
+              "bar": { "implicit": false },
+              "boom": { "implicit": "yay" },
+              "foo": { "implicit": 0 }
+            }
           }
         }
       }
