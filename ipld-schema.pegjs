@@ -28,7 +28,7 @@
   }
 }
 
-Root = types:TypeDef+ { return { schema: types.reduce(extend, {}) } }
+Root = types:TypeDef+ { return { types: types.reduce(extend, {}) } }
 
 TypeDef = _ 'type' _ name:TypeName _ definition:Definition _ {
   return { [name]: definition }

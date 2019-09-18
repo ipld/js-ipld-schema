@@ -1,11 +1,11 @@
 function print (schema, indent = '  ') {
-  if (!schema || typeof schema.schema !== 'object') {
+  if (!schema || typeof schema.types !== 'object') {
     throw new Error('Invalid schema')
   }
 
   let str = ''
 
-  for (const [type, defn] of Object.entries(schema.schema)) {
+  for (const [type, defn] of Object.entries(schema.types)) {
     if (typeof defn.kind !== 'string') {
       throw new Error(`Invalid schema ${type} doesn't have a kind`)
     }

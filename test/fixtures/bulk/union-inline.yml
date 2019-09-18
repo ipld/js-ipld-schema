@@ -16,7 +16,7 @@ schema: |
 root: UnionInline
 expected: |
   {
-    "schema": {
+    "types": {
       "UnionInline": {
         "kind": "union",
         "representation": {

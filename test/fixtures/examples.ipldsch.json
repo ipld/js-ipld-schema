@@ -1,5 +1,5 @@
 {
-	"schema": {
+	"types": {
 		"ExampleWithNullable": {
 			"kind": "map",
 			"keyType": "String",

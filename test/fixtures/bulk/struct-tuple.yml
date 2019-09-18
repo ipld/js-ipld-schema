@@ -6,7 +6,7 @@ schema: |
   } representation tuple
 expected: |
   {
-    "schema": {
+    "types": {
       "StructTuple": {
         "kind": "struct",
         "fields": {

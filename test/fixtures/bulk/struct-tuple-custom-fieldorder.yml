@@ -8,7 +8,7 @@ schema: |
   }
 expected: |
   {
-    "schema": {
+    "types": {
       "StructAsTupleWithCustomFieldorder": {
         "kind": "struct",
         "fields": {

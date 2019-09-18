@@ -8,7 +8,7 @@ canonical: |
   type StructEmptyTight struct {}
 expected: |
   {
-    "schema": {
+    "types": {
       "StructEmpty": {
         "kind": "struct",
         "fields": {},

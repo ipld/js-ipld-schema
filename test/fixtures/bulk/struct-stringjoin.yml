@@ -8,7 +8,7 @@ schema: |
   }
 expected: |
   {
-    "schema": {
+    "types": {
       "StructAsStringjoin": {
         "kind": "struct",
         "fields": {

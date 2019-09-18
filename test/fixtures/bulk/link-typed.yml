@@ -5,7 +5,7 @@ schema: |
 root: FooLink
 expected: |
   {
-    "schema": {
+    "types": {
       "FooLink": {
         "kind": "link",
         "expectedType": "Foo"

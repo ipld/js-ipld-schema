@@ -15,7 +15,7 @@ schema: |
   } representation kinded
 expected: |
   {
-    "schema": {
+    "types": {
       "FileUnion": {
         "kind": "union",
         "representation": {

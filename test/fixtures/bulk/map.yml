@@ -2,7 +2,7 @@ schema: |
   type SimpleMap {String:Int}
 expected: |
   {
-    "schema": {
+    "types": {
       "SimpleMap": {
         "kind": "map",
         "keyType": "String",

@@ -16,7 +16,7 @@ schema: |
 root: UnionEnvelope
 expected: |
   {
-    "schema": {
+    "types": {
       "Bar": {
         "kind": "bool"
       },

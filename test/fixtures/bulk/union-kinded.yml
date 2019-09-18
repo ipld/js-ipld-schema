@@ -13,7 +13,7 @@ schema: |
 root: UnionKinded
 expected: |
   {
-    "schema": {
+    "types": {
       "Bar": {
         "kind": "bool"
       },

@@ -2,7 +2,7 @@ schema: |
   type SimpleList [String]
 expected: |
   {
-    "schema": {
+    "types": {
       "SimpleList": {
         "kind": "list",
         "valueType": "String"

@@ -6,7 +6,7 @@ schema: |
   } representation listpairs
 expected: |
   {
-    "schema": {
+    "types": {
       "StructAsListpairs": {
         "kind": "struct",
         "fields": {

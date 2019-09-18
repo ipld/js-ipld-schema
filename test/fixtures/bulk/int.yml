@@ -2,7 +2,7 @@ schema: |
   type SimpleInt int
 expected: |
   {
-    "schema": {
+    "types": {
       "SimpleInt": {
         "kind": "int"
       }

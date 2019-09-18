@@ -2,7 +2,7 @@ schema: |
   type MapAsListpairs {String:String} representation listpairs
 expected: |
   {
-    "schema": {
+    "types": {
       "MapAsListpairs": {
         "kind": "map",
         "keyType": "String",

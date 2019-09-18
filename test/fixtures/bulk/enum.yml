@@ -6,7 +6,7 @@ schema: |
   }
 expected: |
   {
-    "schema": {
+    "types": {
       "SimpleEnum": {
         "kind": "enum",
         "members": {

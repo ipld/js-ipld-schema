@@ -10,7 +10,7 @@ schema: |
 root: Foo
 expected: |
   {
-    "schema": {
+    "types": {
       "Bar": {
         "keyType": "String",
         "kind": "map",

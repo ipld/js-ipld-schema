@@ -5,7 +5,7 @@ schema: |
   }
 expected: |
   {
-    "schema": {
+    "types": {
       "MapAsStringpairs": {
         "kind": "map",
         "keyType": "String",

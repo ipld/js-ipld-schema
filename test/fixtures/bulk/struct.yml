@@ -6,7 +6,7 @@ schema: |
   }
 expected: |
   {
-    "schema": {
+    "types": {
       "SimpleStruct": {
         "kind": "struct",
         "fields": {

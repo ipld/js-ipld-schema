@@ -2,7 +2,7 @@ schema: |
   type MapWithNullable {String:nullable String}
 expected: |
   {
-    "schema": {
+    "types": {
       "MapWithNullable": {
         "kind": "map",
         "keyType": "String",

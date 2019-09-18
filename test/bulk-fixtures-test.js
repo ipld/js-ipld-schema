@@ -15,7 +15,7 @@ fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).map((f) => {
     const testName = `fixture ${f}`
     // assume the root type is the first listed (default for the only type listed), otherwise
     // if there is a 'root' in the fixture, use that
-    const rootType = fixture.root || Object.keys(fixture.expected.schema)[0]
+    const rootType = fixture.root || Object.keys(fixture.expected.types)[0]
 
     t.test(`${testName}: schema parse`, (t) => {
       const schema = new Schema(fixture.schema)

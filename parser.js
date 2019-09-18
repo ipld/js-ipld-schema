@@ -141,7 +141,7 @@ function peg$parse(input, options) {
       peg$startRuleFunctions = { Root: peg$parseRoot },
       peg$startRuleFunction  = peg$parseRoot,
 
-      peg$c0 = function(types) { return { schema: types.reduce(extend, {}) } },
+      peg$c0 = function(types) { return { types: types.reduce(extend, {}) } },
       peg$c1 = "type",
       peg$c2 = peg$literalExpectation("type", false),
       peg$c3 = function(name, definition) {

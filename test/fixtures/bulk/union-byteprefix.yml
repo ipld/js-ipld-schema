@@ -10,7 +10,7 @@ schema: |
 root: Signature
 expected: |
   {
-    "schema": {
+    "types": {
       "Bls12_381Signature": {
         "kind": "bytes"
       },

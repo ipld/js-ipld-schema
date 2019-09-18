@@ -9,7 +9,7 @@ schema: |
   }
 expected: |
   {
-    "schema": {
+    "types": {
       "StructAsStringpairs": {
         "kind": "struct",
         "fields": {
