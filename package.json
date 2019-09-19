@@ -1,6 +1,6 @@
 {
   "name": "ipld-schema",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "IPLD Schema parser and utilities for JavaScript",
   "main": "./ipld-schema.js",
   "scripts": {
