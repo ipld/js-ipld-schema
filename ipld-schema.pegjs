@@ -99,14 +99,21 @@ CopyDescriptor = "=" _ fromType:TypeName {
   return { kind: 'copy', fromType }
 }
 
-EnumDescriptor = "{" values:EnumValue+ "}" {
-  return {
-    kind: 'enum',
-    members: values.reduce(extend, {})
+EnumDescriptor = "{" members:EnumMember+ "}" _ representation:EnumRepresentation? _ {
+  if (!representation || !(representation.string || representation.int)) {
+    representation = { string: {} }
   }
+
+  if (representation.string) {
+    representation.string = members.reduce(extend, {})
+  } else if (representation.int) {
+    representation.int = members.reduce(extend, {})
+  }
+
+  return { kind: 'enum', representation }
 }
 
-EnumValue = _ "|" _ name:QuotedString _ { return { [name]: null } }
+EnumMember = _ "|" _ name:EnumValue _ int:Integer? _ { return { [name]: int } }
 
 UnionDescriptor = "{" values:UnionValue+ "}" _ representation:UnionRepresentation {
   let fields = values.reduce(extend, {})
@@ -224,6 +231,10 @@ StructRepresentation = "representation" _ representation:StructRepresentationTyp
   return representation
 }
 
+EnumRepresentation = "representation" _ representation:EnumRepresentationType _ {
+  return representation
+}
+
 UnionRepresentationType
   = "keyed" { return { keyed: {} } }
   / "kinded" { return { kinded: {} } }
@@ -304,6 +315,10 @@ StructStringjoinRepresentationField_FieldOrder = _ "fieldOrder" _ fieldOrder:Quo
   return { fieldOrder }
 }
 
+EnumRepresentationType
+  = "string" { return { string: {} } }
+  / "int" { return { int: {} } }
+
 BytesDescriptor = "representation" _ "advanced" _ representation:AdvancedRepresentation { return { kind: 'bytes', representation } }
 
 QuotedStringArray = "[" _ firstElement:QuotedString? subsequentElements:(_ "," _ s:QuotedString _ { return s })* _ "]" {
@@ -317,6 +332,8 @@ QuotedStringArray = "[" _ firstElement:QuotedString? subsequentElements:(_ "," _
 }
 
 TypeName = first:[A-Z] remainder:[a-zA-Z0-9_]* { return first + remainder.join('') }
+
+EnumValue = StringName
 
 QuotedString = "\"" chars:[^"]+ "\"" { return chars.join('') }
 

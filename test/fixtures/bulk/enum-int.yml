@@ -1,0 +1,21 @@
+schema: |
+  type SimpleEnum enum {
+    | foo 0
+    | bar 1
+    | baz 100
+  } representation int
+expected: |
+  {
+    "types": {
+      "SimpleEnum": {
+        "kind": "enum",
+        "representation": {
+          "int": {
+            "foo": 0,
+            "bar": 1,
+            "baz": 100
+          }
+        }
+      }
+    }
+  }
