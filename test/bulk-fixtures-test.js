@@ -10,10 +10,6 @@ fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).map((f) => {
     return
   }
 
-  if (!f.endsWith('advanced.yml')) {
-    return
-  }
-
   tap.test(`fixture ${f}`, async (t) => {
     const fixture = await loadFixture(f)
     const testName = `fixture ${f}`

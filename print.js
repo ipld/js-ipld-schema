@@ -38,7 +38,7 @@ function printTypes (schema, indent) {
 }
 
 function printType (defn, indent) {
-  if (['map', 'list', 'link'].includes(defn.kind)) {
+  if (['map', 'list', 'link', 'copy'].includes(defn.kind)) {
     return printTypeTerm(defn, indent)
   }
 
@@ -67,6 +67,10 @@ function printTypeTerm (defn, indent) {
 
 printTypeTerm.link = function link (defn) {
   return `&${printTypeTerm(defn.expectedType || 'Any')}`
+}
+
+printTypeTerm.copy = function copy (defn) {
+  return `= ${defn.fromType}`
 }
 
 printTypeTerm.map = function map (defn, indent) {

@@ -66,6 +66,7 @@ Definition
   = descriptor:MapDescriptor { return descriptor } // "map" assumed if goes straight to a {}
   / descriptor:ListDescriptor { return descriptor } // "list" assumed if goes straight to a []
   / descriptor:LinkDescriptor { return descriptor } // "link" assumed if goes straight to a &
+  / descriptor:CopyDescriptor { return descriptor } // "="
   / EnumKind _ descriptor:EnumDescriptor { return descriptor }
   / UnionKind _ descriptor:UnionDescriptor { return descriptor }
   / StructKind _ descriptor:StructDescriptor { return descriptor }
@@ -92,6 +93,10 @@ TypeDescriptor = options:TypeOption* _ valueType:(TypeName / MapDescriptor / Lis
 
 LinkDescriptor = "&" expectedType:TypeName {
   return extend({ kind: 'link' }, expectedType !== 'Any' ? { expectedType } : null)
+}
+
+CopyDescriptor = "=" _ fromType:TypeName {
+  return { kind: 'copy', fromType }
 }
 
 EnumDescriptor = "{" values:EnumValue+ "}" {
