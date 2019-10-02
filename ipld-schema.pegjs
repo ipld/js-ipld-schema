@@ -333,6 +333,7 @@ BaseType
 	/ "map"
 	/ "list"
 	/ "link"
+	/ "null"
 
 __
   = whitespace+
