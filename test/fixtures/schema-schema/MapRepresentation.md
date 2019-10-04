@@ -10,5 +10,6 @@ type MapRepresentation union {
 	| MapRepresentation_Map "map"
 	| MapRepresentation_StringPairs "stringpairs"
 	| MapRepresentation_ListPairs "listpairs"
+	| AdvancedDataLayoutName "advanced"
 } representation keyed
 ```

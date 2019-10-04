@@ -8,5 +8,6 @@ The values of the list have some specific type of their own.
 type TypeList struct {
 	valueType TypeTerm
 	valueNullable Bool (implicit "false")
+	representation ListRepresentation
 } representation map
 ```

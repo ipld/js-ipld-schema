@@ -20,5 +20,6 @@ type TypeKind enum {
 	| "union"
 	| "struct"
 	| "enum"
+	| "copy"
 }
 ```

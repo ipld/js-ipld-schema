@@ -39,6 +39,7 @@ type Type union {
 	| TypeUnion "union"
 	| TypeStruct "struct"
 	| TypeEnum "enum"
+	| TypeCopy "copy"
 } representation inline {
 	discriminantKey "kind"
 }
