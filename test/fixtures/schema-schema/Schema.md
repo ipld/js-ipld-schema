@@ -17,7 +17,8 @@ A complete (if quite short) Schema might look like this:
 
 
 ```ipldsch
-type Schema union {
-	| SchemaMap "schema"
-} representation keyed
+type Schema struct {
+	types SchemaMap
+	advanced AdvancedDataLayoutMap
+}
 ```
