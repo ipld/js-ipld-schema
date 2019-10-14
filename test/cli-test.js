@@ -25,6 +25,28 @@ tap.test('examples to-json ipldsch', (t) => {
   })
 })
 
+tap.test('examples-adl to-json ipldsch', (t) => {
+  const inFile = path.join(__dirname, 'fixtures/examples-adl.ipldsch')
+  const cli = require.resolve('../bin/cli.js')
+  const expectedSchema = require(path.join(__dirname, 'fixtures/examples-adl.ipldsch.json'))
+
+  execFile(process.execPath, [cli, 'to-json', inFile], (err, stdout, stderr) => {
+    t.error(err)
+    t.ok(!stderr)
+
+    let schemaJson
+    try {
+      schemaJson = JSON.parse(stdout)
+    } catch (err) {
+      t.error(err)
+    }
+    t.deepEqual(schemaJson, expectedSchema)
+  }).on('close', (code) => {
+    t.equal(code, 0, 'exit code')
+    t.done()
+  })
+})
+
 tap.test('examples to-json md', (t) => {
   const inFile = path.join(__dirname, 'fixtures/examples.ipldsch.md')
   const cli = require.resolve('../bin/cli.js')
@@ -121,6 +143,55 @@ tap.test('schema-schema multi md to-json', (t) => {
   const expectedSchema = require(path.join(__dirname, 'fixtures/schema-schema.ipldsch.json'))
 
   execFile(process.execPath, [cli, 'to-json'].concat(files), (err, stdout, stderr) => {
+    t.error(err)
+    t.ok(!stderr)
+
+    let schemaJson
+    try {
+      schemaJson = JSON.parse(stdout)
+    } catch (err) {
+      t.error(err)
+    }
+    t.deepEqual(schemaJson, expectedSchema)
+  }).on('close', (code) => {
+    t.equal(code, 0, 'exit code')
+    t.done()
+  })
+})
+
+tap.test('schema-schema multi md to-json', (t) => {
+  const inDir = path.join(__dirname, 'fixtures/schema-schema/')
+  const files = fs.readdirSync(inDir)
+    .map((f) => path.join(inDir, f))
+  const cli = require.resolve('../bin/cli.js')
+  const expectedSchema = require(path.join(__dirname, 'fixtures/schema-schema.ipldsch.json'))
+
+  execFile(process.execPath, [cli, 'to-json'].concat(files), (err, stdout, stderr) => {
+    t.error(err)
+    t.ok(!stderr)
+
+    let schemaJson
+    try {
+      schemaJson = JSON.parse(stdout)
+    } catch (err) {
+      t.error(err)
+    }
+    t.deepEqual(schemaJson, expectedSchema)
+  }).on('close', (code) => {
+    t.equal(code, 0, 'exit code')
+    t.done()
+  })
+})
+
+tap.test('examples-all to-json ipldsch', (t) => {
+  const inFiles = [
+    path.join(__dirname, 'fixtures/examples.ipldsch'),
+    path.join(__dirname, 'fixtures/examples-adl.ipldsch')
+  ]
+  const cli = require.resolve('../bin/cli.js')
+  const expectedSchema = require(path.join(__dirname, 'fixtures/examples-all.ipldsch.json'))
+
+  execFile(process.execPath, [cli, 'to-json'].concat(inFiles), (err, stdout, stderr) => {
     t.error(err)
     t.ok(!stderr)
 

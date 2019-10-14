@@ -1,0 +1,86 @@
+{
+  "advanced": {
+    "FunkyBytes": {
+      "kind": "advanced"
+    },
+    "FunkyVector": {
+      "kind": "advanced"
+    }
+  },
+  "types": {
+    "MyFunkyBytes": {
+      "kind": "bytes",
+      "representation": {
+        "advanced": "FunkyBytes"
+      }
+    },
+    "MyFunkyVector": {
+      "kind": "list",
+      "valueType": {
+        "kind": "link",
+        "expectedType": "MyFunkyBytes"
+      },
+      "representation": {
+        "advanced": "FunkyVector"
+      }
+    },
+    "ADLExample": {
+      "kind": "struct",
+      "fields": {
+        "fooField": {
+          "type": {
+            "kind": "map",
+            "keyType": "String",
+            "valueType": "MyFunkyBytes"
+          },
+          "optional": true
+        },
+        "barField": {
+          "type": {
+            "kind": "map",
+            "keyType": "String",
+            "valueType": "String"
+          },
+          "nullable": true
+        },
+        "bazField": {
+          "type": {
+            "kind": "map",
+            "keyType": "String",
+            "valueType": "MyFunkyBytes",
+            "valueNullable": true
+          }
+        },
+        "wozField": {
+          "type": {
+            "kind": "map",
+            "keyType": "String",
+            "valueType": {
+              "kind": "list",
+              "valueType": "String",
+              "valueNullable": true
+            }
+          }
+        },
+        "boomField": {
+          "type": {
+            "kind": "link",
+            "expectedType": "ExampleWithNullable"
+          }
+        },
+        "funkyField": {
+          "type": "MyFunkyVector"
+        }
+      },
+      "representation": {
+        "map": {
+          "fields": {
+            "fooField": {
+              "rename": "foo_field"
+            }
+          }
+        }
+      }
+    }
+  }
+}
