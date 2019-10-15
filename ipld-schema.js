@@ -50,7 +50,8 @@ function loadAndValidateType (load, schema, value, typeName) {
   } else if (type.kind === 'enum') {
     // TODO: verify type.representation.string exists and is an object with keys
     // TODO: support representation.int too
-    validateEnum(value, Object.keys(type.representation.string), typeName)
+    // TOOD: support renamed values for string enums too
+    validateEnum(value, Object.keys(type.members), typeName)
     return load ? value : true
   } else if (type.kind === 'list') {
     // TODO: verify type.valueType exists

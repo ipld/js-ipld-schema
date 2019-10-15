@@ -1,14 +1,19 @@
 schema: |
   type SimpleEnum enum {
-    | foo 0
-    | bar 1
-    | baz 100
+    | Foo ("0")
+    | Bar ("1")
+    | Baz ("100")
   } representation int
 expected: |
   {
     "types": {
       "SimpleEnum": {
         "kind": "enum",
+        "members": {
+          "foo": null,
+          "bar": null,
+          "baz": null
+        }
         "representation": {
           "int": {
             "foo": 0,

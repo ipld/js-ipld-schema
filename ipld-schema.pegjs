@@ -104,16 +104,27 @@ EnumDescriptor = "{" members:EnumMember+ "}" _ representation:EnumRepresentation
     representation = { string: {} }
   }
 
+  const repr = members.filter((m) => Object.values(m)[0]).reduce(extend, {})
+  members = members.reduce(extend, {})
+  Object.keys(members).forEach((k) => members[k] = null)
+
   if (representation.string) {
-    representation.string = members.reduce(extend, {})
+    representation.string = repr
   } else if (representation.int) {
-    representation.int = members.reduce(extend, {})
+    representation.int = repr
+    if (Object.values(repr).find((v) => parseInt(v, 10) != v)) {
+      throw new Error('int representations only support integer representation values')
+    }
   }
 
-  return { kind: 'enum', representation }
+  return { kind: 'enum', members, representation }
 }
 
-EnumMember = _ "|" _ name:EnumValue _ int:Integer? _ { return { [name]: int } }
+EnumMember = _ "|" _ name:EnumValue _ representationOptions:EnumFieldRepresentationOptions? _ {
+  return { [name]: representationOptions }
+}
+
+EnumFieldRepresentationOptions = "(" _ value:QuotedString _ ")" { return value }
 
 UnionDescriptor = "{" values:UnionValue+ "}" _ representation:UnionRepresentation {
   let fields = values.reduce(extend, {})

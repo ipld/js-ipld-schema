@@ -274,11 +274,12 @@ printTypeTerm.enum = function _enum (defn, indent) {
 
   let str = '{'
 
-  for (const [key, value] of Object.entries(defn.representation.string || defn.representation.int)) {
-    // TODO handle int enums, unquote keys
-    str += `\n${indent}| ${key}`
-    if (typeof value === 'number') {
-      str += ` ${value}`
+  for (const ev of Object.keys(defn.members)) {
+    str += `\n${indent}| ${ev}`
+    const sv = (defn.representation.string && defn.representation.string[ev]) ||
+      (defn.representation.int && defn.representation.int[ev])
+    if (sv !== undefined) {
+      str += ` ("${sv}")`
     }
   }
 

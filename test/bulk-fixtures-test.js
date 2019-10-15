@@ -6,7 +6,7 @@ const Schema = require('../ipld-schema')
 const print = require('../print')
 
 fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).map((f) => {
-  if (!f.endsWith('.yml')) {
+  if (!f.endsWith('.yml') || f !== 'enum.yml') {
     return
   }
 
