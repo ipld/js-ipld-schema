@@ -6,9 +6,9 @@ schema: |
   }
 
   type SimpleEnum enum {
-    | foo
-    | bar
-    | baz
+    | Foo
+    | Bar
+    | Baz
   }
 
   type Bloop {String:&Any}
@@ -40,12 +40,13 @@ expected: |
       },
       "SimpleEnum": {
         "kind": "enum",
+        "members": {
+          "Foo": null,
+          "Bar": null,
+          "Baz": null
+        },
         "representation": {
-          "string": {
-            "foo": null,
-            "bar": null,
-            "baz": null
-          }
+          "string": {}
         }
       },
       "Bloop": {
