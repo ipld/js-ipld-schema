@@ -20,13 +20,23 @@ async function toJSON (files, options) {
       if (!schema) {
         schema = parsed
       } else {
-        for (const [type, defn] of Object.entries(parsed.types)) {
-          if (schema.types[type]) {
-            console.error(`Error: duplicate type "${type}" found in schema(s)`)
-            return process.exit(1)
+        const copy = (coll) => {
+          if (!parsed[coll]) {
+            return
           }
-          schema.types[type] = defn
+          if (!schema[coll]) {
+            schema[coll] = {}
+          }
+          for (const [type, defn] of Object.entries(parsed[coll])) {
+            if (schema[coll][type]) {
+              console.error(`Error: duplicate ${coll} "${type}" found in schema(s)`)
+              return process.exit(1)
+            }
+            schema[coll][type] = defn
+          }
         }
+        copy('types')
+        copy('advanced')
       }
     } catch (err) {
       console.error(`Error parsing ${filename}: ${transformError(err).message}`)
