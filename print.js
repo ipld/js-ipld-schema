@@ -265,18 +265,28 @@ printTypeTerm.union = function union (defn, indent) {
 }
 
 printTypeTerm.enum = function _enum (defn, indent) {
-  if (typeof defn.members !== 'object') {
-    throw new Error('Invalid schema, enum requires a "members" map')
+  if (typeof defn.representation !== 'object') {
+    throw new Error('Invalid schema, enum requires a "representation" map')
+  }
+  if (typeof defn.representation.string !== 'object' && typeof defn.representation.int !== 'object') {
+    throw new Error('Invalid schema, enum requires a "string" or "int" representation map')
   }
 
   let str = '{'
 
-  for (const [key] of Object.entries(defn.members)) {
-    // TODO handle int enums, unquote keys
-    str += `\n${indent}| "${key}"`
+  for (const ev of Object.keys(defn.members)) {
+    str += `\n${indent}| ${ev}`
+    const sv = (defn.representation.string && defn.representation.string[ev]) ||
+      (defn.representation.int && defn.representation.int[ev])
+    if (sv !== undefined) {
+      str += ` ("${sv}")`
+    }
   }
 
   str += '\n}'
+  if (defn.representation.int) {
+    str += ' representation int'
+  }
   return str
 }
 

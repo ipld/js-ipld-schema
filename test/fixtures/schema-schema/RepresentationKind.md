@@ -16,13 +16,13 @@ some of the detailed behaviors of a "kinded"-style union type.
 
 ```ipldsch
 type RepresentationKind enum {
-	| "bool"
-	| "string"
-	| "bytes"
-	| "int"
-	| "float"
-	| "map"
-	| "list"
-	| "link"
+	| Bool
+	| String
+	| Bytes
+	| Int
+	| Float
+	| Map
+	| List
+	| Link
 }
 ```

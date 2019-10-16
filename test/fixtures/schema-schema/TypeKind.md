@@ -9,17 +9,16 @@ in the Type union representation details?
 
 ```ipldsch
 type TypeKind enum {
-	| "bool"
-	| "string"
-	| "bytes"
-	| "int"
-	| "float"
-	| "map"
-	| "list"
-	| "link"
-	| "union"
-	| "struct"
-	| "enum"
-	| "copy"
+	| Bool
+	| String
+	| Bytes
+	| Int
+	| Float
+	| Map
+	| List
+	| Link
+	| Union
+	| Struct
+	| Enum
 }
 ```

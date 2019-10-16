@@ -48,7 +48,9 @@ function loadAndValidateType (load, schema, value, typeName) {
     validateBool(value, typeName)
     return load ? value : true
   } else if (type.kind === 'enum') {
-    // TODO: verify type.members exists and is an object with keys
+    // TODO: verify type.representation.string exists and is an object with keys
+    // TODO: support representation.int too
+    // TOOD: support renamed values for string enums too
     validateEnum(value, Object.keys(type.members), typeName)
     return load ? value : true
   } else if (type.kind === 'list') {

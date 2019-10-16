@@ -99,14 +99,32 @@ CopyDescriptor = "=" _ fromType:TypeName {
   return { kind: 'copy', fromType }
 }
 
-EnumDescriptor = "{" values:EnumValue+ "}" {
-  return {
-    kind: 'enum',
-    members: values.reduce(extend, {})
+EnumDescriptor = "{" members:EnumMember+ "}" _ representation:EnumRepresentation? _ {
+  if (!representation || !(representation.string || representation.int)) {
+    representation = { string: {} }
   }
+
+  const repr = members.filter((m) => Object.values(m)[0]).reduce(extend, {})
+  members = members.reduce(extend, {})
+  Object.keys(members).forEach((k) => members[k] = null)
+
+  if (representation.string) {
+    representation.string = repr
+  } else if (representation.int) {
+    representation.int = repr
+    if (Object.values(repr).find((v) => parseInt(v, 10) != v)) {
+      throw new Error('int representations only support integer representation values')
+    }
+  }
+
+  return { kind: 'enum', members, representation }
 }
 
-EnumValue = _ "|" _ name:QuotedString _ { return { [name]: null } }
+EnumMember = _ "|" _ name:EnumValue _ representationOptions:EnumFieldRepresentationOptions? _ {
+  return { [name]: representationOptions }
+}
+
+EnumFieldRepresentationOptions = "(" _ value:QuotedString _ ")" { return value }
 
 UnionDescriptor = "{" values:UnionValue+ "}" _ representation:UnionRepresentation {
   let fields = values.reduce(extend, {})
@@ -224,6 +242,10 @@ StructRepresentation = "representation" _ representation:StructRepresentationTyp
   return representation
 }
 
+EnumRepresentation = "representation" _ representation:EnumRepresentationType _ {
+  return representation
+}
+
 UnionRepresentationType
   = "keyed" { return { keyed: {} } }
   / "kinded" { return { kinded: {} } }
@@ -304,6 +326,10 @@ StructStringjoinRepresentationField_FieldOrder = _ "fieldOrder" _ fieldOrder:Quo
   return { fieldOrder }
 }
 
+EnumRepresentationType
+  = "string" { return { string: {} } }
+  / "int" { return { int: {} } }
+
 BytesDescriptor = "representation" _ "advanced" _ representation:AdvancedRepresentation { return { kind: 'bytes', representation } }
 
 QuotedStringArray = "[" _ firstElement:QuotedString? subsequentElements:(_ "," _ s:QuotedString _ { return s })* _ "]" {
@@ -317,6 +343,8 @@ QuotedStringArray = "[" _ firstElement:QuotedString? subsequentElements:(_ "," _
 }
 
 TypeName = first:[A-Z] remainder:[a-zA-Z0-9_]* { return first + remainder.join('') }
+
+EnumValue = StringName
 
 QuotedString = "\"" chars:[^"]+ "\"" { return chars.join('') }
 
