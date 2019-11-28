@@ -1,0 +1,77 @@
+# https://github.com/ipld/js-ipld-schema/issues/24
+schema: |
+  type bahamas_leaks_edges_csv struct {
+    node_1 BahamasNodeUnion
+    rel_type String
+    node_2 BahamasNodeUnion
+    sourceID String
+    valid_until String
+    start_date optional String
+    end_date optional String
+  }
+
+  type bahamasNodeUnion union {
+    | &bahamas_leaks_nodes_address_csv "address"
+    | &bahamas_leaks_nodes_entity_csv "entity"
+    | &bahamas_leaks_nodes_intermediary_csv "intermediary"
+    | &bahamas_leaks_nodes_officer_csv "officer"
+  } representation keyed
+expected: |
+  {
+    "types": {
+      "bahamas_leaks_edges_csv": {
+        "kind": "struct",
+        "fields": {
+          "node_1": {
+            "type": "BahamasNodeUnion"
+          },
+          "rel_type": {
+            "type": "String"
+          },
+          "node_2": {
+            "type": "BahamasNodeUnion"
+          },
+          "sourceID": {
+            "type": "String"
+          },
+          "valid_until": {
+            "type": "String"
+          },
+          "start_date": {
+            "type": "String",
+            "optional": true
+          },
+          "end_date": {
+            "type": "String",
+            "optional": true
+          }
+        },
+        "representation": {
+          "map": {}
+        }
+      },
+     "bahamasNodeUnion": {
+       "kind": "union",
+       "representation": {
+         "keyed": {
+           "address": {
+             "kind": "link",
+             "expectedType": "bahamas_leaks_nodes_address_csv"
+           },
+           "entity": {
+             "kind": "link",
+             "expectedType": "bahamas_leaks_nodes_entity_csv"
+           },
+           "intermediary": {
+             "kind": "link",
+             "expectedType": "bahamas_leaks_nodes_intermediary_csv"
+           },
+           "officer": {
+             "kind": "link",
+             "expectedType": "bahamas_leaks_nodes_officer_csv"
+           }
+         }
+       }
+     }
+    }
+  }
