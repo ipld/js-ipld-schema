@@ -1,6 +1,8 @@
 const is = require('@sindresorhus/is')
 const parser = require('./parser')
 const { transformError } = require('./util')
+const print = require('./print')
+const check = require('./check')
 
 const kindTypes = {
   String: { kind: 'string' },
@@ -302,3 +304,7 @@ function parse (text) {
 
 module.exports = Schema
 module.exports.parse = parse
+module.exports.print = function _print (descriptor) {
+  check(descriptor, true)
+  return print(descriptor)
+}

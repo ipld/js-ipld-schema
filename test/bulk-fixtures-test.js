@@ -3,16 +3,16 @@ const path = require('path')
 const yaml = require('js-yaml')
 const tap = require('tap')
 const Schema = require('../ipld-schema')
-const print = require('../print')
 
 fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).map((f) => {
   if (!f.endsWith('.yml')) {
     return
   }
 
-  tap.test(`fixture ${f}`, async (t) => {
+  const testName = `fixture ${f}`
+
+  tap.test(testName, async (t) => {
     const fixture = await loadFixture(f)
-    const testName = `fixture ${f}`
     // assume the root type is the first listed (default for the only type listed), otherwise
     // if there is a 'root' in the fixture, use that
     const rootType = fixture.root || Object.keys(fixture.expected.types)[0]
@@ -25,9 +25,16 @@ fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).map((f) => {
 
     t.test(`${testName}: schema canonical`, (t) => {
       const schema = new Schema(fixture.schema)
-      const schemaCanonical = print(schema.descriptor)
+      const printedSchema = Schema.print(schema.descriptor)
       const expected = fixture.canonical || fixture.schema
-      t.deepEqual(schemaCanonical, expected.replace(/\n+$/, ''), `canonicalizing ${testName}`)
+      t.deepEqual(printedSchema, expected.replace(/\n+$/, ''), `canonicalizing ${testName}`)
+      t.done()
+    })
+
+    t.test(`${testName}: json to schema`, (t) => {
+      const printedSchema = Schema.print(fixture.expected)
+      const expected = fixture.canonical || fixture.schema
+      t.deepEqual(printedSchema, expected.replace(/\n+$/, ''), `converting json to schema ${testName}`)
       t.done()
     })
 
