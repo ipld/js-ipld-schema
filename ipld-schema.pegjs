@@ -342,13 +342,13 @@ QuotedStringArray = "[" _ firstElement:QuotedString? subsequentElements:(_ "," _
   return [ firstElement ].concat(subsequentElements)
 }
 
-TypeName = first:[A-Z] remainder:[a-zA-Z0-9_]* { return first + remainder.join('') }
+TypeName = StringName
 
 EnumValue = StringName
 
 QuotedString = "\"" chars:[^"]+ "\"" { return chars.join('') }
 
-StringName = chars:[a-zA-Z0-9_]+ { return chars.join('') }
+StringName = first:[a-zA-Z] remainder:[a-zA-Z0-9_]* { return first + remainder.join('') }
 
 Integer = chars:[0-9]+ { return parseInt(chars.join(''), 10) }
 
