@@ -10,7 +10,7 @@
     "coverage": "tap test/*-test.js --cov --coverage-report=html"
   },
   "bin": {
-    "ipld-schema": "./bin/cli.js"
+    "ipld-schema": "bin/cli.js"
   },
   "author": "Rod <r@va.gg> (http://r.va.gg/)",
   "license": "Apache-2.0",
