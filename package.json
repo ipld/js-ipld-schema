@@ -15,7 +15,7 @@
   "author": "Rod <r@va.gg> (http://r.va.gg/)",
   "license": "Apache-2.0",
   "devDependencies": {
-    "js-yaml": "~3.13.1",
+    "js-yaml": "~4.1.0",
     "pegjs": "~0.10.0",
     "standard": "~14.2.0",
     "tap": "~14.6.1"
