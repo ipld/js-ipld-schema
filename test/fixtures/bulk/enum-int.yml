@@ -16,9 +16,9 @@ expected: |
         },
         "representation": {
           "int": {
-            "Foo": 0,
-            "Bar": 1,
-            "Baz": 100
+            "Foo": "0",
+            "Bar": "1",
+            "Baz": "100"
           }
         }
       }

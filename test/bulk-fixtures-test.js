@@ -1,60 +1,37 @@
+/* eslint-env mocha */
+
 const fs = require('fs')
 const path = require('path')
 const yaml = require('js-yaml')
-const tap = require('tap')
-const Schema = require('../ipld-schema')
+const { parse } = require('../ipld-schema')
 const print = require('../print')
+const { assert } = require('chai')
 
-fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).map((f) => {
-  if (!f.endsWith('.yml')) {
-    return
-  }
-
-  tap.test(`fixture ${f}`, async (t) => {
-    const fixture = await loadFixture(f)
-    const testName = `fixture ${f}`
-    // assume the root type is the first listed (default for the only type listed), otherwise
-    // if there is a 'root' in the fixture, use that
-    const rootType = fixture.root || Object.keys(fixture.expected.types)[0]
-
-    t.test(`${testName}: schema parse`, (t) => {
-      const schema = new Schema(fixture.schema)
-      t.deepEqual(schema.descriptor, fixture.expected, `parsing ${testName}`)
-      t.done()
-    })
-
-    t.test(`${testName}: schema canonical`, (t) => {
-      const schema = new Schema(fixture.schema)
-      const schemaCanonical = print(schema.descriptor)
-      const expected = fixture.canonical || fixture.schema
-      t.deepEqual(schemaCanonical, expected.replace(/\n+$/, ''), `canonicalizing ${testName}`)
-      t.done()
-    })
-
-    if (fixture.blocks) {
-      fixture.blocks.forEach((block, i) => {
-        t.test(`fixture ${f}: block validate (${i}: ${require('util').inspect(block.actual)})`, (t) => {
-          const schema = new Schema(fixture.schema)
-          t.doesNotThrow(() => { schema.validate(block.actual, rootType) }, `validating good block ${i} in ${testName}`)
-          if (block.expected) {
-            const loaded = schema.load(block.actual, rootType)
-            t.strictSame(loaded, block.expected)
-          }
-          t.done()
-        })
-      })
+describe('fixtures/bulk', () => {
+  fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).forEach((f) => {
+    if (!f.endsWith('.yml')) {
+      return
     }
 
-    if (fixture.badBlocks) {
-      fixture.badBlocks.forEach((block, i) => {
-        t.test(`fixture ${f}: bad block validate (${i})`, (t) => {
-          const schema = new Schema(fixture.schema)
-          t.throws(() => { schema.validate(block, rootType) }, /validation error/i, `validating bad block ${i} in ${testName}`)
-          t.throws(() => { schema.load(block, rootType) }, /validation error/i, `validating bad block ${i} in ${testName}`)
-          t.done()
-        })
+    describe(`fixture ${f}`, () => {
+      const testName = `fixture ${f}`
+      let fixture
+      before(async () => {
+        fixture = await loadFixture(f)
       })
-    }
+
+      it(`${testName}: schema parse`, () => {
+        const schema = parse(fixture.schema)
+        assert.deepStrictEqual(schema, fixture.expected, `parsing ${testName}`)
+      })
+
+      it(`${testName}: schema canonical`, () => {
+        const schema = parse(fixture.schema)
+        const schemaCanonical = print(schema)
+        const expected = fixture.canonical || fixture.schema
+        assert.deepStrictEqual(schemaCanonical, expected.replace(/\n+$/, ''), `canonicalizing ${testName}`)
+      })
+    })
   })
 })
 

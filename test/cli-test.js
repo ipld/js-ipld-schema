@@ -1,209 +1,143 @@
+/* eslint-env mocha */
+
 const path = require('path')
-const fs = require('fs')
+const fs = require('fs/promises')
 const { execFile } = require('child_process')
-const tap = require('tap')
+const { promisify } = require('util')
+const { assert } = require('chai')
+const execFileP = promisify(execFile)
 
-tap.test('examples to-json ipldsch', (t) => {
-  const inFile = path.join(__dirname, 'fixtures/examples.ipldsch')
-  const cli = require.resolve('../bin/cli.js')
-  const expectedSchema = require(path.join(__dirname, 'fixtures/examples.ipldsch.json'))
+describe('cli', () => {
+  it('examples to-json ipldsch', async () => {
+    const inFile = path.join(__dirname, 'fixtures/examples.ipldsch')
+    const cli = require.resolve('../bin/cli.js')
+    const expectedSchema = require(path.join(__dirname, 'fixtures/examples.ipldsch.json'))
 
-  execFile(process.execPath, [cli, 'to-json', inFile], (err, stdout, stderr) => {
-    t.error(err)
-    t.ok(!stderr)
-
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', inFile])
+    assert(!stderr)
     let schemaJson
     try {
       schemaJson = JSON.parse(stdout)
     } catch (err) {
-      t.error(err)
+      assert.ifError(err)
     }
-    t.deepEqual(schemaJson, expectedSchema)
-  }).on('close', (code) => {
-    t.equal(code, 0, 'exit code')
-    t.done()
+    assert.deepStrictEqual(schemaJson, expectedSchema)
   })
-})
 
-tap.test('examples-adl to-json ipldsch', (t) => {
-  const inFile = path.join(__dirname, 'fixtures/examples-adl.ipldsch')
-  const cli = require.resolve('../bin/cli.js')
-  const expectedSchema = require(path.join(__dirname, 'fixtures/examples-adl.ipldsch.json'))
+  it('examples-adl to-json ipldsch', async () => {
+    const inFile = path.join(__dirname, 'fixtures/examples-adl.ipldsch')
+    const cli = require.resolve('../bin/cli.js')
+    const expectedSchema = require(path.join(__dirname, 'fixtures/examples-adl.ipldsch.json'))
 
-  execFile(process.execPath, [cli, 'to-json', inFile], (err, stdout, stderr) => {
-    t.error(err)
-    t.ok(!stderr)
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', inFile])
+    assert(!stderr)
+    const schemaJson = JSON.parse(stdout)
+    assert.deepStrictEqual(schemaJson, expectedSchema)
+  })
 
-    let schemaJson
+  it('examples to-json md', async () => {
+    const inFile = path.join(__dirname, 'fixtures/examples.ipldsch.md')
+    const cli = require.resolve('../bin/cli.js')
+    const expectedSchema = require(path.join(__dirname, 'fixtures/examples.ipldsch.json'))
+
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', inFile])
+    assert(!stderr)
+
+    const schemaJson = JSON.parse(stdout)
+    assert.deepStrictEqual(schemaJson, expectedSchema)
+  })
+
+  it('examples validate ipldsch', async () => {
+    const filename = 'examples.ipldsch.md'
+    const inFile = path.join(__dirname, 'fixtures', filename)
+    const cli = require.resolve('../bin/cli.js')
+
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'validate', inFile])
+    assert(!stdout)
+    assert(stderr.includes(filename), `stderr referenced ${filename}`)
+  })
+
+  it('examples validate md', async () => {
+    const filename = 'examples.ipldsch.md'
+    const inFile = path.join(__dirname, 'fixtures', filename)
+    const cli = require.resolve('../bin/cli.js')
+
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'validate', inFile])
+    assert(!stdout)
+    assert(stderr.includes(filename), `stderr referenced ${filename}`)
+  })
+
+  it('validate failure', async () => {
+    const inFile = path.join(__dirname, 'bork.ipldsch')
+    const cli = require.resolve('../bin/cli.js')
+
+    await fs.writeFile(inFile, 'type Nope NopeNopeNope Nopity Nope nope [&{!')
+    let failed = false
     try {
-      schemaJson = JSON.parse(stdout)
+      await execFileP(process.execPath, [cli, 'validate', inFile])
     } catch (err) {
-      t.error(err)
+      failed = true
+      assert(err.message.includes(inFile))
+      assert(!err.stdout)
+      assert(err.stderr.includes(inFile))
+    } finally {
+      await fs.unlink(inFile)
     }
-    t.deepEqual(schemaJson, expectedSchema)
-  }).on('close', (code) => {
-    t.equal(code, 0, 'exit code')
-    t.done()
-  })
-})
-
-tap.test('examples to-json md', (t) => {
-  const inFile = path.join(__dirname, 'fixtures/examples.ipldsch.md')
-  const cli = require.resolve('../bin/cli.js')
-  const expectedSchema = require(path.join(__dirname, 'fixtures/examples.ipldsch.json'))
-
-  execFile(process.execPath, [cli, 'to-json', inFile], (err, stdout, stderr) => {
-    t.error(err)
-    t.ok(!stderr)
-
-    let schemaJson
-    try {
-      schemaJson = JSON.parse(stdout)
-    } catch (err) {
-      t.error(err)
+    if (!failed) {
+      assert.fail('did not error')
     }
-    t.deepEqual(schemaJson, expectedSchema)
-  }).on('close', (code) => {
-    t.equal(code, 0, 'exit code')
-    t.done()
   })
-})
 
-tap.test('examples validate ipldsch', (t) => {
-  const filename = 'fixtures/examples.ipldsch.md'
-  const inFile = path.join(__dirname, filename)
-  const cli = require.resolve('../bin/cli.js')
+  it('schema-schema multi md validate', async () => {
+    const inDir = path.join(__dirname, 'fixtures/schema-schema/')
+    const files = (await fs.readdir(inDir)).map((f) => path.join(inDir, f))
+    const cli = require.resolve('../bin/cli.js')
 
-  execFile(process.execPath, [cli, 'validate', inFile], (err, stdout, stderr) => {
-    t.error(err)
-    t.ok(!stdout)
-    t.contains(stderr, filename, `stderr referenced ${filename}`)
-  }).on('close', (code) => {
-    t.equal(code, 0, 'exit code')
-    t.done()
-  })
-})
-
-tap.test('examples validate md', (t) => {
-  const filename = 'fixtures/examples.ipldsch.md'
-  const inFile = path.join(__dirname, filename)
-  const cli = require.resolve('../bin/cli.js')
-
-  execFile(process.execPath, [cli, 'validate', inFile], (err, stdout, stderr) => {
-    t.error(err)
-    t.ok(!stdout)
-    t.contains(stderr, filename, `stderr referenced ${filename}`)
-  }).on('close', (code) => {
-    t.equal(code, 0, 'exit code')
-    t.done()
-  })
-})
-
-tap.test('validate failure', (t) => {
-  const inFile = path.join(__dirname, 'bork.ipldsch')
-  const cli = require.resolve('../bin/cli.js')
-
-  fs.writeFile(inFile, 'type Nope NopeNopeNope Nopity Nope nope [&{!', () => {
-    execFile(process.execPath, [cli, 'validate', inFile], (err, stdout, stderr) => {
-      fs.unlink(inFile, () => {})
-      t.ok(err)
-      t.contains(err.message, inFile)
-      t.ok(!stdout)
-      t.contains(stderr, inFile)
-    }).on('close', (code) => {
-      t.equal(code, 1, 'exit code')
-      t.done()
-    })
-  })
-})
-
-tap.test('schema-schema multi md validate', (t) => {
-  const inDir = path.join(__dirname, 'fixtures/schema-schema/')
-  const files = fs.readdirSync(inDir)
-    .map((f) => path.join(inDir, f))
-  const cli = require.resolve('../bin/cli.js')
-
-  execFile(process.execPath, [cli, 'validate'].concat(files), (err, stdout, stderr) => {
-    t.error(err)
-    t.ok(!stdout)
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'validate'].concat(files))
+    assert(!stdout)
     for (const f of files) {
-      t.contains(stderr, path.basename(f), `stderr referenced ${path.basename(f)}`)
+      assert(stderr.includes(path.basename(f)), `stderr referenced ${path.basename(f)}`)
     }
-  }).on('close', (code) => {
-    t.equal(code, 0, 'exit code')
-    t.done()
   })
-})
 
-tap.test('schema-schema multi md to-json', (t) => {
-  const inDir = path.join(__dirname, 'fixtures/schema-schema/')
-  const files = fs.readdirSync(inDir)
-    .map((f) => path.join(inDir, f))
-  const cli = require.resolve('../bin/cli.js')
-  const expectedSchema = require(path.join(__dirname, 'fixtures/schema-schema.ipldsch.json'))
+  it('schema-schema multi md to-json', async () => {
+    const inDir = path.join(__dirname, 'fixtures/schema-schema/')
+    const files = (await fs.readdir(inDir)).map((f) => path.join(inDir, f))
+    const cli = require.resolve('../bin/cli.js')
+    const expectedSchema = require(path.join(__dirname, 'fixtures/schema-schema.ipldsch.json'))
 
-  execFile(process.execPath, [cli, 'to-json'].concat(files), (err, stdout, stderr) => {
-    t.error(err)
-    t.ok(!stderr)
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json'].concat(files))
+    assert(!stderr)
 
-    let schemaJson
-    try {
-      schemaJson = JSON.parse(stdout)
-    } catch (err) {
-      t.error(err)
-    }
-    t.deepEqual(schemaJson, expectedSchema)
-  }).on('close', (code) => {
-    t.equal(code, 0, 'exit code')
-    t.done()
+    const schemaJson = JSON.parse(stdout)
+    assert.deepStrictEqual(schemaJson, expectedSchema)
   })
-})
 
-tap.test('schema-schema multi md to-json', (t) => {
-  const inDir = path.join(__dirname, 'fixtures/schema-schema/')
-  const files = fs.readdirSync(inDir)
-    .map((f) => path.join(inDir, f))
-  const cli = require.resolve('../bin/cli.js')
-  const expectedSchema = require(path.join(__dirname, 'fixtures/schema-schema.ipldsch.json'))
+  it('schema-schema multi md to-json', async () => {
+    const inDir = path.join(__dirname, 'fixtures/schema-schema/')
+    const files = (await fs.readdir(inDir)).map((f) => path.join(inDir, f))
+    const cli = require.resolve('../bin/cli.js')
+    const expectedSchema = require(path.join(__dirname, 'fixtures/schema-schema.ipldsch.json'))
 
-  execFile(process.execPath, [cli, 'to-json'].concat(files), (err, stdout, stderr) => {
-    t.error(err)
-    t.ok(!stderr)
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json'].concat(files))
+    assert(!stderr)
 
-    let schemaJson
-    try {
-      schemaJson = JSON.parse(stdout)
-    } catch (err) {
-      t.error(err)
-    }
-    t.deepEqual(schemaJson, expectedSchema)
-  }).on('close', (code) => {
-    t.equal(code, 0, 'exit code')
-    t.done()
+    const schemaJson = JSON.parse(stdout)
+    assert.deepStrictEqual(schemaJson, expectedSchema)
   })
-})
 
-tap.test('examples-all to-json ipldsch', (t) => {
-  const inFiles = [
-    path.join(__dirname, 'fixtures/examples.ipldsch'),
-    path.join(__dirname, 'fixtures/examples-adl.ipldsch')
-  ]
-  const cli = require.resolve('../bin/cli.js')
-  const expectedSchema = require(path.join(__dirname, 'fixtures/examples-all.ipldsch.json'))
+  it('examples-all to-json ipldsch', async () => {
+    const inFiles = [
+      path.join(__dirname, 'fixtures/examples.ipldsch'),
+      path.join(__dirname, 'fixtures/examples-adl.ipldsch')
+    ]
+    const cli = require.resolve('../bin/cli.js')
+    const expectedSchema = require(path.join(__dirname, 'fixtures/examples-all.ipldsch.json'))
 
-  execFile(process.execPath, [cli, 'to-json'].concat(inFiles), (err, stdout, stderr) => {
-    t.error(err)
-    t.ok(!stderr)
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json'].concat(inFiles))
+    assert(!stderr)
 
-    let schemaJson
-    try {
-      schemaJson = JSON.parse(stdout)
-    } catch (err) {
-      t.error(err)
-    }
-    t.deepEqual(schemaJson, expectedSchema)
-  }).on('close', (code) => {
-    t.equal(code, 0, 'exit code')
-    t.done()
+    const schemaJson = JSON.parse(stdout)
+    assert.deepStrictEqual(schemaJson, expectedSchema)
   })
 })

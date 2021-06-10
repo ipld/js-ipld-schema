@@ -1,17 +1,17 @@
 # ipld-schema
 
-[IPLD](http://ipld.io/) Schema Implementation: parser and utilities
+[IPLD](http://ipld.io/) Schema DSL Parser and CLI utilities
 
-IPLD Schemas are a work in progress but are already useful. Read more about IPLD Schemas at https://github.com/ipld/specs/tree/master/schemas
+Read more about IPLD Schemas at https://github.com/ipld/specs/tree/master/schemas
 
-This project is also a work in progress, but should parse schemas as they are defined at the time of last publish.
+For validation of JavaScript object forms against an IPLD schema, see [ipld-schema-validator](https://github.com/rvagg/js-ipld-schema-validator).
 
 ## Usage
 
 ```js
-const Schema = require('ipld-schema')
+const { parse } = require('ipld-schema')
 
-let schema = new Schema(`
+let schema = parse(`
   type SimpleStruct struct {
     foo Int
     bar Bool
@@ -20,7 +20,7 @@ let schema = new Schema(`
   type MyMap { String: SimpleStruct }
 `)
 
-console.dir(schema.descriptor, { depth: Infinity })
+console.dir(schema, { depth: Infinity })
 
 // →
 // {
@@ -35,24 +35,6 @@ console.dir(schema.descriptor, { depth: Infinity })
 //   },
 //   MyMap: { kind: 'map', keyType: 'String', valueType: 'SimpleStruct' }
 // }
-```
-
-**`Schema#validate(block, rootType)`** can be used to validate an in-memory block representation against the schema defined by the `schema` object. It will throw an error if the block does not match the schema provided.
-
-Continuing from the previous example:
-
-```js
-const myMap = {
-  one: { foo: 100, bar: true, baz: 'one' },
-  two: { foo: -100, bar: false, baz: 'two' },
-  three: { foo: 1, bar: true, baz: 'three' },
-}
-
-// validate that 'one' is of type 'SimpleStruct'
-schema.validate(myMap.one, 'SimpleStruct')
-
-// validate that the whole 'myMap' object is of type 'MyMap'
-schema.validate(myMap, 'MyMap')
 ```
 
 ## Command line
