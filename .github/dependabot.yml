@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    ignore:
+      # ^9 switched to ESM-only, we need to migrate here first
+      - dependency-name: "get-stdin"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
