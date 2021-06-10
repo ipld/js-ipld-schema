@@ -27,7 +27,7 @@
   "dependencies": {
     "@sindresorhus/is": "~1.0.0",
     "get-stdin": "^7.0.0",
-    "yargs": "^14.0.0"
+    "yargs": "^17.0.1"
   },
   "standard": {
     "ignore": [
