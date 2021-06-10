@@ -1,11 +1,13 @@
-const fs = require('fs').promises
-const path = require('path')
-const tap = require('tap')
-const Schema = require('../ipld-schema')
+/* eslint-env mocha */
 
-tap.test('schema-schema', async (t) => {
+const fs = require('fs/promises')
+const path = require('path')
+const { parse } = require('../ipld-schema')
+const { assert } = require('chai')
+
+it('schema-schema', async () => {
   const schemaText = await fs.readFile(path.join(__dirname, 'fixtures/schema-schema.ipldsch'), 'utf8')
-  const schema = new Schema(schemaText)
+  const schema = parse(schemaText)
   const expectedSchema = require(path.join(__dirname, 'fixtures/schema-schema.ipldsch.json'))
-  t.deepEqual(schema.descriptor, expectedSchema)
+  assert.deepStrictEqual(schema, expectedSchema)
 })
