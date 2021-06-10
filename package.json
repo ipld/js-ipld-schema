@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "IPLD Schema parser and CLI utilities for JavaScript",
   "main": "./ipld-schema.js",
+  "types": "./types.d.ts",
   "scripts": {
     "peg": "npm_config_yes=true npx pegjs -o parser.js ipld-schema.pegjs",
     "lint": "standard *.js test/*.js bin/*.js",
