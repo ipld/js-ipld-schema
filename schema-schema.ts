@@ -11,20 +11,23 @@ export type KindUnion = {}
 export type KindStruct = {}
 export type KindEnum = {}
 
-export type TypeBool = {}
-export type TypeString = {}
+export type TypeBool = { kind: "bool" }
+export type TypeString = { kind: "string" }
 export type TypeBytes = {
+  kind: "bytes"
   representation?: BytesRepresentation
 }
 export type BytesRepresentation =
     { bytes: BytesRepresentation_Bytes }
   | { advanced: AdvancedDataLayoutName }
 export type BytesRepresentation_Bytes = {}
-export type TypeInt = {}
-export type TypeFloat = {}
+export type TypeInt = { kind: "int" }
+export type TypeFloat = { kind: "float" }
+export type TypeNull = { kind: "null" }
 export type TypeMap = {
+  kind: "map"
   keyType: TypeName
-  valueType?: TypeTerm
+  valueType: TypeTerm
   valueNullable?: KindBool
   representation?: MapRepresentation
 }
@@ -41,6 +44,7 @@ export type MapRepresentation_StringPairs = {
 }
 export type MapRepresentation_ListPairs = {}
 export type TypeList = {
+  kind: "list"
   valueType: TypeTerm
   valueNullable?: KindBool
   representation?: ListRepresentation
@@ -50,10 +54,12 @@ export type ListRepresentation =
   | { advanced: AdvancedDataLayoutName }
 export type ListRepresentation_List = {}
 export type TypeLink = {
+  kind: "link"
   expectedType?: KindString
 }
 export type TypeUnion = {
-  representation?: UnionRepresentation
+  kind: "union"
+  representation: UnionRepresentation
 }
 export type UnionRepresentation =
     { kinded: UnionRepresentation_Kinded }
@@ -61,23 +67,24 @@ export type UnionRepresentation =
   | { envelope: UnionRepresentation_Envelope }
   | { inline: UnionRepresentation_Inline }
   | { byteprefix: UnionRepresentation_BytePrefix }
-export type UnionRepresentation_Kinded = Record<RepresentationKind, TypeName>
-export type UnionRepresentation_Keyed = Record<KindString, TypeName>
+export type UnionRepresentation_Kinded = { [k in RepresentationKind]?: TypeName }
+export type UnionRepresentation_Keyed = { [k in KindString]: TypeName }
 export type UnionRepresentation_Envelope = {
   discriminantKey: KindString
   contentKey: KindString
-  discriminantTable: Record<KindString, TypeName>
+  discriminantTable: { [ k in KindString]: TypeName }
 }
 export type UnionRepresentation_Inline = {
   discriminantKey: KindString
-  discriminantTable: Record<KindString, TypeName>
+  discriminantTable: { [ k in KindString]: TypeName }
 }
 export type UnionRepresentation_BytePrefix = {
-  discriminantTable: Record<TypeName, KindInt>
+  discriminantTable: { [ k in TypeName]: KindInt }
 }
 
 export type TypeStruct = {
-  fields: Record<FieldName, StructField>
+  kind: "struct"
+  fields: { [ k in FieldName]: StructField }
   representation?: StructRepresentation
 }
 export type FieldName = string
@@ -90,8 +97,8 @@ export type TypeTerm =
     TypeName
   | InlineDefn
 export type InlineDefn =
-    { map: TypeMap }
-  | { list: TypeList }
+    TypeMap
+  | TypeList
 export type StructRepresentation =
     { map: StructRepresentation_Map }
   | { tuple: StructRepresentation_Tuple }
@@ -99,7 +106,7 @@ export type StructRepresentation =
   | { stringjoin: StructRepresentation_StringJoin }
   | { listpairs: StructRepresentation_ListPairs }
 export type StructRepresentation_Map = {
-  fields?: Record<FieldName, StructRepresentation_Map_FieldDetails>
+  fields?: { [ k in FieldName]: StructRepresentation_Map_FieldDetails }
 }
 export type StructRepresentation_Map_FieldDetails = {
   rename?: KindString
@@ -120,21 +127,23 @@ export type StructRepresentation_ListPairs = {}
 
     
 export type TypeEnum = {
-  members: Record<EnumValue, KindNull>
+  kind: "enum"
+  members: { [ k in EnumValue]: KindNull }
   representation: EnumRepresentation
 }
 export type EnumValue = string
 export type EnumRepresentation =
     { string: EnumRepresentation_String }
   | { int: EnumRepresentation_Int }
-export type EnumRepresentation_String = Record<EnumValue, KindString>
-export type EnumRepresentation_Int = Record<EnumValue, KindInt>
+export type EnumRepresentation_String = { [ k in EnumValue]: KindString }
+export type EnumRepresentation_Int = { [ k in EnumValue]: KindInt }
 export type TypeCopy = {
+  kind: "copy"
   fromType: TypeName
 }
 
 export type TypeName = string
-export type SchemaMap = { TypeName: Type }
+export type SchemaMap = { [ k in TypeName]: Type }
 export type AdvancedDataLayoutName = string
 export type Schema = {
   types: SchemaMap
@@ -145,6 +154,7 @@ export type Type =
   | TypeBytes
   | TypeInt
   | TypeFloat
+  | TypeNull
   | TypeMap
   | TypeList
   | TypeLink
@@ -172,6 +182,7 @@ export type RepresentationKind =
   | "bytes"
   | "int"
   | "float"
+  | "null"
   | "map"
   | "list"
   | "link"

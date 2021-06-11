@@ -1,3 +1,4 @@
 import { Schema } from './schema-schema'
 
-export function parse(schemaText: string): Schema
+function parse(schemaText: string): Schema
+export { Schema, parse }
