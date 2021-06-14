@@ -10,7 +10,6 @@ export type KindLink = {}
 export type KindUnion = {}
 export type KindStruct = {}
 export type KindEnum = {}
-
 export type TypeBool = { kind: "bool" }
 export type TypeString = { kind: "string" }
 export type TypeBytes = {
@@ -36,7 +35,6 @@ export type MapRepresentation =
   | { stringpairs: MapRepresentation_StringPairs }
   | { listpairs: MapRepresentation_ListPairs }
   | { advanced: AdvancedDataLayoutName }
-
 export type MapRepresentation_Map = {}
 export type MapRepresentation_StringPairs = {
   innerDelim: KindString
@@ -67,7 +65,8 @@ export type UnionRepresentation =
   | { envelope: UnionRepresentation_Envelope }
   | { inline: UnionRepresentation_Inline }
   | { byteprefix: UnionRepresentation_BytePrefix }
-export type UnionRepresentation_Kinded = { [k in RepresentationKind]?: TypeName }
+export type UnionRepresentation_Kinded = { [k in RepresentationKind]?: KindedType }
+export type KindedType = TypeName | TypeLink
 export type UnionRepresentation_Keyed = { [k in KindString]: TypeName }
 export type UnionRepresentation_Envelope = {
   discriminantKey: KindString
@@ -78,10 +77,7 @@ export type UnionRepresentation_Inline = {
   discriminantKey: KindString
   discriminantTable: { [ k in KindString]: TypeName }
 }
-export type UnionRepresentation_BytePrefix = {
-  discriminantTable: { [ k in TypeName]: KindInt }
-}
-
+export type UnionRepresentation_BytePrefix = { [ k in TypeName]: KindInt }
 export type TypeStruct = {
   kind: "struct"
   fields: { [ k in FieldName]: StructField }
@@ -124,8 +120,6 @@ export type StructRepresentation_StringJoin = {
   fieldOrder?: FieldName[]
 }
 export type StructRepresentation_ListPairs = {}
-
-    
 export type TypeEnum = {
   kind: "enum"
   members: { [ k in EnumValue]: KindNull }
@@ -141,7 +135,6 @@ export type TypeCopy = {
   kind: "copy"
   fromType: TypeName
 }
-
 export type TypeName = string
 export type SchemaMap = { [ k in TypeName]: Type }
 export type AdvancedDataLayoutName = string
@@ -162,7 +155,6 @@ export type Type =
   | TypeStruct
   | TypeEnum
   | TypeCopy
-
 export type TypeKind =
     KindBool
   | KindString
@@ -175,7 +167,6 @@ export type TypeKind =
   | KindUnion
   | KindStruct
   | KindEnum
-
 export type RepresentationKind =
     "bool"
   | "string"
@@ -186,7 +177,6 @@ export type RepresentationKind =
   | "map"
   | "list"
   | "link"
-
 export type AnyScalar =
     KindBool
   | KindString
