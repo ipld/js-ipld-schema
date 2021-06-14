@@ -23,7 +23,7 @@ const yargs = require('yargs')
   .command('to-schema',
     'Accepts .ipldsch and .md files, if none are passed will read from stdin, prints the canonical IPLD Schema form of the schema',
     toOpts)
-  .showHelpOnFail()
+  .showHelpOnFail(true)
   .demandCommand(1, 'must provide a valid command')
   .help()
 
