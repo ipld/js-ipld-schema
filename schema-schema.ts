@@ -95,6 +95,7 @@ export type TypeTerm =
 export type InlineDefn =
     TypeMap
   | TypeList
+  | TypeLink
 export type StructRepresentation =
     { map: StructRepresentation_Map }
   | { tuple: StructRepresentation_Tuple }
