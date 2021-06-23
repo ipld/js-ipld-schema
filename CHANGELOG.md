@@ -1,3 +1,10 @@
+### [1.1.1](https://github.com/rvagg/js-ipld-schema/compare/v1.1.0...v1.1.1) (2021-06-23)
+
+
+### Bug Fixes
+
+* add TypeLink to InlineDefn ([de0d76c](https://github.com/rvagg/js-ipld-schema/commit/de0d76cdefd5abeb5bc40ebab4211fc5da4e9dd3))
+
 ## [1.1.0](https://github.com/rvagg/js-ipld-schema/compare/v1.0.0...v1.1.0) (2021-06-23)
 
 
