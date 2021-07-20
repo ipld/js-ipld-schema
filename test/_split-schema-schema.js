@@ -38,13 +38,13 @@ async function run () {
       inType = line.split(' ')[1]
       block.push('')
       block.push('```ipldsch')
+      const title = line.match(/^type ([A-Z]\w+)/)
+      block.unshift(`# schema-schema: \`${title[1]}\``)
     } else if (inType && line.startsWith('#')) {
       await writeBlock()
     }
 
     if (!block.length) {
-      const title = line.match(/[A-Z]\w+/)
-      block.push(`# schema-schema: \`${title[0]}\``)
       block.push('')
     }
     block.push(line.replace(/^#+\s?/, ''))

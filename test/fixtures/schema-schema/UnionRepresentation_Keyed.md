@@ -1,4 +1,4 @@
-# schema-schema: `Keyed`
+# schema-schema: `UnionRepresentation_Keyed`
 
 "Keyed" union representations will encode as a map, where the map has
 exactly one entry, the key string of which will be used to look up the name

@@ -13,7 +13,7 @@ all int values are required.
 
 ```ipldsch
 type TypeEnum struct {
-  members {EnumValue:Null}
+	members {EnumValue:Null}
 	representation EnumRepresentation
 }
 ```

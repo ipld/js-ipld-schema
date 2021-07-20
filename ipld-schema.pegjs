@@ -128,15 +128,14 @@ EnumFieldRepresentationOptions = "(" _ value:QuotedString _ ")" { return value }
 
 UnionDescriptor = "{" values:UnionValue+ "}" _ representation:UnionRepresentation {
   let fields = values.reduce(extend, {})
-  if (!representation.byteprefix && Object.values(values).find((v) => typeof v === 'number') > -1) {
-    throw new Error(`${Object.keys(representation)[0]} union representations do not support integer discriminators`)
-  }
   if (representation.keyed) {
     representation.keyed = fields
   } else if (representation.kinded) {
     representation.kinded = fields
-  } else if (representation.byteprefix) {
-    representation.byteprefix = fields
+  } else if (representation.stringprefix) {
+    representation.stringprefix = fields
+  } else if (representation.bytesprefix) {
+    representation.bytesprefix = fields
   } else if (representation.inline) {
     representation.inline.discriminantTable = fields
   } else if (representation.envelope) {
@@ -149,11 +148,7 @@ UnionDescriptor = "{" values:UnionValue+ "}" _ representation:UnionRepresentatio
 
 // TODO: tighten these up, kinded doesn't get quoted kinds, keyed and envelope does, this allows a kinded
 // union to pass through with quoted strings, it's currently just a messy duplication
-// also .. byteprefix unions get ints
-UnionValue = _ "|" _ type:(TypeName / LinkDescriptor) _ name:(QuotedString / BaseType / Integer) _ {
-  if (typeof name === 'number') { // byteprefix allows this
-    return { [type]: name }
-  }
+UnionValue = _ "|" _ type:(TypeName / LinkDescriptor) _ name:(QuotedString / BaseType) _ {
   return { [name]: type }
 }
 
@@ -249,7 +244,8 @@ EnumRepresentation = "representation" _ representation:EnumRepresentationType _ 
 UnionRepresentationType
   = "keyed" { return { keyed: {} } }
   / "kinded" { return { kinded: {} } }
-  / "byteprefix" { return { byteprefix: {} } } // TODO: check kind reprs for union types are all bytes
+  / "stringprefix" { return { stringprefix: {} } } // TODO: check kind reprs for union types are all strings
+  / "bytesprefix" { return { bytesprefix: {} } } // TODO: check kind reprs for union types are all bytes
   / "inline" _ descriptor:UnionInlineKeyDefinition { return descriptor }
   / "envelope" _ descriptor:UnionEnvelopeKeyDefinition { return descriptor }
 
