@@ -64,7 +64,8 @@ export type UnionRepresentation =
   | { keyed: UnionRepresentation_Keyed }
   | { envelope: UnionRepresentation_Envelope }
   | { inline: UnionRepresentation_Inline }
-  | { byteprefix: UnionRepresentation_BytePrefix }
+  | { stringprefix: UnionRepresentation_StringPrefix }
+  | { bytesprefix: UnionRepresentation_BytesPrefix }
 export type UnionRepresentation_Kinded = { [k in RepresentationKind]?: KindedType }
 export type KindedType = TypeName | TypeLink
 export type UnionRepresentation_Keyed = { [k in KindString]: TypeName }
@@ -77,7 +78,8 @@ export type UnionRepresentation_Inline = {
   discriminantKey: KindString
   discriminantTable: { [ k in KindString]: TypeName }
 }
-export type UnionRepresentation_BytePrefix = { [ k in TypeName]: KindInt }
+export type UnionRepresentation_StringPrefix = { [ k in KindString]: TypeName }
+export type UnionRepresentation_BytesPrefix = { [ k in KindString]: TypeName }
 export type TypeStruct = {
   kind: "struct"
   fields: { [ k in FieldName]: StructField }

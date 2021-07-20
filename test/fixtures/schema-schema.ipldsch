@@ -5,11 +5,11 @@
 
 ## Type names are a simple alias of string.
 ##
-## There are some additional rules that should be applied:
-##   - Type names should by convention begin with a capital letter;
-##   - Type names must be all printable characters (no whitespace);
-##   - Type names must not contain punctuation other than underscores
-##     (dashes, dots, etc.).
+## There are some additional rules that should be applied. Type names:
+##   - *Must* only contain alphanumeric ASCII characters and underscores
+##   - *Must* begin with a capital letter
+##   - *Should* avoid more than one connected underscore character,
+##     multiple-underscores may be used for codegen
 ##
 ## Type names are strings meant for human consumption at a local scope.
 ## When making a Schema, note that the TypeName is the key of the map:
@@ -222,12 +222,16 @@ type TypeFloat struct {}
 ## TypeMap describes a key-value map.
 ## The keys and values of the map have some specific type of their own.
 ##
+## A constraint on keyType is that the referenced type must have a string
+## representation kind. The IPLD Data Model only allows for string keys on maps,
+## so this constraint is imposed here.
+##
 type TypeMap struct {
-	keyType TypeName # additionally, the referenced type must be reprkind==string.
+	keyType TypeName
 	valueType TypeTerm
 	valueNullable Bool (implicit "false")
 	representation MapRepresentation
-} representation map
+}
 
 ## MapRepresentation describes how a map type should be mapped onto
 ## its IPLD Data Model representation.  By default a map is a map in the
@@ -285,7 +289,7 @@ type TypeList struct {
 	valueType TypeTerm
 	valueNullable Bool (implicit "false")
 	representation ListRepresentation
-} representation map
+}
 
 ## ListRepresentation describes how a map type should be mapped onto
 ## its IPLD Data Model representation.  By default a list is a list in the
@@ -344,11 +348,11 @@ type TypeUnion struct {
 ## can be mapped onto a serialized format for the IPLD Data Model.
 ##
 ## There are five strategies that can be used to encode a union:
-## "keyed", "envelope", "inline", "byteprefix", and "kinded".
+## "keyed", "envelope", "inline", "bytesprefix", and "kinded".
 ## The "keyed", "envelope", and "inline" strategies are all ways to produce
 ## representations in a map format, using map keys as type discriminators
 ## (some literature may describe this as a "tagged" style of union).
-## The "byteprefix" strategy, only available only for unions in which all
+## The "bytesprefix" strategy, only available only for unions in which all
 ## member types themselves represent as bytes in the data model, uses another
 ## byte as the type discrimination hint (and like the map-oriented strategies,
 ## may also be seen as a form of "tagged" style unions).
@@ -364,7 +368,7 @@ type UnionRepresentation union {
 	| UnionRepresentation_Keyed "keyed"
 	| UnionRepresentation_Envelope "envelope"
 	| UnionRepresentation_Inline "inline"
-	| UnionRepresentation_BytePrefix "byteprefix"
+	| UnionRepresentation_BytesPrefix "bytesprefix"
 } representation keyed
 
 ## "Kinded" union representations describe a bidirectional mapping between
@@ -409,7 +413,7 @@ type UnionRepresentation_Envelope struct {
 ## behavior!  Similarly, the member struct types may not have fields which
 ## have names that collide with the discriminantKey.
 ##
-## When designing a new protocol, use inline unions sparringly; despite
+## When designing a new protocol, use inline unions sparingly; despite
 ## appearing simple, they have the most edge cases of any kind of union
 ## representation, and their implementation is generally the most complex and
 ## is difficult to optimize deserialization to support.
@@ -418,17 +422,23 @@ type UnionRepresentation_Inline struct {
 	discriminantTable {String:TypeName}
 }
 
-## UnionRepresentation_BytePrefix describes a union representation for unions
+## UnionRepresentation_BytesPrefix describes a union representation for unions
 ## whose member types are all bytes. It is encoded to a byte array whose
-## first byte is the discriminator and subsequent bytes form the discriminated
+## first bytes are the discriminator and subsequent bytes form the discriminated
 ## type.
 ##
-## byteprefix is an invalid representation for any union that contains a type
+## Discriminators are represented as hexadecimal strings. There is currently
+## no limitation on their length, other than needing to be at least one byte.
+## Nor is there a requirement that they all be of the same length, although
+## they must all represent unique prefixes.
+##
+## Only valid, upper-case, hexadecimal strings representing at least one byte
+## are allowed.
+##
+## bytesprefix is an invalid representation for any union that contains a type
 ## that does not have a bytes representation.
 ##
-type UnionRepresentation_BytePrefix struct {
-	discriminantTable {TypeName:Int}
-}
+type UnionRepresentation_BytesPrefix {String:TypeName}
 
 ## TypeStruct describes a type which has a group of fields of varying Type.
 ## Each field has a name, which is used to access its value, similarly to
@@ -490,7 +500,7 @@ type StructField struct {
 	type TypeTerm
 	optional Bool (implicit "false")
 	nullable Bool (implicit "false")
-} representation map
+}
 
 ## TypeTerm is a union of either TypeName or an InlineDefn. th It's used for the
 ## value type in the recursive types (maps, lists, and the fields of structs),
@@ -650,7 +660,7 @@ type StructRepresentation_ListPairs struct {}
 ## all int values are required.
 ##
 type TypeEnum struct {
-  members {EnumValue:Null}
+	members {EnumValue:Null}
 	representation EnumRepresentation
 }
 

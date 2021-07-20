@@ -4,9 +4,9 @@ schema: |
   type Secp256k1Signature bytes
 
   type Signature union {
-    | Secp256k1Signature 0
-    | Bls12_381Signature 1
-  } representation byteprefix
+    | Secp256k1Signature "00"
+    | Bls12_381Signature "01"
+  } representation bytesprefix
 root: Signature
 expected: |
   {
@@ -20,9 +20,9 @@ expected: |
       "Signature": {
         "kind": "union",
         "representation": {
-          "byteprefix": {
-            "Secp256k1Signature": 0,
-            "Bls12_381Signature": 1
+          "bytesprefix": {
+            "00": "Secp256k1Signature",
+            "01": "Bls12_381Signature"
           }
         }
       }
