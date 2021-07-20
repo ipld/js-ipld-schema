@@ -100,11 +100,12 @@ printTypeTerm.map = function map (defn, indent, highlighter) {
   const nullable = defn.valueNullable === true ? 'nullable ' : ''
   let str = `${highlighter.punctuation('{')}${printTypeTerm(defn.keyType, indent, highlighter)}:${nullable}${printTypeTerm(defn.valueType, indent, highlighter)}${highlighter.punctuation('}')}`
   if (defn.representation) {
-    if (typeof defn.representation.listpairs === 'object') {
+    const repr = reprStrategy(defn)
+    if (repr === 'listpairs') {
       str += ` ${highlighter.builtin('representation')} listpairs`
-    } else if (typeof defn.representation.stringpairs === 'object') {
+    } else if (repr === 'stringpairs') {
       str += stringpairs(indent, 'map', defn.representation.stringpairs, highlighter)
-    } else if (typeof defn.representation.advanced === 'string') {
+    } else if (repr === 'advanced') {
       str += ` ${highlighter.builtin('representation')} advanced ${defn.representation.advanced}`
     }
   }
@@ -120,7 +121,7 @@ printTypeTerm.list = function list (defn, indent, highlighter) {
   let str = `${highlighter.punctuation('[')}${nullable}${printTypeTerm(defn.valueType, indent, highlighter)}${highlighter.punctuation(']')}`
 
   if (defn.representation) {
-    if (typeof defn.representation.advanced === 'string') {
+    if (reprStrategy(defn) === 'advanced') {
       str += ` ${highlighter.builtin('representation')} advanced ${defn.representation.advanced}`
     }
   }
@@ -170,9 +171,10 @@ printTypeTerm.struct = function struct (defn, indent, highlighter) {
   str += highlighter.punctuation('}')
 
   if (defn.representation) {
-    if (typeof defn.representation.listpairs === 'object') {
+    const repr = reprStrategy(defn)
+    if (repr === 'listpairs') {
       str += ` ${highlighter.builtin('representation')} listpairs`
-    } else if (typeof defn.representation.stringjoin === 'object') {
+    } else if (repr === 'stringjoin') {
       if (typeof defn.representation.stringjoin.join !== 'string') {
         throw new Error('Invalid schema, struct stringjoin representations require an join string')
       }
@@ -180,16 +182,16 @@ printTypeTerm.struct = function struct (defn, indent, highlighter) {
       str += `${indent}join ${highlighter.string(`"${defn.representation.stringjoin.join}"`)}\n`
       str += fieldOrder(indent, defn.representation.stringjoin.fieldOrder, highlighter)
       str += highlighter.punctuation('}')
-    } else if (typeof defn.representation.stringpairs === 'object') {
+    } else if (repr === 'stringpairs') {
       str += stringpairs(indent, 'struct', defn.representation.stringpairs, highlighter)
-    } else if (typeof defn.representation.tuple === 'object') {
+    } else if (repr === 'tuple') {
       str += ` ${highlighter.builtin('representation')} tuple`
       if (Array.isArray(defn.representation.tuple.fieldOrder)) {
         str += ` ${highlighter.punctuation('{')}\n`
         str += fieldOrder(indent, defn.representation.tuple.fieldOrder, highlighter)
         str += highlighter.punctuation('}')
       }
-    } else if (typeof defn.representation.advanced === 'string') {
+    } else if (repr === 'advanced') {
       str += ` ${highlighter.builtin('representation')} advanced ${defn.representation.advanced}`
     }
   }
@@ -221,29 +223,46 @@ function stringpairs (indent, kind, stringpairs, highlighter) {
   return str
 }
 
+function reprStrategy (defn) {
+  if (typeof defn.representation !== 'object') {
+    throw new Error('Expected \'representation\' property of definition')
+  }
+  const keys = Object.keys(defn.representation)
+  if (keys.length !== 1) {
+    throw new Error('Expected exactly one \'representation\' field')
+  }
+  const repr = keys[0]
+  if (repr === 'advanced') {
+    if (typeof defn.representation[repr] !== 'string') {
+      throw new Error('Expected representation \'advanced\' to be an string')
+    }
+  } else {
+    if (typeof defn.representation[repr] !== 'object') {
+      throw new Error(`Expected representation '${repr}' to be an object`)
+    }
+  }
+  return repr
+}
+
 printTypeTerm.union = function union (defn, indent, highlighter) {
   if (typeof defn.representation !== 'object') {
     throw new Error('Invalid schema, unions require a representation')
   }
 
   let str = highlighter.punctuation('{')
+  const repr = reprStrategy(defn)
 
-  if (typeof defn.representation.kinded === 'object') {
+  if (repr === 'kinded') {
     for (const [kind, type] of Object.entries(defn.representation.kinded)) {
       str += `\n${indent}${highlighter.punctuation('|')} ${printTypeTerm(type, indent, highlighter)} ${kind}`
     }
     str += `\n${highlighter.punctuation('}')} ${highlighter.builtin('representation')} kinded`
-  } else if (typeof defn.representation.keyed === 'object') {
-    for (const [key, type] of Object.entries(defn.representation.keyed)) {
+  } else if (repr === 'keyed' || repr === 'stringprefix' || repr === 'bytesprefix') {
+    for (const [key, type] of Object.entries(defn.representation[repr])) {
       str += `\n${indent}${highlighter.punctuation('|')} ${printTypeTerm(type, indent, highlighter)} ${highlighter.string(`"${key}"`)}`
     }
-    str += `\n${highlighter.punctuation('}')} ${highlighter.builtin('representation')} keyed`
-  } else if (typeof defn.representation.byteprefix === 'object') {
-    for (const [type, key] of Object.entries(defn.representation.byteprefix)) {
-      str += `\n${indent}${highlighter.punctuation('|')} ${printTypeTerm(type, indent, highlighter)} ${key}`
-    }
-    str += `\n${highlighter.punctuation('}')} ${highlighter.builtin('representation')} byteprefix`
-  } else if (typeof defn.representation.inline === 'object') {
+    str += `\n${highlighter.punctuation('}')} ${highlighter.builtin('representation')} ${repr}`
+  } else if (repr === 'inline') {
     if (typeof defn.representation.inline.discriminantTable !== 'object') {
       throw new Error('Invalid schema, inline unions require a discriminantTable map')
     }
@@ -254,7 +273,7 @@ printTypeTerm.union = function union (defn, indent, highlighter) {
       str += `\n${indent}${highlighter.punctuation('|')} ${printTypeTerm(type, indent, highlighter)} ${highlighter.string(`"${key}"`)}`
     }
     str += `\n${highlighter.punctuation('}')} ${highlighter.builtin('representation')} inline ${highlighter.punctuation('{')}\n${indent}discriminantKey ${highlighter.string(`"${defn.representation.inline.discriminantKey}"`)}\n${highlighter.punctuation('}')}`
-  } else if (typeof defn.representation.envelope === 'object') {
+  } else if (repr === 'envelope') {
     if (typeof defn.representation.envelope.discriminantTable !== 'object') {
       throw new Error('Invalid schema, envelope unions require a discriminantTable map')
     }
@@ -282,7 +301,8 @@ printTypeTerm.enum = function _enum (defn, indent, highlighter) {
   if (typeof defn.representation !== 'object') {
     throw new Error('Invalid schema, enum requires a "representation" map')
   }
-  if (typeof defn.representation.string !== 'object' && typeof defn.representation.int !== 'object') {
+  const repr = reprStrategy(defn)
+  if (repr !== 'string' && repr !== 'int') {
     throw new Error('Invalid schema, enum requires a "string" or "int" representation map')
   }
 

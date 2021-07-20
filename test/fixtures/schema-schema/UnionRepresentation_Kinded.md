@@ -1,4 +1,4 @@
-# schema-schema: `Kinded`
+# schema-schema: `UnionRepresentation_Kinded`
 
 "Kinded" union representations describe a bidirectional mapping between
 a RepresentationKind and a Type (referenced by name) which should be the

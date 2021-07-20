@@ -20,7 +20,9 @@ expected: |
             "type": "String"
           }
         },
-        "representation": { "listpairs": {} }
+        "representation": {
+          "listpairs": {}
+        }
       }
     }
   }

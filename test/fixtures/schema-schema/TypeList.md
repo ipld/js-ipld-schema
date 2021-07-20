@@ -9,5 +9,5 @@ type TypeList struct {
 	valueType TypeTerm
 	valueNullable Bool (implicit "false")
 	representation ListRepresentation
-} representation map
+}
 ```

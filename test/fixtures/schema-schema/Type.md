@@ -1,4 +1,4 @@
-# schema-schema: `The`
+# schema-schema: `Type`
 
 The types of Type are a union.
 

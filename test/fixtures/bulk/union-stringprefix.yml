@@ -1,0 +1,37 @@
+schema: |
+  type Flim string
+
+  type Flam string
+
+  type Bloop string
+
+  type FlimFlam union {
+    | Flim "flim:"
+    | Flam "flam:"
+    | Bloop "bloop!:"
+  } representation stringprefix
+root: FlimFlam
+expected: |
+  {
+    "types": {
+      "Flim": {
+        "kind": "string"
+      },
+      "Flam": {
+        "kind": "string"
+      },
+      "Bloop": {
+        "kind": "string"
+      },
+      "FlimFlam": {
+        "kind": "union",
+        "representation": {
+          "stringprefix": {
+            "flim:": "Flim",
+            "flam:": "Flam",
+            "bloop!:": "Bloop"
+          }
+        }
+      }
+    }
+  }

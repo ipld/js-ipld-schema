@@ -1,4 +1,4 @@
-# schema-schema: `Envelope`
+# schema-schema: `UnionRepresentation_Envelope`
 
 "Envelope" union representations will encode as a map, where the map has
 exactly two entries: the two keys should be of the exact strings specified

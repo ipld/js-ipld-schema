@@ -50,28 +50,28 @@ expected: |
           "map": {}
         }
       },
-     "bahamasNodeUnion": {
-       "kind": "union",
-       "representation": {
-         "keyed": {
-           "address": {
-             "kind": "link",
-             "expectedType": "bahamas_leaks_nodes_address_csv"
-           },
-           "entity": {
-             "kind": "link",
-             "expectedType": "bahamas_leaks_nodes_entity_csv"
-           },
-           "intermediary": {
-             "kind": "link",
-             "expectedType": "bahamas_leaks_nodes_intermediary_csv"
-           },
-           "officer": {
-             "kind": "link",
-             "expectedType": "bahamas_leaks_nodes_officer_csv"
-           }
-         }
-       }
-     }
+      "bahamasNodeUnion": {
+        "kind": "union",
+        "representation": {
+          "keyed": {
+            "address": {
+              "kind": "link",
+              "expectedType": "bahamas_leaks_nodes_address_csv"
+            },
+            "entity": {
+              "kind": "link",
+              "expectedType": "bahamas_leaks_nodes_entity_csv"
+            },
+            "intermediary": {
+              "kind": "link",
+              "expectedType": "bahamas_leaks_nodes_intermediary_csv"
+            },
+            "officer": {
+              "kind": "link",
+              "expectedType": "bahamas_leaks_nodes_officer_csv"
+            }
+          }
+        }
+      }
     }
   }

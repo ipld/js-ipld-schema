@@ -1,4 +1,4 @@
-# schema-schema: `Inline`
+# schema-schema: `UnionRepresentation_Inline`
 
 "Inline" union representations require that all of their members encode
 as a map, and encode their type info into the same map as the member data.
@@ -12,7 +12,7 @@ with keys overlapping with the discriminantKey would result in undefined
 behavior!  Similarly, the member struct types may not have fields which
 have names that collide with the discriminantKey.
 
-When designing a new protocol, use inline unions sparringly; despite
+When designing a new protocol, use inline unions sparingly; despite
 appearing simple, they have the most edge cases of any kind of union
 representation, and their implementation is generally the most complex and
 is difficult to optimize deserialization to support.

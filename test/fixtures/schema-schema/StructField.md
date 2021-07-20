@@ -34,5 +34,5 @@ type StructField struct {
 	type TypeTerm
 	optional Bool (implicit "false")
 	nullable Bool (implicit "false")
-} representation map
+}
 ```

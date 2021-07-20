@@ -27,9 +27,15 @@ expected: |
         "representation": {
           "map": {
             "fields": {
-              "bar": { "implicit": false },
-              "boom": { "implicit": "yay" },
-              "foo": { "implicit": 0 }
+              "bar": {
+                "implicit": false
+              },
+              "boom": {
+                "implicit": "yay"
+              },
+              "foo": {
+                "implicit": 0
+              }
             }
           }
         }
