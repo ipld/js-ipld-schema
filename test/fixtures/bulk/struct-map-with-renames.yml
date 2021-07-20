@@ -27,8 +27,12 @@ expected: |
         "representation": {
           "map": {
             "fields": {
-              "bar": { "rename": "b" },
-              "baz": { "rename": "z" },
+              "bar": {
+                "rename": "b"
+              },
+              "baz": {
+                "rename": "z"
+              },
               "foo": {
                 "implicit": 0,
                 "rename": "f"

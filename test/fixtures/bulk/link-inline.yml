@@ -12,14 +12,15 @@ expected: |
   {
     "types": {
       "Bar": {
-        "keyType": "String",
         "kind": "map",
+        "keyType": "String",
         "valueType": {
           "kind": "link",
           "expectedType": "Baz"
         }
       },
       "Baz": {
+        "kind": "struct",
         "fields": {
           "boom": {
             "type": "String"
@@ -31,7 +32,6 @@ expected: |
             }
           }
         },
-        "kind": "struct",
         "representation": {
           "map": {}
         }

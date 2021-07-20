@@ -17,16 +17,15 @@ root: UnionInline
 expected: |
   {
     "types": {
-      "UnionInline": {
-        "kind": "union",
-        "representation": {
-          "inline": {
-            "discriminantKey": "tag",
-            "discriminantTable": {
-              "foo": "Foo",
-              "bar": "Bar"
-            }
+      "Bar": {
+        "kind": "struct",
+        "fields": {
+          "bral": {
+            "type": "String"
           }
+        },
+        "representation": {
+          "map": {}
         }
       },
       "Foo": {
@@ -40,15 +39,16 @@ expected: |
           "map": {}
         }
       },
-      "Bar": {
-        "kind": "struct",
-        "fields": {
-          "bral": {
-            "type": "String"
-          }
-        },
+      "UnionInline": {
+        "kind": "union",
         "representation": {
-          "map": {}
+          "inline": {
+            "discriminantKey": "tag",
+            "discriminantTable": {
+              "foo": "Foo",
+              "bar": "Bar"
+            }
+          }
         }
       }
     }
