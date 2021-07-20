@@ -7,7 +7,9 @@ expected: |
         "kind": "map",
         "keyType": "String",
         "valueType": "String",
-        "representation": { "listpairs": {} }
+        "representation": {
+          "listpairs": {}
+        }
       }
     }
   }

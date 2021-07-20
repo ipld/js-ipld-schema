@@ -23,7 +23,9 @@ expected: |
           }
         },
         "representation": {
-          "stringjoin": { "join": ":" }
+          "stringjoin": {
+            "join": ":"
+          }
         }
       }
     }

@@ -33,22 +33,22 @@ expected: |
       "ShardedMap": {
         "kind": "map",
         "keyType": "String",
-        "representation": {
-          "advanced": "HashMap"
-        },
         "valueType": {
           "kind": "link",
           "expectedType": "BigOlBytes"
+        },
+        "representation": {
+          "advanced": "HashMap"
         }
       },
       "ShardedList": {
         "kind": "list",
-        "representation": {
-          "advanced": "Vector"
-        },
         "valueType": {
           "kind": "link",
           "expectedType": "ShardedMap"
+        },
+        "representation": {
+          "advanced": "Vector"
         }
       }
     }
