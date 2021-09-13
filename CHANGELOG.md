@@ -1,3 +1,20 @@
+## [2.0.0](https://github.com/rvagg/js-ipld-schema/compare/v1.1.6...v2.0.0) (2021-09-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* add stringprefix, rename byteprefix->bytesprefix
+
+### Features
+
+* add stringprefix, rename byteprefix->bytesprefix ([81aa1dd](https://github.com/rvagg/js-ipld-schema/commit/81aa1ddfae67abfd90af8e0020b425296601e6b4))
+
+
+### Trivial Changes
+
+* add stringprefix union test case ([3d9ad09](https://github.com/rvagg/js-ipld-schema/commit/3d9ad090c9441d004fecba74b30a9e351438388d))
+* fix json formatting to match go fixtures (orderd, properly formatted) ([a77c409](https://github.com/rvagg/js-ipld-schema/commit/a77c40975e6bd2bea6633d80b59ccbe16563c2cc))
+
 ### [1.1.6](https://github.com/rvagg/js-ipld-schema/compare/v1.1.5...v1.1.6) (2021-08-06)
 
 
