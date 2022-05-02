@@ -1,3 +1,18 @@
+### [2.0.2](https://github.com/rvagg/js-ipld-schema/compare/v2.0.1...v2.0.2) (2022-05-02)
+
+
+### Trivial Changes
+
+* **deps-dev:** bump mocha from 9.2.2 to 10.0.0 ([c72b8c4](https://github.com/rvagg/js-ipld-schema/commit/c72b8c49d695a9ec06dae7c3a6fa1a59e3ee8e2a))
+* **no-release:** bump actions/checkout from 2.3.4 to 2.4.0 ([#48](https://github.com/rvagg/js-ipld-schema/issues/48)) ([fb6bbf0](https://github.com/rvagg/js-ipld-schema/commit/fb6bbf0c275d234411e4c95796b5821ac025cfec))
+* **no-release:** bump actions/checkout from 2.4.0 to 3.0.1 ([#58](https://github.com/rvagg/js-ipld-schema/issues/58)) ([fc59dfd](https://github.com/rvagg/js-ipld-schema/commit/fc59dfdeffedf6ae00a9d081c01bf026e6ec1842))
+* **no-release:** bump actions/checkout from 3.0.1 to 3.0.2 ([#60](https://github.com/rvagg/js-ipld-schema/issues/60)) ([fd724ce](https://github.com/rvagg/js-ipld-schema/commit/fd724cef2ad6d319d87d7bc44d4f4f60f1871f5b))
+* **no-release:** bump actions/setup-node from 2.4.1 to 2.5.0 ([#49](https://github.com/rvagg/js-ipld-schema/issues/49)) ([b099ab8](https://github.com/rvagg/js-ipld-schema/commit/b099ab84dd90b8baefd2b58f30d3af94c7b0cb36))
+* **no-release:** bump actions/setup-node from 2.5.0 to 2.5.1 ([#50](https://github.com/rvagg/js-ipld-schema/issues/50)) ([3405ecd](https://github.com/rvagg/js-ipld-schema/commit/3405ecde90fb989f8806665b484ce58cab141575))
+* **no-release:** bump actions/setup-node from 2.5.1 to 3.0.0 ([#53](https://github.com/rvagg/js-ipld-schema/issues/53)) ([ce7965a](https://github.com/rvagg/js-ipld-schema/commit/ce7965af533b28e5e507c40a987f294495073445))
+* **no-release:** bump actions/setup-node from 3.0.0 to 3.1.1 ([#57](https://github.com/rvagg/js-ipld-schema/issues/57)) ([1d71656](https://github.com/rvagg/js-ipld-schema/commit/1d71656e927016157fa019ca8d46d85ed3373dc0))
+* **no-release:** bump standard from 16.0.4 to 17.0.0 ([#59](https://github.com/rvagg/js-ipld-schema/issues/59)) ([f1fcf35](https://github.com/rvagg/js-ipld-schema/commit/f1fcf3534fce5d9cded7b3dfca0d7b9513ef6e09))
+
 ### [2.0.1](https://github.com/rvagg/js-ipld-schema/compare/v2.0.0...v2.0.1) (2021-09-28)
 
 
