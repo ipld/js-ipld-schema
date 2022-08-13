@@ -14,41 +14,46 @@ expected: |
   {
     "advanced": {
       "HashMap": {
-        "kind": "advanced"
+        "advanced": {}
       },
       "Vector": {
-        "kind": "advanced"
+        "advanced": {}
       },
       "ByteList": {
-        "kind": "advanced"
+        "advanced": {}
       }
     },
     "types": {
       "BigOlBytes": {
-        "kind": "bytes",
-        "representation": {
-          "advanced": "ByteList"
+        "bytes": {
+          "representation": {
+            "advanced": "ByteList"
+          }
         }
       },
       "ShardedMap": {
-        "kind": "map",
-        "keyType": "String",
-        "valueType": {
-          "kind": "link",
-          "expectedType": "BigOlBytes"
-        },
-        "representation": {
-          "advanced": "HashMap"
+        "map": {
+          "keyType": "String",
+          "valueType": {
+            "link": {
+              "expectedType": "BigOlBytes"
+            }
+          },
+          "representation": {
+            "advanced": "HashMap"
+          }
         }
       },
       "ShardedList": {
-        "kind": "list",
-        "valueType": {
-          "kind": "link",
-          "expectedType": "ShardedMap"
-        },
-        "representation": {
-          "advanced": "Vector"
+        "list": {
+          "valueType": {
+            "link": {
+              "expectedType": "ShardedMap"
+            }
+          },
+          "representation": {
+            "advanced": "Vector"
+          }
         }
       }
     }

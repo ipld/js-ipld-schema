@@ -12,17 +12,24 @@ expected: |
   {
     "types": {
       "Bls12_381Signature": {
-        "kind": "bytes"
+        "bytes": {}
       },
       "Secp256k1Signature": {
-        "kind": "bytes"
+        "bytes": {}
       },
       "Signature": {
-        "kind": "union",
-        "representation": {
-          "bytesprefix": {
-            "00": "Secp256k1Signature",
-            "01": "Bls12_381Signature"
+        "union": {
+          "members": [
+            "Secp256k1Signature",
+            "Bls12_381Signature"
+          ],
+          "representation": {
+            "bytesprefix": {
+              "prefixes": {
+                "00": "Secp256k1Signature",
+                "01": "Bls12_381Signature"
+              }
+            }
           }
         }
       }

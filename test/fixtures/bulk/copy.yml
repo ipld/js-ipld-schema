@@ -22,51 +22,59 @@ expected: |
   {
     "types": {
       "SimpleStruct": {
-        "kind": "struct",
-        "fields": {
-          "foo": {
-            "type": "Int"
+        "struct": {
+          "fields": {
+            "foo": {
+              "type": "Int"
+            },
+            "bar": {
+              "type": "Bool"
+            },
+            "baz": {
+              "type": "String"
+            }
           },
-          "bar": {
-            "type": "Bool"
-          },
-          "baz": {
-            "type": "String"
+          "representation": {
+            "map": {}
           }
-        },
-        "representation": {
-          "map": {}
         }
       },
       "SimpleEnum": {
-        "kind": "enum",
-        "members": {
-          "Foo": null,
-          "Bar": null,
-          "Baz": null
-        },
-        "representation": {
-          "string": {}
+        "enum": {
+          "members": [
+            "Foo",
+            "Bar",
+            "Baz"
+          ],
+          "representation": {
+            "string": {}
+          }
         }
       },
       "Bloop": {
-        "kind": "map",
-        "keyType": "String",
-        "valueType": {
-          "kind": "link"
+        "map": {
+          "keyType": "String",
+          "valueType": {
+            "link": {
+              "expectedType": "Any"
+            }
+          }
         }
       },
       "CopyOfSimpleStruct": {
-        "kind": "copy",
-        "fromType": "SimpleStruct"
+        "copy": {
+          "fromType": "SimpleStruct"
+        }
       },
       "CopyOfSimpleEnum": {
-        "kind": "copy",
-        "fromType": "SimpleEnum"
+        "copy": {
+          "fromType": "SimpleEnum"
+        }
       },
       "Bloop2": {
-        "kind": "copy",
-        "fromType": "Bloop"
+        "copy": {
+          "fromType": "Bloop"
+        }
       }
     }
   }

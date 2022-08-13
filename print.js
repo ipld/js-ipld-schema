@@ -5,7 +5,7 @@ const noopHighlighter = {
   keyword: noop,
   builtin: noop,
   operator: noop,
-  // number: noop,
+  number: noop,
   string: noop,
   // comment: noop,
   className: noop,
@@ -43,30 +43,39 @@ function printTypes (schema, indent, highlighter) {
   let str = ''
 
   for (const [type, defn] of Object.entries(schema.types)) {
-    if (typeof defn.kind !== 'string') {
-      throw new Error(`Invalid schema ${type} doesn't have a kind`)
-    }
-
     str += `${highlighter.keyword('type')} ${highlighter.className(type)} ${printType(defn, indent, highlighter)}\n\n`
   }
 
   return str.replace(/\n\n$/m, '')
 }
 
+function kindFromDefinition (defn) {
+  const [kind, more] = Object.keys(defn)
+  if (!kind) {
+    throw new Error('Invalid schema, missing kind')
+  }
+  if (more !== undefined) {
+    throw new Error('Invalid schema more than one kind')
+  }
+  return kind
+}
+
 function printType (defn, indent, highlighter) {
-  if (['map', 'list', 'link', 'copy'].includes(defn.kind)) {
+  const kind = kindFromDefinition(defn)
+
+  if (['map', 'list', 'link', 'copy'].includes(kind)) {
     return printTypeTerm(defn, indent, highlighter)
   }
 
-  if (['struct', 'union', 'enum'].includes(defn.kind)) {
-    return `${highlighter.builtin(defn.kind)} ${printTypeTerm(defn, indent, highlighter)}`
+  if (['struct', 'union', 'enum'].includes(kind)) {
+    return `${highlighter.builtin(kind)} ${printTypeTerm(defn, indent, highlighter)}`
   }
 
-  if (defn.kind === 'bytes' && defn.representation && typeof defn.representation.advanced === 'string') {
-    return `bytes ${highlighter.builtin('representation')} advanced ${defn.representation.advanced}`
+  if ((kind === 'bytes' || kind === 'string') && defn[kind].representation && typeof defn[kind].representation.advanced === 'string') {
+    return `${kind} ${highlighter.builtin('representation')} advanced ${defn[kind].representation.advanced}`
   }
 
-  return defn.kind
+  return kind
 }
 
 function printTypeTerm (defn, indent, highlighter) {
@@ -74,11 +83,13 @@ function printTypeTerm (defn, indent, highlighter) {
     return defn
   }
 
-  if (typeof printTypeTerm[defn.kind] !== 'function') {
-    throw new Error(`Invalid schema unsupported kind (${defn.kind})`)
+  const kind = kindFromDefinition(defn)
+
+  if (typeof printTypeTerm[kind] !== 'function') {
+    throw new Error(`Invalid schema unsupported kind (${kind})`)
   }
 
-  return printTypeTerm[defn.kind](defn, indent, highlighter)
+  return printTypeTerm[kind](defn[kind], indent, highlighter)
 }
 
 printTypeTerm.link = function link (defn, indent, highlighter) {
@@ -154,7 +165,12 @@ printTypeTerm.struct = function struct (defn, indent, highlighter) {
             }
           }
           if (hasImplicit) {
-            fieldRepr += `${highlighter.keyword('implicit')} ${highlighter.string(`"${fr.implicit}"`)}`
+            const impl = typeof fr.implicit === 'string'
+              ? highlighter.string(`"${fr.implicit}"`)
+              : typeof fr.implicit === 'number'
+                ? highlighter.number(fr.implicit)
+                : highlighter.keyword(fr.implicit)
+            fieldRepr += `${highlighter.keyword('implicit')} ${impl}`
           }
           fieldRepr += highlighter.punctuation(')')
         }
@@ -257,7 +273,18 @@ printTypeTerm.union = function union (defn, indent, highlighter) {
       str += `\n${indent}${highlighter.punctuation('|')} ${printTypeTerm(type, indent, highlighter)} ${kind}`
     }
     str += `\n${highlighter.punctuation('}')} ${highlighter.builtin('representation')} kinded`
-  } else if (repr === 'keyed' || repr === 'stringprefix' || repr === 'bytesprefix') {
+  } else if (repr === 'stringprefix' || repr === 'bytesprefix') {
+    if (typeof defn.representation[repr].prefixes !== 'object') {
+      throw new Error(`Invalid schema, ${repr} unions require a representation prefixes map`)
+    }
+    for (const [key, type] of Object.entries(defn.representation[repr].prefixes)) {
+      str += `\n${indent}${highlighter.punctuation('|')} ${printTypeTerm(type, indent, highlighter)} ${highlighter.string(`"${key}"`)}`
+    }
+    str += `\n${highlighter.punctuation('}')} ${highlighter.builtin('representation')} ${repr}`
+  } else if (repr === 'keyed') {
+    if (typeof defn.representation[repr] !== 'object') {
+      throw new Error(`Invalid schema, ${repr} unions require a representation keyed map`)
+    }
     for (const [key, type] of Object.entries(defn.representation[repr])) {
       str += `\n${indent}${highlighter.punctuation('|')} ${printTypeTerm(type, indent, highlighter)} ${highlighter.string(`"${key}"`)}`
     }
@@ -308,7 +335,7 @@ printTypeTerm.enum = function _enum (defn, indent, highlighter) {
 
   let str = highlighter.punctuation('{')
 
-  for (const ev of Object.keys(defn.members)) {
+  for (const ev of defn.members) {
     str += `\n${indent}${highlighter.punctuation('|')} ${ev}`
     const sv = (defn.representation.string && defn.representation.string[ev]) ||
       (defn.representation.int && defn.representation.int[ev])

@@ -29,7 +29,7 @@ describe('fixtures/bulk', () => {
         const schema = parse(fixture.schema)
         const schemaCanonical = print(schema)
         const expected = fixture.canonical || fixture.schema
-        assert.deepStrictEqual(schemaCanonical, expected.replace(/\n+$/, ''), `canonicalizing ${testName}`)
+        assert.deepStrictEqual(schemaCanonical.replace(/\n+$/gm, ''), expected.replace(/\n+$/gm, ''), `canonicalizing ${testName}`)
       })
     })
   })

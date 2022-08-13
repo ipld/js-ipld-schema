@@ -1,6 +1,6 @@
-# schema-schema: `TypeMap`
+# schema-schema: `TypeDefnMap`
 
-TypeMap describes a key-value map.
+TypeDefnMap describes a key-value map.
 The keys and values of the map have some specific type of their own.
 
 A constraint on keyType is that the referenced type must have a string
@@ -9,10 +9,10 @@ so this constraint is imposed here.
 
 
 ```ipldsch
-type TypeMap struct {
+type TypeDefnMap struct {
 	keyType TypeName
-	valueType TypeTerm
-	valueNullable Bool (implicit "false")
-	representation MapRepresentation
+	valueType TypeNameOrInlineDefn
+	valueNullable Bool (implicit false)
+	representation optional MapRepresentation
 }
 ```

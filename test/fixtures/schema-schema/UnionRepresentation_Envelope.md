@@ -11,6 +11,6 @@ lookup in the discriminant table.
 type UnionRepresentation_Envelope struct {
 	discriminantKey String
 	contentKey String
-	discriminantTable {String:TypeName}
+	discriminantTable {String:UnionMember}
 }
 ```

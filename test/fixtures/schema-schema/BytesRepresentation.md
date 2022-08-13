@@ -1,6 +1,6 @@
 # schema-schema: `BytesRepresentation`
 
-BytesRepresentation specifies how a TypeBytes is to be serialized. By
+BytesRepresentation specifies how a TypeDefnBytes is to be serialized. By
 default it will be stored as bytes in the data model but it may be replaced
 with an ADL.
 

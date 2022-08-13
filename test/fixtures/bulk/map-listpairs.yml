@@ -4,11 +4,12 @@ expected: |
   {
     "types": {
       "MapAsListpairs": {
-        "kind": "map",
-        "keyType": "String",
-        "valueType": "String",
-        "representation": {
-          "listpairs": {}
+        "map": {
+          "keyType": "String",
+          "valueType": "String",
+          "representation": {
+            "listpairs": {}
+          }
         }
       }
     }

@@ -18,5 +18,7 @@ that does not have a bytes representation.
 
 
 ```ipldsch
-type UnionRepresentation_BytesPrefix {String:TypeName}
+type UnionRepresentation_BytesPrefix struct {
+	prefixes {HexString:TypeName}
+}
 ```

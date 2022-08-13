@@ -8,17 +8,18 @@ expected: |
   {
     "types": {
       "SimpleEnum": {
-        "kind": "enum",
-        "members": {
-          "Foo": null,
-          "Bar": null,
-          "Baz": null
-        },
-        "representation": {
-          "int": {
-            "Foo": "0",
-            "Bar": "1",
-            "Baz": "100"
+        "enum": {
+          "members": [
+            "Foo",
+            "Bar",
+            "Baz"
+          ],
+          "representation": {
+            "int": {
+              "Foo": 0,
+              "Bar": 1,
+              "Baz": 100
+            }
           }
         }
       }

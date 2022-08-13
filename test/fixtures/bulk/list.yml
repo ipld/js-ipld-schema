@@ -4,8 +4,9 @@ expected: |
   {
     "types": {
       "SimpleList": {
-        "kind": "list",
-        "valueType": "String"
+        "list": {
+          "valueType": "String"
+        }
       }
     }
   }

@@ -1,145 +1,165 @@
 {
   "advanced": {
     "FunkyBytes": {
-      "kind": "advanced"
+      "advanced": {}
     },
     "FunkyVector": {
-      "kind": "advanced"
+      "advanced": {}
     }
   },
   "types": {
     "MyFunkyBytes": {
-      "kind": "bytes",
-      "representation": {
-        "advanced": "FunkyBytes"
+      "bytes": {
+        "representation": {
+          "advanced": "FunkyBytes"
+        }
       }
     },
     "MyFunkyVector": {
-      "kind": "list",
-      "valueType": {
-        "kind": "link",
-        "expectedType": "MyFunkyBytes"
-      },
-      "representation": {
-        "advanced": "FunkyVector"
+      "list": {
+        "valueType": {
+          "link": {
+            "expectedType": "MyFunkyBytes"
+          }
+        },
+        "representation": {
+          "advanced": "FunkyVector"
+        }
       }
     },
     "ADLExample": {
-      "kind": "struct",
-      "fields": {
-        "fooField": {
-          "type": {
-            "kind": "map",
-            "keyType": "String",
-            "valueType": "MyFunkyBytes"
+      "struct": {
+        "fields": {
+          "fooField": {
+            "type": {
+              "map": {
+                "keyType": "String",
+                "valueType": "MyFunkyBytes"
+              }
+            },
+            "optional": true
           },
-          "optional": true
-        },
-        "barField": {
-          "type": {
-            "kind": "map",
-            "keyType": "String",
-            "valueType": "String"
+          "barField": {
+            "type": {
+              "map": {
+                "keyType": "String",
+                "valueType": "String"
+              }
+            },
+            "nullable": true
           },
-          "nullable": true
-        },
-        "bazField": {
-          "type": {
-            "kind": "map",
-            "keyType": "String",
-            "valueType": "MyFunkyBytes",
-            "valueNullable": true
-          }
-        },
-        "wozField": {
-          "type": {
-            "kind": "map",
-            "keyType": "String",
-            "valueType": {
-              "kind": "list",
-              "valueType": "String",
-              "valueNullable": true
+          "bazField": {
+            "type": {
+              "map": {
+                "keyType": "String",
+                "valueType": "MyFunkyBytes",
+                "valueNullable": true
+              }
             }
+          },
+          "wozField": {
+            "type": {
+              "map": {
+                "keyType": "String",
+                "valueType": {
+                  "list": {
+                    "valueType": "String",
+                    "valueNullable": true
+                  }
+                }
+              }
+            }
+          },
+          "boomField": {
+            "type": {
+              "link": {
+                "expectedType": "ExampleWithNullable"
+              }
+            }
+          },
+          "funkyField": {
+            "type": "MyFunkyVector"
           }
         },
-        "boomField": {
-          "type": {
-            "kind": "link",
-            "expectedType": "ExampleWithNullable"
-          }
-        },
-        "funkyField": {
-          "type": "MyFunkyVector"
-        }
-      },
-      "representation": {
-        "map": {
-          "fields": {
-            "fooField": {
-              "rename": "foo_field"
+        "representation": {
+          "map": {
+            "fields": {
+              "fooField": {
+                "rename": "foo_field"
+              }
             }
           }
         }
       }
     },
     "ExampleWithNullable": {
-      "kind": "map",
-      "keyType": "String",
-      "valueType": {
-        "kind": "link"
-      },
-      "valueNullable": true
-    },
-    "ExampleWithAnonDefns": {
-      "kind": "struct",
-      "fields": {
-        "fooField": {
-          "type": {
-            "kind": "map",
-            "keyType": "String",
-            "valueType": "String"
-          },
-          "optional": true
-        },
-        "barField": {
-          "type": {
-            "kind": "map",
-            "keyType": "String",
-            "valueType": "String"
-          },
-          "nullable": true
-        },
-        "bazField": {
-          "type": {
-            "kind": "map",
-            "keyType": "String",
-            "valueType": "String",
-            "valueNullable": true
+      "map": {
+        "keyType": "String",
+        "valueType": {
+          "link": {
+            "expectedType": "Any"
           }
         },
-        "wozField": {
-          "type": {
-            "kind": "map",
-            "keyType": "String",
-            "valueType": {
-              "kind": "list",
-              "valueType": "String",
-              "valueNullable": true
+        "valueNullable": true
+      }
+    },
+    "ExampleWithAnonDefns": {
+      "struct": {
+        "fields": {
+          "fooField": {
+            "type": {
+              "map": {
+                "keyType": "String",
+                "valueType": "String"
+              }
+            },
+            "optional": true
+          },
+          "barField": {
+            "type": {
+              "map": {
+                "keyType": "String",
+                "valueType": "String"
+              }
+            },
+            "nullable": true
+          },
+          "bazField": {
+            "type": {
+              "map": {
+                "keyType": "String",
+                "valueType": "String",
+                "valueNullable": true
+              }
+            }
+          },
+          "wozField": {
+            "type": {
+              "map": {
+                "keyType": "String",
+                "valueType": {
+                  "list": {
+                    "valueType": "String",
+                    "valueNullable": true
+                  }
+                }
+              }
+            }
+          },
+          "boomField": {
+            "type": {
+              "link": {
+                "expectedType": "ExampleWithNullable"
+              }
             }
           }
         },
-        "boomField": {
-          "type": {
-            "kind": "link",
-            "expectedType": "ExampleWithNullable"
-          }
-        }
-      },
-      "representation": {
-        "map": {
-          "fields": {
-            "fooField": {
-              "rename": "foo_field"
+        "representation": {
+          "map": {
+            "fields": {
+              "fooField": {
+                "rename": "foo_field"
+              }
             }
           }
         }
