@@ -1,17 +1,19 @@
 /* eslint-env mocha */
 
-const path = require('path')
-const fs = require('fs/promises')
-const { execFile } = require('child_process')
-const { promisify } = require('util')
-const { assert } = require('chai')
+import path from 'path'
+import fs from 'fs'
+import { execFile } from 'child_process'
+import { promisify } from 'util'
+import { fileURLToPath } from 'url'
+import { assert } from 'chai'
+
 const execFileP = promisify(execFile)
 
 describe('cli', () => {
   it('examples to-json ipldsch', async () => {
-    const inFile = path.join(__dirname, 'fixtures/examples.ipldsch')
-    const cli = require.resolve('../bin/cli.js')
-    const expectedSchema = require(path.join(__dirname, 'fixtures/examples.ipldsch.json'))
+    const inFile = fileURLToPath(new URL('./fixtures/examples.ipldsch', import.meta.url))
+    const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
+    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples.ipldsch.json', import.meta.url)))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', inFile])
     assert(!stderr)
@@ -25,9 +27,9 @@ describe('cli', () => {
   })
 
   it('examples-adl to-json ipldsch', async () => {
-    const inFile = path.join(__dirname, 'fixtures/examples-adl.ipldsch')
-    const cli = require.resolve('../bin/cli.js')
-    const expectedSchema = require(path.join(__dirname, 'fixtures/examples-adl.ipldsch.json'))
+    const inFile = fileURLToPath(new URL('./fixtures/examples-adl.ipldsch', import.meta.url))
+    const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
+    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples-adl.ipldsch.json', import.meta.url)))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', inFile])
     assert(!stderr)
@@ -36,9 +38,9 @@ describe('cli', () => {
   })
 
   it('examples to-json md', async () => {
-    const inFile = path.join(__dirname, 'fixtures/examples.ipldsch.md')
-    const cli = require.resolve('../bin/cli.js')
-    const expectedSchema = require(path.join(__dirname, 'fixtures/examples.ipldsch.json'))
+    const inFile = fileURLToPath(new URL('./fixtures/examples.ipldsch.md', import.meta.url))
+    const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
+    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples.ipldsch.json', import.meta.url)))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', inFile])
     assert(!stderr)
@@ -49,8 +51,8 @@ describe('cli', () => {
 
   it('examples validate ipldsch', async () => {
     const filename = 'examples.ipldsch.md'
-    const inFile = path.join(__dirname, 'fixtures', filename)
-    const cli = require.resolve('../bin/cli.js')
+    const inFile = fileURLToPath(new URL(filename, new URL('./fixtures/', import.meta.url)))
+    const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'validate', inFile])
     assert(!stdout)
@@ -59,8 +61,8 @@ describe('cli', () => {
 
   it('examples validate md', async () => {
     const filename = 'examples.ipldsch.md'
-    const inFile = path.join(__dirname, 'fixtures', filename)
-    const cli = require.resolve('../bin/cli.js')
+    const inFile = fileURLToPath(new URL(filename, new URL('./fixtures/', import.meta.url)))
+    const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'validate', inFile])
     assert(!stdout)
@@ -68,10 +70,10 @@ describe('cli', () => {
   })
 
   it('validate failure', async () => {
-    const inFile = path.join(__dirname, 'bork.ipldsch')
-    const cli = require.resolve('../bin/cli.js')
+    const inFile = fileURLToPath(new URL('bork.ipldsch', import.meta.url))
+    const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
 
-    await fs.writeFile(inFile, 'type Nope NopeNopeNope Nopity Nope nope [&{!')
+    await fs.promises.writeFile(inFile, 'type Nope NopeNopeNope Nopity Nope nope [&{!')
     let failed = false
     try {
       await execFileP(process.execPath, [cli, 'validate', inFile])
@@ -81,7 +83,7 @@ describe('cli', () => {
       assert(!err.stdout)
       assert(err.stderr.includes(inFile))
     } finally {
-      await fs.unlink(inFile)
+      await fs.promises.unlink(inFile)
     }
     if (!failed) {
       assert.fail('did not error')
@@ -89,9 +91,9 @@ describe('cli', () => {
   })
 
   it('schema-schema multi md validate', async () => {
-    const inDir = path.join(__dirname, 'fixtures/schema-schema/')
-    const files = (await fs.readdir(inDir)).map((f) => path.join(inDir, f))
-    const cli = require.resolve('../bin/cli.js')
+    const inDir = fileURLToPath(new URL('./fixtures/schema-schema/', import.meta.url))
+    const files = (await fs.promises.readdir(inDir)).map((f) => path.join(inDir, f))
+    const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'validate'].concat(files))
     assert(!stdout)
@@ -101,10 +103,10 @@ describe('cli', () => {
   })
 
   it('schema-schema multi md to-json', async () => {
-    const inDir = path.join(__dirname, 'fixtures/schema-schema/')
-    const files = (await fs.readdir(inDir)).map((f) => path.join(inDir, f))
-    const cli = require.resolve('../bin/cli.js')
-    const expectedSchema = require(path.join(__dirname, 'fixtures/schema-schema.ipldsch.json'))
+    const inDir = fileURLToPath(new URL('./fixtures/schema-schema/', import.meta.url))
+    const files = (await fs.promises.readdir(inDir)).map((f) => path.join(inDir, f))
+    const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
+    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch.json', import.meta.url)))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json'].concat(files))
     assert(!stderr)
@@ -114,10 +116,10 @@ describe('cli', () => {
   })
 
   it('schema-schema multi md to-json', async () => {
-    const inDir = path.join(__dirname, 'fixtures/schema-schema/')
-    const files = (await fs.readdir(inDir)).map((f) => path.join(inDir, f))
-    const cli = require.resolve('../bin/cli.js')
-    const expectedSchema = require(path.join(__dirname, 'fixtures/schema-schema.ipldsch.json'))
+    const inDir = fileURLToPath(new URL('./fixtures/schema-schema/', import.meta.url))
+    const files = (await fs.promises.readdir(inDir)).map((f) => path.join(inDir, f))
+    const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
+    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch.json', import.meta.url)))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json'].concat(files))
     assert(!stderr)
@@ -128,11 +130,11 @@ describe('cli', () => {
 
   it('examples-all to-json ipldsch', async () => {
     const inFiles = [
-      path.join(__dirname, 'fixtures/examples.ipldsch'),
-      path.join(__dirname, 'fixtures/examples-adl.ipldsch')
+      fileURLToPath(new URL('./fixtures/examples.ipldsch', import.meta.url)),
+      fileURLToPath(new URL('./fixtures/examples-adl.ipldsch', import.meta.url))
     ]
-    const cli = require.resolve('../bin/cli.js')
-    const expectedSchema = require(path.join(__dirname, 'fixtures/examples-all.ipldsch.json'))
+    const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
+    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples-all.ipldsch.json', import.meta.url)))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json'].concat(inFiles))
     assert(!stderr)

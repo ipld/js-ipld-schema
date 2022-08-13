@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-const parser = require('../parser')
-const print = require('../print')
-const { transformError } = require('../util')
-const collectInput = require('./collect-input')
+import * as parser from '../parser.cjs'
+import { print } from '../print.js'
+import { transformError } from '../util.js'
+import { collectInput } from './collect-input.js'
 
 let indent = '  '
 
-async function toSchema (files, options) {
+export async function toSchema (files, options) {
   if (options.tabs) {
     indent = '\t'
   }
@@ -37,5 +37,3 @@ async function toSchema (files, options) {
 
   console.log(print(schema, indent))
 }
-
-module.exports = toSchema

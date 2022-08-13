@@ -1,14 +1,14 @@
 // A run-once script to split up schema-schema.ipldsch into a markdown file per type
 // for the purpose of test fixtures
 
-const fs = require('fs').promises
-const path = require('path')
+import fs from 'fs'
+import { fileURLToPath } from 'url'
 
 async function run () {
-  let schemaText = await fs.readFile(path.join(__dirname, 'fixtures/schema-schema.ipldsch'), 'utf8')
+  let schemaText = await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch', import.meta.url), 'utf8')
   schemaText = schemaText.split('\n')
-  const outDir = path.join(__dirname, 'fixtures/schema-schema/')
-  await fs.mkdir(outDir, { recursive: true })
+  const outDir = new URL('./fixtures/schema-schema/', import.meta.url)
+  await fs.promises.mkdir(outDir, { recursive: true })
 
   let block = []
   let inType = null
@@ -20,9 +20,9 @@ async function run () {
     }
     block[block.length - 1] = '```'
     block.push('')
-    const file = path.join(outDir, `${inType}.md`)
-    await fs.writeFile(file, block.join('\n'), 'utf8')
-    console.log('Wrote', inType, 'to', file)
+    const file = new URL(`${inType}.md`, outDir)
+    await fs.promises.writeFile(file, block.join('\n'), 'utf8')
+    console.log('Wrote', inType, 'to', fileURLToPath(file))
     block = []
     inType = null
   }

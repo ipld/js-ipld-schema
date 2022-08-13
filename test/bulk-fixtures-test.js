@@ -1,14 +1,13 @@
 /* eslint-env mocha */
 
-const fs = require('fs')
-const path = require('path')
-const yaml = require('js-yaml')
-const { parse } = require('../ipld-schema')
-const print = require('../print')
-const { assert } = require('chai')
+import fs from 'fs'
+import yaml from 'js-yaml'
+import { parse } from '../ipld-schema.js'
+import { print } from '../print.js'
+import { assert } from 'chai'
 
 describe('fixtures/bulk', () => {
-  fs.readdirSync(path.join(__dirname, 'fixtures/bulk')).forEach((f) => {
+  fs.readdirSync(new URL('./fixtures/bulk/', import.meta.url)).forEach((f) => {
     if (!f.endsWith('.yml')) {
       return
     }
@@ -36,7 +35,7 @@ describe('fixtures/bulk', () => {
 })
 
 async function loadFixture (file) {
-  const yamlContent = await fs.promises.readFile(path.join(__dirname, 'fixtures/bulk', file), 'utf8')
+  const yamlContent = await fs.promises.readFile(new URL(file, new URL('./fixtures/bulk/', import.meta.url)), 'utf8')
   const fixture = yaml.load(yamlContent)
   fixture.expected = JSON.parse(fixture.expected)
   if (fixture.blocks) {

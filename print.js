@@ -12,7 +12,7 @@ const noopHighlighter = {
   punctuation: noop
 }
 
-function print (schema, indent = '  ', highlighter = {}) {
+export function print (schema, indent = '  ', highlighter = {}) {
   if (!schema || typeof schema.types !== 'object') {
     throw new Error('Invalid schema')
   }
@@ -350,5 +350,3 @@ printTypeTerm.enum = function _enum (defn, indent, highlighter) {
   }
   return str
 }
-
-module.exports = print
