@@ -18,24 +18,30 @@ expected: |
   {
     "types": {
       "Bar": {
-        "kind": "bool"
+        "bool": {}
       },
       "Baz": {
-        "kind": "string"
+        "string": {}
       },
       "Foo": {
-        "kind": "int"
+        "int": {}
       },
       "UnionEnvelope": {
-        "kind": "union",
-        "representation": {
-          "envelope": {
-            "discriminantKey": "bim",
-            "contentKey": "bam",
-            "discriminantTable": {
-              "foo": "Foo",
-              "bar": "Bar",
-              "baz": "Baz"
+        "union": {
+          "members": [
+            "Foo",
+            "Bar",
+            "Baz"
+          ],
+          "representation": {
+            "envelope": {
+              "discriminantKey": "bim",
+              "contentKey": "bam",
+              "discriminantTable": {
+                "foo": "Foo",
+                "bar": "Bar",
+                "baz": "Baz"
+              }
             }
           }
         }

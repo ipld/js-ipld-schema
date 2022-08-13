@@ -1,13 +1,15 @@
 schema: |
-  type FileUnion union {
-    | File map
-    | &File link
-  } representation kinded
+  type Data bytes
 
   type File struct {
     name optional String
     data optional DataUnion
   }
+
+  type FileUnion union {
+    | File map
+    | &File link
+  } representation kinded
 
   type DataUnion union {
     | Data bytes
@@ -16,42 +18,66 @@ schema: |
 expected: |
   {
     "types": {
+      "Data": {
+        "bytes": {}
+      },
+      "File": {
+        "struct": {
+          "fields": {
+            "name": {
+              "type": "String",
+              "optional": true
+            },
+            "data": {
+              "type": "DataUnion",
+              "optional": true
+            }
+          },
+          "representation": {
+            "map": {}
+          }
+        }
+      },
       "FileUnion": {
-        "kind": "union",
-        "representation": {
-          "kinded": {
-            "map": "File",
-            "link": {
-              "kind": "link",
-              "expectedType": "File"
+        "union": {
+          "members": [
+            "File",
+            {
+              "link": {
+                "expectedType": "File"
+              }
+            }
+          ],
+          "representation": {
+            "kinded": {
+              "map": "File",
+              "link": {
+                "link": {
+                  "expectedType": "File"
+                }
+              }
             }
           }
         }
       },
-      "File": {
-        "kind": "struct",
-        "fields": {
-          "name": {
-            "type": "String",
-            "optional": true
-          },
-          "data": {
-            "type": "DataUnion",
-            "optional": true
-          }
-        },
-        "representation": {
-          "map": {}
-        }
-      },
       "DataUnion": {
-        "kind": "union",
-        "representation": {
-          "kinded": {
-            "bytes": "Data",
-            "link": {
-              "kind": "link",
-              "expectedType": "Data"
+        "union": {
+          "members": [
+            "Data",
+            {
+              "link": {
+                "expectedType": "Data"
+              }
+            }
+          ],
+          "representation": {
+            "kinded": {
+              "bytes": "Data",
+              "link": {
+                "link": {
+                  "expectedType": "Data"
+                }
+              }
             }
           }
         }

@@ -7,13 +7,14 @@ expected: |
   {
     "types": {
       "MapAsStringpairs": {
-        "kind": "map",
-        "keyType": "String",
-        "valueType": "String",
-        "representation": {
-          "stringpairs": {
-            "innerDelim": "=",
-            "entryDelim": ","
+        "map": {
+          "keyType": "String",
+          "valueType": "String",
+          "representation": {
+            "stringpairs": {
+              "innerDelim": "=",
+              "entryDelim": ","
+            }
           }
         }
       }

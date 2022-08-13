@@ -12,33 +12,38 @@ expected: |
   {
     "types": {
       "Bar": {
-        "kind": "map",
-        "keyType": "String",
-        "valueType": {
-          "kind": "link",
-          "expectedType": "Baz"
+        "map": {
+          "keyType": "String",
+          "valueType": {
+            "link": {
+              "expectedType": "Baz"
+            }
+          }
         }
       },
       "Baz": {
-        "kind": "struct",
-        "fields": {
-          "boom": {
-            "type": "String"
-          },
-          "foo": {
-            "type": {
-              "kind": "link",
-              "expectedType": "Foo"
+        "struct": {
+          "fields": {
+            "boom": {
+              "type": "String"
+            },
+            "foo": {
+              "type": {
+                "link": {
+                  "expectedType": "Foo"
+                }
+              }
             }
+          },
+          "representation": {
+            "map": {}
           }
-        },
-        "representation": {
-          "map": {}
         }
       },
       "Foo": {
-        "kind": "list",
-        "valueType": "Int"
+        "list": {
+          "valueType": "Int"
+        }
       }
     }
   }

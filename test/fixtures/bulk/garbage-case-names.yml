@@ -20,55 +20,83 @@ expected: |
   {
     "types": {
       "bahamas_leaks_edges_csv": {
-        "kind": "struct",
-        "fields": {
-          "node_1": {
-            "type": "BahamasNodeUnion"
+        "struct": {
+          "fields": {
+            "node_1": {
+              "type": "BahamasNodeUnion"
+            },
+            "rel_type": {
+              "type": "String"
+            },
+            "node_2": {
+              "type": "BahamasNodeUnion"
+            },
+            "sourceID": {
+              "type": "String"
+            },
+            "valid_until": {
+              "type": "String"
+            },
+            "start_date": {
+              "type": "String",
+              "optional": true
+            },
+            "end_date": {
+              "type": "String",
+              "optional": true
+            }
           },
-          "rel_type": {
-            "type": "String"
-          },
-          "node_2": {
-            "type": "BahamasNodeUnion"
-          },
-          "sourceID": {
-            "type": "String"
-          },
-          "valid_until": {
-            "type": "String"
-          },
-          "start_date": {
-            "type": "String",
-            "optional": true
-          },
-          "end_date": {
-            "type": "String",
-            "optional": true
+          "representation": {
+            "map": {}
           }
-        },
-        "representation": {
-          "map": {}
         }
       },
       "bahamasNodeUnion": {
-        "kind": "union",
-        "representation": {
-          "keyed": {
-            "address": {
-              "kind": "link",
-              "expectedType": "bahamas_leaks_nodes_address_csv"
+        "union": {
+          "members": [
+            {
+              "link": {
+                "expectedType": "bahamas_leaks_nodes_address_csv"
+              }
             },
-            "entity": {
-              "kind": "link",
-              "expectedType": "bahamas_leaks_nodes_entity_csv"
+            {
+              "link": {
+                "expectedType": "bahamas_leaks_nodes_entity_csv"
+              }
             },
-            "intermediary": {
-              "kind": "link",
-              "expectedType": "bahamas_leaks_nodes_intermediary_csv"
+            {
+              "link": {
+                "expectedType": "bahamas_leaks_nodes_intermediary_csv"
+              }
             },
-            "officer": {
-              "kind": "link",
-              "expectedType": "bahamas_leaks_nodes_officer_csv"
+            {
+              "link": {
+                "expectedType": "bahamas_leaks_nodes_officer_csv"
+              }
+            }
+          ],
+          "representation": {
+            "keyed": {
+              "address": {
+                "link": {
+                  "expectedType": "bahamas_leaks_nodes_address_csv"
+                }
+              },
+              "entity": {
+                "link": {
+                  "expectedType": "bahamas_leaks_nodes_entity_csv"
+                }
+              },
+              "intermediary": {
+                "link": {
+                  "expectedType": "bahamas_leaks_nodes_intermediary_csv"
+                }
+              },
+              "officer": {
+                "link": {
+                  "expectedType": "bahamas_leaks_nodes_officer_csv"
+                }
+              }
             }
           }
         }

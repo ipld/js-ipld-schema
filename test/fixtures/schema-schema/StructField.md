@@ -1,9 +1,9 @@
 # schema-schema: `StructField`
 
-StructField describes the properties of each field declared by a TypeStruct.
+StructField describes the properties of each field declared by a TypeDefnStruct.
 
-StructField contains properties similar to TypeMap -- namely, it describes
-a content type (as a TypeTerm -- it supports inline definitions) -- and
+StructField contains properties similar to TypeDefnMap -- namely, it describes
+a content type (as a TypeNameOrInlineDefn -- it supports inline definitions) -- and
 has a boolean property for whether or not the value is permitted to be null.
 
 In addition, StructField also has a property called "optional".
@@ -31,8 +31,8 @@ just like "nullable" fields; "implicit" fields *do not*.
 
 ```ipldsch
 type StructField struct {
-	type TypeTerm
-	optional Bool (implicit "false")
-	nullable Bool (implicit "false")
+	type TypeNameOrInlineDefn
+	optional Bool (implicit false)
+	nullable Bool (implicit false)
 }
 ```

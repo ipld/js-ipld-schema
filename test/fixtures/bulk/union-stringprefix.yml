@@ -1,35 +1,32 @@
 schema: |
-  type Flim string
-
-  type Flam string
-
-  type Bloop string
-
-  type FlimFlam union {
-    | Flim "flim:"
-    | Flam "flam:"
-    | Bloop "bloop!:"
+  type Foo string
+  type Bar string
+  type StringPrefixUnion union {
+    | Foo "foo:"
+    | Bar "bar:"
   } representation stringprefix
-root: FlimFlam
 expected: |
   {
     "types": {
-      "Flim": {
-        "kind": "string"
+      "Foo": {
+        "string": {}
       },
-      "Flam": {
-        "kind": "string"
+      "Bar": {
+        "string": {}
       },
-      "Bloop": {
-        "kind": "string"
-      },
-      "FlimFlam": {
-        "kind": "union",
-        "representation": {
-          "stringprefix": {
-            "flim:": "Flim",
-            "flam:": "Flam",
-            "bloop!:": "Bloop"
+      "StringPrefixUnion": {
+        "union": {
+          "members": [
+            "Foo",
+            "Bar"
+          ],
+          "representation": {
+            "stringprefix": {
+              "prefixes": {
+                "foo:": "Foo",
+                "bar:": "Bar"
+              }
+            }
           }
         }
       }

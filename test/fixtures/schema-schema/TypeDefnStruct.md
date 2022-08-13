@@ -1,6 +1,6 @@
-# schema-schema: `TypeStruct`
+# schema-schema: `TypeDefnStruct`
 
-TypeStruct describes a type which has a group of fields of varying Type.
+TypeDefnStruct describes a type which has a group of fields of varying Type.
 Each field has a name, which is used to access its value, similarly to
 accessing values in a map.
 
@@ -11,7 +11,7 @@ also exist).
 
 
 ```ipldsch
-type TypeStruct struct {
+type TypeDefnStruct struct {
 	fields {FieldName:StructField}
 	representation StructRepresentation
 }

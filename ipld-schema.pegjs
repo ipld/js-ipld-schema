@@ -55,7 +55,7 @@ TypeDef = _ 'type' _ name:TypeName _ definition:Definition _ {
 }
 
 AdvancedDef = _ 'advanced' _ name:TypeName _ {
-  return { [name]: { kind: 'advanced' } }
+  return { [name]: { advanced: {} } }
 }
 
 AdvancedRepresentation = name:TypeName {
@@ -71,7 +71,7 @@ Definition
   / UnionKind _ descriptor:UnionDescriptor { return descriptor }
   / StructKind _ descriptor:StructDescriptor { return descriptor }
   / BytesKind _ descriptor:BytesDescriptor { return descriptor }
-  / kind:SimpleKind { return kind }
+  / kind:SimpleKind { return { [kind]: {} } }
 
 MapKind = "map"
 ListKind = "list"
@@ -80,10 +80,10 @@ UnionKind = "union"
 StructKind = "struct"
 BytesKind = "bytes"
 
-SimpleKind = kind:BaseType { return { kind } }
+SimpleKind = kind:BaseType { return kind }
 
 ListDescriptor = "[" _ fields:TypeDescriptor _ "]" _ representation:ListRepresentation? {
-  return Object.assign({ kind: 'list' }, fields, representation ? { representation } : null)
+  return { list: Object.assign({}, fields, representation ? { representation } : null) }
 }
 
 // TODO: generalise this TypeName / MapDescriptor / ListDescriptor / LinkDescriptor combo, it's used elsewhere
@@ -92,11 +92,11 @@ TypeDescriptor = options:TypeOption* _ valueType:(TypeName / MapDescriptor / Lis
 }
 
 LinkDescriptor = "&" expectedType:TypeName {
-  return extend({ kind: 'link' }, expectedType !== 'Any' ? { expectedType } : null)
+  return { link: { expectedType } }
 }
 
 CopyDescriptor = "=" _ fromType:TypeName {
-  return { kind: 'copy', fromType }
+  return { copy: { fromType } }
 }
 
 EnumDescriptor = "{" members:EnumMember+ "}" _ representation:EnumRepresentation? _ {
@@ -105,19 +105,22 @@ EnumDescriptor = "{" members:EnumMember+ "}" _ representation:EnumRepresentation
   }
 
   const repr = members.filter((m) => Object.values(m)[0]).reduce(extend, {})
-  members = members.reduce(extend, {})
-  Object.keys(members).forEach((k) => members[k] = null)
+  members = Object.keys(members.reduce(extend, {}))
 
   if (representation.string) {
     representation.string = repr
   } else if (representation.int) {
     representation.int = repr
-    if (Object.values(repr).find((v) => parseInt(v, 10) != v)) {
-      throw new Error('int representations only support integer representation values')
-    }
+    Object.entries(repr).forEach(([k, v]) => {
+      const i = parseInt(v, 10)
+      if (i != v) {
+        throw new Error('int representations only support integer representation values')
+      }
+      repr[k] = i
+    })
   }
 
-  return { kind: 'enum', members, representation }
+  return { enum: { members, representation } }
 }
 
 EnumMember = _ "|" _ name:EnumValue _ representationOptions:EnumFieldRepresentationOptions? _ {
@@ -133,9 +136,9 @@ UnionDescriptor = "{" values:UnionValue+ "}" _ representation:UnionRepresentatio
   } else if (representation.kinded) {
     representation.kinded = fields
   } else if (representation.stringprefix) {
-    representation.stringprefix = fields
+    representation.stringprefix = { prefixes: fields }
   } else if (representation.bytesprefix) {
-    representation.bytesprefix = fields
+    representation.bytesprefix = { prefixes: fields }
   } else if (representation.inline) {
     representation.inline.discriminantTable = fields
   } else if (representation.envelope) {
@@ -143,7 +146,7 @@ UnionDescriptor = "{" values:UnionValue+ "}" _ representation:UnionRepresentatio
   } else {
     throw new Error('Unsupported union type') // we shouldn't get here if we're coded right
   }
-  return { kind: 'union', representation }
+  return { union: { members: Object.values(fields), representation } }
 }
 
 // TODO: tighten these up, kinded doesn't get quoted kinds, keyed and envelope does, this allows a kinded
@@ -158,7 +161,7 @@ MapDescriptor = "{" _ keyType:TypeName _ ":" _ valueType:TypeDescriptor _ "}" _ 
     representation = { [representationType]: representation || {} }
     delete representation[representationType].type
   }
-  return Object.assign({ kind: 'map', keyType }, valueType, representation ? { representation } : null)
+  return { map: Object.assign({ keyType }, valueType, representation ? { representation } : null) }
 }
 
 StructDescriptor = "{" _ values:StructValue* _ "}" _ representation:StructRepresentation? {
@@ -191,7 +194,7 @@ StructDescriptor = "{" _ values:StructValue* _ "}" _ representation:StructRepres
     }
     representation.map.fields = representationFields
   }
-  return extend({ kind: 'struct', fields }, { representation: representation || defaultStructRepresentation() })
+  return { struct: extend({ fields }, { representation: representation || defaultStructRepresentation() }) }
 }
 
 // TODO: break these by newline || "}" (non-greedy match)
@@ -218,8 +221,14 @@ StructFieldRepresentationOptions = "(" _ options:StructFieldRepresentationOption
 }
 
 StructFieldRepresentationOption
-  = "implicit" _ implicit:QuotedString _ { return { implicit: coerceValue(implicit) } }
+  = "implicit" _ implicit:ImplicitOption { return { implicit } }
   / "rename" _ rename:QuotedString _ { return { rename } }
+
+ImplicitOption
+  = implicit:QuotedString _ { return implicit }
+  / implicit:Integer _ { return parseInt(implicit, 10) }
+  / "true" { return true }
+  / "false" { return false }
 
 UnionRepresentation = "representation" _ representation:UnionRepresentationType _ {
   return representation
@@ -326,7 +335,7 @@ EnumRepresentationType
   = "string" { return { string: {} } }
   / "int" { return { int: {} } }
 
-BytesDescriptor = "representation" _ "advanced" _ representation:AdvancedRepresentation { return { kind: 'bytes', representation } }
+BytesDescriptor = "representation" _ "advanced" _ representation:AdvancedRepresentation { return { bytes: { representation } } }
 
 QuotedStringArray = "[" _ firstElement:QuotedString? subsequentElements:(_ "," _ s:QuotedString _ { return s })* _ "]" {
   if (!firstElement) {
@@ -358,6 +367,7 @@ BaseType
 	/ "list"
 	/ "link"
 	/ "null"
+	/ "any"
 
 __
   = whitespace+

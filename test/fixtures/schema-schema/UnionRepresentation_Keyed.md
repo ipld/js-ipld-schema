@@ -10,5 +10,5 @@ performance characteristics, as they have most "mechanical sympathy" with
 parsing and deserialization implementation order.
 
 ```ipldsch
-type UnionRepresentation_Keyed {String:TypeName}
+type UnionRepresentation_Keyed {String:UnionMember}
 ```

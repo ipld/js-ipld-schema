@@ -1,13 +1,12 @@
 # schema-schema: `Schema`
 
-Schema is a single-member union, which can be used in serialization
-to make a form of "nominative type declaration".
+Schema is a the root element of an IPLD Schema document.
 
 A complete (if quite short) Schema might look like this:
 
 ```
 {
-  "schema": {
+  "types": {
     "MyFooType": {
       "type": "string"
     }
@@ -15,10 +14,18 @@ A complete (if quite short) Schema might look like this:
 }
 ```
 
+The main bulk of a schema is the types map,
+which is TypeName mapped to TypeDefn.
+
+Some additional top level fields are optional,
+such as some maps which may store data about where ADLs
+should be expected to be used within the data described by the schema.
+However, not all schemas use these features.
+
 
 ```ipldsch
 type Schema struct {
-	types SchemaMap
-	advanced AdvancedDataLayoutMap
+	types {TypeName:TypeDefn}
+	advanced optional AdvancedDataLayoutMap
 }
 ```

@@ -11,22 +11,23 @@ expected: |
   {
     "types": {
       "StructAsStringpairs": {
-        "kind": "struct",
-        "fields": {
-          "foo": {
-            "type": "Int"
+        "struct": {
+          "fields": {
+            "foo": {
+              "type": "Int"
+            },
+            "bar": {
+              "type": "Bool"
+            },
+            "baz": {
+              "type": "String"
+            }
           },
-          "bar": {
-            "type": "Bool"
-          },
-          "baz": {
-            "type": "String"
-          }
-        },
-        "representation": {
-          "stringpairs": {
-            "innerDelim": "=",
-            "entryDelim": ","
+          "representation": {
+            "stringpairs": {
+              "innerDelim": "=",
+              "entryDelim": ","
+            }
           }
         }
       }
