@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-const print = require('../print')
-const collectInput = require('./collect-input')
+import { print } from '../print.js'
+import { collectInput } from './collect-input.js'
 
 let indent = '  '
 
-async function toSchema (files, options) {
+export async function jsonToSchema (files, options) {
   if (options.tabs) {
     indent = '\t'
   }
@@ -17,5 +17,3 @@ async function toSchema (files, options) {
     console.log(print(schema, indent))
   }
 }
-
-module.exports = toSchema

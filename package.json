@@ -3,12 +3,21 @@
   "version": "2.0.2",
   "description": "IPLD Schema parser and CLI utilities for JavaScript",
   "main": "./ipld-schema.js",
+  "type": "module",
   "types": "./types.d.ts",
   "scripts": {
-    "peg": "npm_config_yes=true npx pegjs -o parser.js ipld-schema.pegjs",
+    "peg": "npm_config_yes=true npx pegjs -o parser.cjs ipld-schema.pegjs",
     "lint": "standard *.js test/*.js bin/*.js",
     "test": "npm run lint && mocha test/*-test.js",
     "coverage": "c8 --reporter=html --reporter=text mocha test/test-*.js && npx st -d coverage -p 8888"
+  },
+  "exports": {
+    ".": {
+      "import": "./ipld-schema.js"
+    },
+    "./print.js": {
+      "import": "./print.js"
+    }
   },
   "bin": {
     "ipld-schema": "bin/cli.js"

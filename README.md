@@ -9,7 +9,7 @@ For validation of JavaScript object forms against an IPLD schema, see [ipld-sche
 ## Usage
 
 ```js
-const { parse } = require('ipld-schema')
+import { parse } from 'ipld-schema'
 
 let schema = parse(`
   type SimpleStruct struct {
@@ -25,17 +25,27 @@ console.dir(schema, { depth: Infinity })
 // →
 // {
 //   SimpleStruct: {
-//     kind: 'struct',
-//     fields: {
-//       foo: { type: 'Int' },
-//       bar: { type: 'Bool' },
-//       baz: { type: 'String' }
-//     },
-//     representation: { map: {} }
+//     struct: {
+//       fields: {
+//         foo: { type: 'Int' },
+//         bar: { type: 'Bool' },
+//         baz: { type: 'String' }
+//       },
+//       representation: { map: {} }
+//     }
 //   },
-//   MyMap: { kind: 'map', keyType: 'String', valueType: 'SimpleStruct' }
+//   MyMap: { map: { keyType: 'String', valueType: 'SimpleStruct' } }
 // }
 ```
+
+You can also convert the parsed form back to DSL form with the `print` function:
+
+```js
+import { print } from 'ipld-schema/print.js'
+
+console.log(print(schema))
+```
+
 
 ## Command line
 
@@ -80,26 +90,28 @@ $ ipld-schema to-json simple-struct.ipldsch
 {
   "schema": {
     "SimpleStruct": {
-      "kind": "struct",
-      "fields": {
-        "foo": {
-          "type": "Int"
+      "struct": {
+        "fields": {
+          "foo": {
+            "type": "Int"
+          },
+          "bar": {
+            "type": "Bool"
+          },
+          "baz": {
+            "type": "String"
+          }
         },
-        "bar": {
-          "type": "Bool"
-        },
-        "baz": {
-          "type": "String"
+        "representation": {
+          "map": {}
         }
-      },
-      "representation": {
-        "map": {}
       }
     },
     "MyMap": {
-      "kind": "map",
-      "keyType": "String",
-      "valueType": "SimpleStruct"
+      "map": {
+        "keyType": "String",
+        "valueType": "SimpleStruct"
+      }
     }
   }
 }

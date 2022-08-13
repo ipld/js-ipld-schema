@@ -1,8 +1,8 @@
-const parser = require('../parser')
-const { transformError } = require('../util')
-const collectInput = require('./collect-input')
+import * as parser from '../parser.cjs'
+import { transformError } from '../util.js'
+import { collectInput } from './collect-input.js'
 
-async function validate (files) {
+export async function validate (files) {
   const input = await collectInput(files)
 
   for (const { filename, contents } of input) {
@@ -15,5 +15,3 @@ async function validate (files) {
     console.error(`Validated ${filename} ...`)
   }
 }
-
-module.exports = validate

@@ -1,13 +1,12 @@
 /* eslint-env mocha */
 
-const fs = require('fs/promises')
-const path = require('path')
-const { parse } = require('../ipld-schema')
-const { assert } = require('chai')
+import fs from 'fs'
+import { parse } from '../ipld-schema.js'
+import { assert } from 'chai'
 
 it('schema-schema', async () => {
-  const schemaText = await fs.readFile(path.join(__dirname, 'fixtures/schema-schema.ipldsch'), 'utf8')
+  const schemaText = await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch', import.meta.url), 'utf8')
   const schema = parse(schemaText)
-  const expectedSchema = require(path.join(__dirname, 'fixtures/schema-schema.ipldsch.json'))
+  const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch.json', import.meta.url)))
   assert.deepStrictEqual(schema, expectedSchema)
 })

@@ -1,5 +1,5 @@
-const getStdin = require('get-stdin')
-const fs = require('fs').promises
+import getStdin from 'get-stdin'
+import fs from 'fs'
 
 function stripMarkdown (str) {
   str = str.split('\n')
@@ -26,10 +26,10 @@ function stripMarkdown (str) {
 }
 
 async function read (filename) {
-  return fs.readFile(filename, 'utf8')
+  return fs.promises.readFile(filename, 'utf8')
 }
 
-async function collectInput (files) {
+export async function collectInput (files) {
   let input = []
 
   if (!files.length) {
@@ -60,5 +60,3 @@ async function collectInput (files) {
 
   return input
 }
-
-module.exports = collectInput

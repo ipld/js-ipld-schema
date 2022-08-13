@@ -1,12 +1,10 @@
-const parser = require('./parser')
-const { transformError } = require('./util')
+import * as parser from './parser.cjs'
+import { transformError } from './util.js'
 
-function parse (text) {
+export function parse (text) {
   try {
     return parser.parse(text)
   } catch (err) {
     throw transformError(err)
   }
 }
-
-module.exports.parse = parse

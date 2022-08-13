@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-const parser = require('../parser')
-const { transformError } = require('../util')
-const collectInput = require('./collect-input')
+import * as parser from '../parser.cjs'
+import { transformError } from '../util.js'
+import { collectInput } from './collect-input.js'
 
 let indent = '  '
 
-async function toJSON (files, options) {
+export async function toJSON (files, options) {
   if (options.tabs) {
     indent = '\t'
   }
@@ -46,5 +46,3 @@ async function toJSON (files, options) {
 
   console.log(JSON.stringify(schema, null, indent))
 }
-
-module.exports = toJSON

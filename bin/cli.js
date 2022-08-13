@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
-const validate = require('./validate')
-const toJSON = require('./to-json')
-const toSchema = require('./to-schema')
-const jsonToSchema = require('./json-to-schema')
+import { validate } from './validate.js'
+import { toJSON } from './to-json.js'
+import { toSchema } from './to-schema.js'
+import { jsonToSchema } from './json-to-schema.js'
+import _yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
 
 const toOpts = {
   tabs: {
@@ -13,7 +15,7 @@ const toOpts = {
   }
 }
 
-const yargs = require('yargs')
+const yargs = _yargs(hideBin(process.argv))
   .scriptName('ipld-schema')
   .usage('$0 <cmd> [args]')
   .command('validate',
