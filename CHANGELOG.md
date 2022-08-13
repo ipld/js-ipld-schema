@@ -1,3 +1,28 @@
+## [3.0.0](https://github.com/rvagg/js-ipld-schema/compare/v2.0.2...v3.0.0) (2022-08-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* convert to ESM-only
+* adapt to latest major upstream spec changes
+
+### Features
+
+* convert to ESM-only ([2a86b2e](https://github.com/rvagg/js-ipld-schema/commit/2a86b2e7635e27ec611aef7d933714e3865a6605))
+
+
+### Bug Fixes
+
+* adapt to latest major upstream spec changes ([f3f70ca](https://github.com/rvagg/js-ipld-schema/commit/f3f70ca300ccc935b8c66ab71607f05119f0036d)), closes [#45](https://github.com/rvagg/js-ipld-schema/issues/45)
+
+
+### Trivial Changes
+
+* **no-release:** bump actions/setup-node from 3.1.1 to 3.2.0 ([#62](https://github.com/rvagg/js-ipld-schema/issues/62)) ([a25f92a](https://github.com/rvagg/js-ipld-schema/commit/a25f92ab32b675430baa2b7c9262ead906504224))
+* **no-release:** bump actions/setup-node from 3.2.0 to 3.3.0 ([#63](https://github.com/rvagg/js-ipld-schema/issues/63)) ([358ba3f](https://github.com/rvagg/js-ipld-schema/commit/358ba3f785265f65af70d9651f2a76c4653eaa5e))
+* **no-release:** bump actions/setup-node from 3.3.0 to 3.4.0 ([#64](https://github.com/rvagg/js-ipld-schema/issues/64)) ([f8b83cd](https://github.com/rvagg/js-ipld-schema/commit/f8b83cda5f9552bc2d083746b8f3875397aed523))
+* **no-release:** bump actions/setup-node from 3.4.0 to 3.4.1 ([#65](https://github.com/rvagg/js-ipld-schema/issues/65)) ([216dd76](https://github.com/rvagg/js-ipld-schema/commit/216dd76b790ac906d13d27544eb81387055b13cc))
+
 ### [2.0.2](https://github.com/rvagg/js-ipld-schema/compare/v2.0.1...v2.0.2) (2022-05-02)
 
 
