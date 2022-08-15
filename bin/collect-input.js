@@ -29,6 +29,10 @@ async function read (filename) {
   return fs.promises.readFile(filename, 'utf8')
 }
 
+/**
+ * @param {string[]} files
+ * @returns {{ filename: string, contents }[]}
+ */
 export async function collectInput (files) {
   let input = []
 
