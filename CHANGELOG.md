@@ -1,3 +1,10 @@
+## [3.0.2](https://github.com/rvagg/js-ipld-schema/compare/v3.0.1...v3.0.2) (2022-08-15)
+
+
+### Bug Fixes
+
+* update deps ([8fb783d](https://github.com/rvagg/js-ipld-schema/commit/8fb783d2c2d083f799d781cdace0cc26709b1ff2))
+
 ## [3.0.1](https://github.com/rvagg/js-ipld-schema/compare/v3.0.0...v3.0.1) (2022-08-15)
 
 
