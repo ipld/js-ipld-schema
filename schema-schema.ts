@@ -10,28 +10,44 @@ export type KindLink = {}
 export type KindUnion = {}
 export type KindStruct = {}
 export type KindEnum = {}
-export type TypeBool = { kind: "bool" }
-export type TypeString = { kind: "string" }
-export type TypeBytes = {
-  kind: "bytes"
-  representation?: BytesRepresentation
+
+export type TypeDefn =
+    { bool: TypeDefnBool }
+  | { string: TypeDefnString }
+  | { bytes: TypeDefnBytes }
+  | { int: TypeDefnInt }
+  | { float: TypeDefnFloat }
+  | { map: TypeDefnMap }
+  | { list: TypeDefnList }
+  | { link: TypeDefnLink }
+  | { union: TypeDefnUnion }
+  | { struct: TypeDefnStruct }
+  | { enum: TypeDefnEnum }
+  | { unit: TypeDefnUnit }
+  | { any: TypeDefnAny }
+  | { copy: TypeDefnCopy }
+  | { null: TypeDefnNull } // TODO: not in schema-schema, what do?
+
+export type TypeDefnBool = {}
+export type TypeDefnString = {}
+export type TypeDefnBytes = {
+  representation?: BytesRepresentation // TODO: not optional in schema-schema
 }
 export type BytesRepresentation =
     { bytes: BytesRepresentation_Bytes }
   | { advanced: AdvancedDataLayoutName }
 export type BytesRepresentation_Bytes = {}
-export type TypeInt = { kind: "int" }
-export type TypeFloat = { kind: "float" }
-export type TypeNull = { kind: "null" }
-export type TypeMap = {
-  kind: "map"
+export type TypeDefnInt = {}
+export type TypeDefnFloat = {}
+export type TypeDefnNull = {} // TODO: not in schema-schema, what do?
+export type TypeDefnMap = {
   keyType: TypeName
-  valueType: TypeTerm
+  valueType: TypeNameOrInlineDefn
   valueNullable?: KindBool
   representation?: MapRepresentation
 }
 export type MapRepresentation =
-    { map: MapRepresentation_Map }
+    { map: MapRepresentation_Map } // TODO: not in schema-schema - put it there
   | { stringpairs: MapRepresentation_StringPairs }
   | { listpairs: MapRepresentation_ListPairs }
   | { advanced: AdvancedDataLayoutName }
@@ -41,24 +57,27 @@ export type MapRepresentation_StringPairs = {
   entryDelim: KindString
 }
 export type MapRepresentation_ListPairs = {}
-export type TypeList = {
-  kind: "list"
-  valueType: TypeTerm
+export type TypeDefnList = {
+  valueType: TypeNameOrInlineDefn
   valueNullable?: KindBool
   representation?: ListRepresentation
 }
 export type ListRepresentation =
-    { list: ListRepresentation_List }
+    { list: ListRepresentation_List } // TODO: not in schema-schema - put it there?
   | { advanced: AdvancedDataLayoutName }
 export type ListRepresentation_List = {}
-export type TypeLink = {
-  kind: "link"
+export type TypeDefnLink = {
   expectedType?: KindString
 }
-export type TypeUnion = {
-  kind: "union"
+export type TypeDefnUnion = {
+  members: UnionMember[]
   representation: UnionRepresentation
 }
+export type UnionMember =
+    TypeName
+  | UnionMemberInlineDefn
+export type UnionMemberInlineDefn =
+    { link: TypeDefnLink }
 export type UnionRepresentation =
     { kinded: UnionRepresentation_Kinded }
   | { keyed: UnionRepresentation_Keyed }
@@ -66,38 +85,37 @@ export type UnionRepresentation =
   | { inline: UnionRepresentation_Inline }
   | { stringprefix: UnionRepresentation_StringPrefix }
   | { bytesprefix: UnionRepresentation_BytesPrefix }
-export type UnionRepresentation_Kinded = { [k in RepresentationKind]?: KindedType }
-export type KindedType = TypeName | TypeLink
-export type UnionRepresentation_Keyed = { [k in KindString]: TypeName }
+export type UnionRepresentation_Kinded = { [k in RepresentationKind]?: UnionMember }
+export type UnionRepresentation_Keyed = { [k in KindString]: UnionMember }
 export type UnionRepresentation_Envelope = {
   discriminantKey: KindString
   contentKey: KindString
-  discriminantTable: { [ k in KindString]: TypeName }
+  discriminantTable: { [ k in KindString]: UnionMember }
 }
 export type UnionRepresentation_Inline = {
   discriminantKey: KindString
-  discriminantTable: { [ k in KindString]: TypeName }
+  discriminantTable: { [ k in HexString]: TypeName }
 }
+export type HexString = string
 export type UnionRepresentation_StringPrefix = { [ k in KindString]: TypeName }
 export type UnionRepresentation_BytesPrefix = { [ k in KindString]: TypeName }
-export type TypeStruct = {
-  kind: "struct"
+export type TypeDefnStruct = {
   fields: { [ k in FieldName]: StructField }
   representation?: StructRepresentation
 }
 export type FieldName = string
 export type StructField = {
-  type: TypeTerm
+  type: TypeNameOrInlineDefn
   optional?: KindBool
   nullable?: KindBool
 }
-export type TypeTerm =
+export type TypeNameOrInlineDefn =
     TypeName
   | InlineDefn
 export type InlineDefn =
-    TypeMap
-  | TypeList
-  | TypeLink
+    { map: TypeDefnMap }
+  | { list: TypeDefnList }
+  | { link: TypeDefnLink }
 export type StructRepresentation =
     { map: StructRepresentation_Map }
   | { tuple: StructRepresentation_Tuple }
@@ -123,41 +141,36 @@ export type StructRepresentation_StringJoin = {
   fieldOrder?: FieldName[]
 }
 export type StructRepresentation_ListPairs = {}
-export type TypeEnum = {
-  kind: "enum"
-  members: { [ k in EnumValue]: KindNull }
+export type TypeDefnEnum = {
+  members: EnumMember[]
   representation: EnumRepresentation
 }
-export type EnumValue = string
+export type EnumMember = string
 export type EnumRepresentation =
     { string: EnumRepresentation_String }
   | { int: EnumRepresentation_Int }
-export type EnumRepresentation_String = { [ k in EnumValue]: KindString }
-export type EnumRepresentation_Int = { [ k in EnumValue]: KindInt }
-export type TypeCopy = {
-  kind: "copy"
+export type EnumRepresentation_String = { [ k in EnumMember]: KindString }
+export type EnumRepresentation_Int = { [ k in EnumMember]: KindInt }
+export type TypeDefnCopy = {
   fromType: TypeName
 }
-export type TypeName = string
-export type SchemaMap = { [ k in TypeName]: Type }
-export type AdvancedDataLayoutName = string
-export type Schema = {
-  types: SchemaMap
+export type TypeDefnUnit = {
+  representation: UnitRepresentation
 }
-export type Type =
-    TypeBool
-  | TypeString
-  | TypeBytes
-  | TypeInt
-  | TypeFloat
-  | TypeNull
-  | TypeMap
-  | TypeList
-  | TypeLink
-  | TypeUnion
-  | TypeStruct
-  | TypeEnum
-  | TypeCopy
+export type UnitRepresentation =
+    "null"
+  | "true"
+  | "false"
+  | "emptymap"
+export type TypeDefnAny = {}
+export type TypeName = string
+export type Schema = {
+  types: { [ k in TypeName]: TypeDefn }
+  advanced?: AdvancedDataLayoutMap
+}
+export type AdvancedDataLayoutName = string
+export type AdvancedDataLayoutMap = { [ k in AdvancedDataLayoutName ]: AdvancedDataLayout }
+export type AdvancedDataLayout = {}
 export type TypeKind =
     KindBool
   | KindString
@@ -176,7 +189,7 @@ export type RepresentationKind =
   | "bytes"
   | "int"
   | "float"
-  | "null"
+  | "null" // TODO: not in schema-schema, wot do?
   | "map"
   | "list"
   | "link"
