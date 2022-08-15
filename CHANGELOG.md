@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/rvagg/js-ipld-schema/compare/v3.0.0...v3.0.1) (2022-08-15)
+
+
+### Bug Fixes
+
+* update schema-schema types ([33db763](https://github.com/rvagg/js-ipld-schema/commit/33db763ca9d369aa9fa75c9d19ef1878583ef5a8))
+
 ## [3.0.0](https://github.com/rvagg/js-ipld-schema/compare/v2.0.2...v3.0.0) (2022-08-13)
 
 
