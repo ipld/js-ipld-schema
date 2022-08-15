@@ -35,8 +35,8 @@
     "url": "https://github.com/rvagg/js-ipld-schema.git"
   },
   "dependencies": {
-    "get-stdin": "^8.0.0",
-    "yargs": "^17.0.1"
+    "get-stdin": "^9.0.0",
+    "yargs": "^17.5.1"
   },
   "standard": {
     "ignore": [

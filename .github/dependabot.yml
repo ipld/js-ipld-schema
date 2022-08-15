@@ -11,9 +11,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    ignore:
-      # ^9 switched to ESM-only, we need to migrate here first
-      - dependency-name: "get-stdin"
     commit-message:
       prefix: "chore"
       include: "scope"
