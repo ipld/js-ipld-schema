@@ -1,12 +1,17 @@
 #!/usr/bin/env node
 
-import * as parser from '../parser.cjs'
-import { print } from '../print.js'
-import { transformError } from '../util.js'
+import * as parser from '../lib/parser.cjs'
+import { toDSL } from '../lib/to-dsl.js'
+import { transformError } from '../lib/util.js'
 import { collectInput } from './collect-input.js'
 
 let indent = '  '
 
+/**
+ * @param {string[]} files
+ * @param {{tabs?:boolean}} options
+ * @returns
+ */
 export async function toSchema (files, options) {
   if (options.tabs) {
     indent = '\t'
@@ -30,10 +35,11 @@ export async function toSchema (files, options) {
         }
       }
     } catch (err) {
+      // @ts-ignore
       console.error(`Error parsing ${filename}: ${transformError(err).message}`)
       process.exit(1)
     }
   }
 
-  console.log(print(schema, indent))
+  console.log(toDSL(schema, indent))
 }

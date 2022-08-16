@@ -29,12 +29,15 @@ export type TypeDefn =
   | { null: TypeDefnNull } // TODO: not in schema-schema, what do?
 
 export type TypeDefnBool = {}
-export type TypeDefnString = {}
+export type TypeDefnString = {
+  representation?: StringRepresentation // TODO: not in schema-schema
+}
+export type StringRepresentation = { advanced: AdvancedDataLayoutName } // TODO: does it need a {string}
 export type TypeDefnBytes = {
   representation?: BytesRepresentation // TODO: not optional in schema-schema
 }
 export type BytesRepresentation =
-    { bytes: BytesRepresentation_Bytes }
+    { bytes: BytesRepresentation_Bytes } // TODO: does this make sense? or is default good enough?
   | { advanced: AdvancedDataLayoutName }
 export type BytesRepresentation_Bytes = {}
 export type TypeDefnInt = {}
@@ -85,7 +88,9 @@ export type UnionRepresentation =
   | { inline: UnionRepresentation_Inline }
   | { stringprefix: UnionRepresentation_StringPrefix }
   | { bytesprefix: UnionRepresentation_BytesPrefix }
-export type UnionRepresentation_Kinded = { [k in RepresentationKind]?: UnionMember }
+
+// TODO: schema-schema has UnionMember instead of TypeName here but we need a name for the map
+export type UnionRepresentation_Kinded = { [k in RepresentationKind]?: TypeName }
 export type UnionRepresentation_Keyed = { [k in KindString]: UnionMember }
 export type UnionRepresentation_Envelope = {
   discriminantKey: KindString
@@ -122,6 +127,7 @@ export type StructRepresentation =
   | { stringpairs: StructRepresentation_StringPairs }
   | { stringjoin: StructRepresentation_StringJoin }
   | { listpairs: StructRepresentation_ListPairs }
+  | { advanced: AdvancedDataLayoutName } // TODO: not on schema-schema
 export type StructRepresentation_Map = {
   fields?: { [ k in FieldName]: StructRepresentation_Map_FieldDetails }
 }

@@ -4,22 +4,29 @@
   "description": "IPLD Schema parser and CLI utilities for JavaScript",
   "main": "./ipld-schema.js",
   "type": "module",
-  "types": "./types.d.ts",
   "scripts": {
-    "peg": "npm_config_yes=true npx pegjs -o parser.cjs ipld-schema.pegjs",
-    "lint": "standard *.js test/*.js bin/*.js",
-    "test": "npm run lint && mocha test/*-test.js",
+    "build": "npm run build:types",
+    "build:types": "tsc --build",
+    "prepublishOnly": "npm run build",
+    "peg": "echo '// @ts-nocheck' > lib/parser.cjs && npm_config_yes=true npx pegjs -o tmp.cjs ipld-schema.pegjs && cat tmp.cjs >> lib/parser.cjs && rm tmp.cjs",
+    "lint": "standard",
+    "test:node": "c8 --check-coverage --exclude=lib/parser.cjs --exclude=test/** mocha test/test-*.js",
+    "test:browser": "polendina --cleanup --webpack-config test/webpack.config.js test/test-typed-*.js",
+    "test": "npm run lint && npm run build && npm run test:node && npm run test:browser",
     "coverage": "c8 --reporter=html --reporter=text mocha test/test-*.js && npx st -d coverage -p 8888"
   },
   "exports": {
-    ".": {
-      "import": "./ipld-schema.js"
-    },
-    "./print.js": {
-      "import": "./print.js"
+    "./to-dsl.js": {
+      "import": "./lib/to-dsl.js"
     },
     "./bin/collect-input.js": {
       "import": "./bin/collect-input.js"
+    },
+    "./from-dsl.js": {
+      "import": "./lib/from-dsl.js"
+    },
+    "./typed.js": {
+      "import": "./lib/typed.js"
     }
   },
   "bin": {
@@ -28,23 +35,52 @@
   "author": "Rod <r@va.gg> (http://r.va.gg/)",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@types/chai": "^4.3.3",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^18.7.3",
+    "c8": "^7.12.0",
     "chai": "^4.3.4",
     "js-yaml": "^4.1.0",
     "mocha": "^10.0.0",
-    "standard": "^17.0.0"
+    "polendina": "^3.1.0",
+    "standard": "^17.0.0",
+    "typescript": "^4.7.4"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/rvagg/js-ipld-schema.git"
   },
   "dependencies": {
+    "@types/yargs": "^17.0.11",
     "get-stdin": "^9.0.0",
     "yargs": "^17.5.1"
   },
   "standard": {
     "ignore": [
-      "parser.js"
+      "parser.cjs"
     ]
+  },
+  "typesVersions": {
+    "*": {
+      "./to-dsl.js": [
+        "./lib/to-dsl.js"
+      ],
+      "./bin/collect-input.js": [
+        "./bin/collect-input.js"
+      ],
+      "./from-dsl.js": [
+        "./lib/from-dsl.js"
+      ],
+      "./typed.js": [
+        "./lib/typed.js"
+      ],
+      "*": [
+        "types/*"
+      ],
+      "types/*": [
+        "types/*"
+      ]
+    }
   },
   "release": {
     "branches": [
