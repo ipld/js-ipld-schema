@@ -1,8 +1,12 @@
 import getStdin from 'get-stdin'
 import fs from 'fs'
 
-function stripMarkdown (str) {
-  str = str.split('\n')
+/**
+ * @param {string} strInp
+ * @returns {string}
+ */
+function stripMarkdown (strInp) {
+  const str = strInp.split('\n')
   const stripped = []
   let inBlock = false
   let blockCount = 0
@@ -25,13 +29,17 @@ function stripMarkdown (str) {
   return blockCount ? stripped.join('\n') : ''
 }
 
+/**
+ * @param {string} filename
+ * @returns {Promise<string>}
+ */
 async function read (filename) {
   return fs.promises.readFile(filename, 'utf8')
 }
 
 /**
  * @param {string[]} files
- * @returns {{ filename: string, contents }[]}
+ * @returns {Promise<{ filename: string, contents: string }[]>}
  */
 export async function collectInput (files) {
   let input = []

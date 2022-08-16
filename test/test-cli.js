@@ -13,7 +13,7 @@ describe('cli', () => {
   it('examples to-json ipldsch', async () => {
     const inFile = fileURLToPath(new URL('./fixtures/examples.ipldsch', import.meta.url))
     const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
-    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples.ipldsch.json', import.meta.url)))
+    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples.ipldsch.json', import.meta.url), 'utf8'))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', inFile])
     assert(!stderr)
@@ -29,7 +29,7 @@ describe('cli', () => {
   it('examples-adl to-json ipldsch', async () => {
     const inFile = fileURLToPath(new URL('./fixtures/examples-adl.ipldsch', import.meta.url))
     const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
-    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples-adl.ipldsch.json', import.meta.url)))
+    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples-adl.ipldsch.json', import.meta.url), 'utf8'))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', inFile])
     assert(!stderr)
@@ -40,7 +40,7 @@ describe('cli', () => {
   it('examples to-json md', async () => {
     const inFile = fileURLToPath(new URL('./fixtures/examples.ipldsch.md', import.meta.url))
     const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
-    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples.ipldsch.json', import.meta.url)))
+    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples.ipldsch.json', import.meta.url), 'utf8'))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', inFile])
     assert(!stderr)
@@ -79,8 +79,11 @@ describe('cli', () => {
       await execFileP(process.execPath, [cli, 'validate', inFile])
     } catch (err) {
       failed = true
+      // @ts-ignore
       assert(err.message.includes(inFile))
+      // @ts-ignore
       assert(!err.stdout)
+      // @ts-ignore
       assert(err.stderr.includes(inFile))
     } finally {
       await fs.promises.unlink(inFile)
@@ -106,7 +109,7 @@ describe('cli', () => {
     const inDir = fileURLToPath(new URL('./fixtures/schema-schema/', import.meta.url))
     const files = (await fs.promises.readdir(inDir)).map((f) => path.join(inDir, f))
     const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
-    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch.json', import.meta.url)))
+    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch.json', import.meta.url), 'utf8'))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json'].concat(files))
     assert(!stderr)
@@ -119,7 +122,7 @@ describe('cli', () => {
     const inDir = fileURLToPath(new URL('./fixtures/schema-schema/', import.meta.url))
     const files = (await fs.promises.readdir(inDir)).map((f) => path.join(inDir, f))
     const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
-    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch.json', import.meta.url)))
+    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch.json', import.meta.url), 'utf8'))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json'].concat(files))
     assert(!stderr)
@@ -134,7 +137,7 @@ describe('cli', () => {
       fileURLToPath(new URL('./fixtures/examples-adl.ipldsch', import.meta.url))
     ]
     const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
-    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples-all.ipldsch.json', import.meta.url)))
+    const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples-all.ipldsch.json', import.meta.url), 'utf8'))
 
     const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json'].concat(inFiles))
     assert(!stderr)

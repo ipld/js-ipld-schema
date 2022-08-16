@@ -22,25 +22,34 @@ const yargs = _yargs(hideBin(process.argv))
     'Accepts .ipldsch and .md files, if none are passed will read from stdin, returns exit code 0 on successful validation')
   .command('to-json',
     'Accepts .ipldsch files, if none are passed will read from stdin, prints the JSON form of the schema',
+    // @ts-ignore
     toOpts)
   .command('to-schema',
     'Accepts .ipldsch and .md files, if none are passed will read from stdin, prints the canonical IPLD Schema form of the schema',
+    // @ts-ignore
     toOpts)
   .command('json-to-schema',
     'Accepts .json files, if none are passed will read from stdin, prints the canonical IPLD Schema form of the schema represented by the JSON',
+    // @ts-ignore
     toOpts)
   .showHelpOnFail(true)
   .demandCommand(1, 'must provide a valid command')
   .help()
 
+/**
+ * @param {(s:string[], o:{tabs?:boolean})=>Promise<void>} fn
+ */
 function runCommand (fn) {
+  // @ts-ignore
   const args = yargs.argv._.slice(1)
+  // @ts-ignore
   fn(args, yargs.argv).catch((err) => {
     console.error(err)
     process.exit(1)
   })
 }
 
+// @ts-ignore
 switch (yargs.argv._[0]) {
   case 'validate':
     runCommand(validate)

@@ -229,6 +229,7 @@ ImplicitOption
   / implicit:Integer _ { return parseInt(implicit, 10) }
   / "true" { return true }
   / "false" { return false }
+  // TODO: floats and bytes
 
 UnionRepresentation = "representation" _ representation:UnionRepresentationType _ {
   return representation

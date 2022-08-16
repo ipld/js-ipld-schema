@@ -5,19 +5,19 @@ import fs from 'fs'
 import { fileURLToPath } from 'url'
 
 async function run () {
-  let schemaText = await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch', import.meta.url), 'utf8')
-  schemaText = schemaText.split('\n')
+  const schemaTextFull = await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch', import.meta.url), 'utf8')
+  const schemaText = schemaTextFull.split('\n')
   const outDir = new URL('./fixtures/schema-schema/', import.meta.url)
   await fs.promises.mkdir(outDir, { recursive: true })
 
+  /** @type {string[]} */
   let block = []
+  /** @type {null|string} */
   let inType = null
+  /** @type {boolean} */
   let head = true
 
   async function writeBlock () {
-    if (block[block.length - 1]) {
-      block.push(null)
-    }
     block[block.length - 1] = '```'
     block.push('')
     const file = new URL(`${inType}.md`, outDir)
@@ -39,6 +39,9 @@ async function run () {
       block.push('')
       block.push('```ipldsch')
       const title = line.match(/^type ([A-Z]\w+)/)
+      if (title == null) {
+        throw new Error('Malformed schema-schema')
+      }
       block.unshift(`# schema-schema: \`${title[1]}\``)
     } else if (inType && line.startsWith('#')) {
       await writeBlock()

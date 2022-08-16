@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": false,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictFunctionTypes": false,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "strictBindCallApply": true,
+    "strict": true,
+    "alwaysStrict": true,
+    "esModuleInterop": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "types",
+    "skipLibCheck": true,
+    "stripInternal": true,
+    "resolveJsonModule": true,
+    "emitDeclarationOnly": true,
+    "baseUrl": ".",
+    "paths": {
+      "ipld-schema/to-dsl.js": [ "lib/to-dsl.js" ],
+      "ipld-schema/from-dsl.js": [ "lib/from-dsl.js" ],
+      "ipld-schema/typed.js": [ "lib/typed.js" ]
+    }
+  },
+  "exclude": [
+    "parser.cjs",
+    "node_modules",
+    "types"
+  ],
+  "compileOnSave": false
+}

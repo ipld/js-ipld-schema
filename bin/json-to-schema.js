@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 
-import { print } from '../print.js'
+import { toDSL } from 'ipld-schema/to-dsl.js'
 import { collectInput } from './collect-input.js'
 
 let indent = '  '
 
+/**
+ * @param {string[]} files
+ * @param {{tabs?:boolean}} options
+ * @returns
+ */
 export async function jsonToSchema (files, options) {
   if (options.tabs) {
     indent = '\t'
@@ -14,6 +19,6 @@ export async function jsonToSchema (files, options) {
 
   for (const { contents } of input) {
     const schema = JSON.parse(contents)
-    console.log(print(schema, indent))
+    console.log(toDSL(schema, indent))
   }
 }
