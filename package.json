@@ -17,6 +17,9 @@
     },
     "./print.js": {
       "import": "./print.js"
+    },
+    "./bin/collect-input.js": {
+      "import": "./bin/collect-input.js"
     }
   },
   "bin": {
