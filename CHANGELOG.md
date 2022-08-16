@@ -1,3 +1,10 @@
+## [3.0.3](https://github.com/rvagg/js-ipld-schema/compare/v3.0.2...v3.0.3) (2022-08-16)
+
+
+### Bug Fixes
+
+* export bin/collect-input.js (used by ipld-schema-validator) ([324d1d5](https://github.com/rvagg/js-ipld-schema/commit/324d1d59fefbcc8c99361fa9f73df0920b02bf1e))
+
 ## [3.0.2](https://github.com/rvagg/js-ipld-schema/compare/v3.0.1...v3.0.2) (2022-08-15)
 
 
