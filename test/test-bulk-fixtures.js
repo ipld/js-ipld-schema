@@ -3,8 +3,8 @@
 import fs from 'fs'
 // @ts-ignore
 import yaml from 'js-yaml'
-import { fromDSL } from 'ipld-schema/from-dsl.js'
-import { toDSL } from 'ipld-schema/to-dsl.js'
+import { fromDSL } from '@ipld/schema/from-dsl.js'
+import { toDSL } from '@ipld/schema/to-dsl.js'
 import { assert } from 'chai'
 
 /**

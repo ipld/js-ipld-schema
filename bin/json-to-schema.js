@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { toDSL } from 'ipld-schema/to-dsl.js'
+import { toDSL } from '@ipld/schema/to-dsl.js'
 import { collectInput } from './collect-input.js'
 
 let indent = '  '

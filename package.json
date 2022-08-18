@@ -1,5 +1,5 @@
 {
-  "name": "ipld-schema",
+  "name": "@ipld/schema",
   "version": "3.0.3",
   "description": "IPLD Schema parser and CLI utilities for JavaScript",
   "main": "./ipld-schema.js",
