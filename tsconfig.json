@@ -28,9 +28,9 @@
     "emitDeclarationOnly": true,
     "baseUrl": ".",
     "paths": {
-      "ipld-schema/to-dsl.js": [ "lib/to-dsl.js" ],
-      "ipld-schema/from-dsl.js": [ "lib/from-dsl.js" ],
-      "ipld-schema/typed.js": [ "lib/typed.js" ]
+      "@ipld/schema/to-dsl.js": [ "lib/to-dsl.js" ],
+      "@ipld/schema/from-dsl.js": [ "lib/from-dsl.js" ],
+      "@ipld/schema/typed.js": [ "lib/typed.js" ]
     }
   },
   "exclude": [

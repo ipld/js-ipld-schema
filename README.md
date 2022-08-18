@@ -9,9 +9,9 @@ For validation of JavaScript object forms against an IPLD schema, see [ipld-sche
 ## Usage
 
 ```js
-import { parse } from 'ipld-schema'
+import { fromDSL } from '@ipld/schema/from-dsl.js'
 
-let schema = parse(`
+let schema = fromDSL(`
   type SimpleStruct struct {
     foo Int
     bar Bool
@@ -38,12 +38,12 @@ console.dir(schema, { depth: Infinity })
 // }
 ```
 
-You can also convert the parsed form back to DSL form with the `print` function:
+You can also convert the parsed form back to DSL form with the `toDSL` function:
 
 ```js
-import { print } from 'ipld-schema/print.js'
+import { toDSL } from '@ipld/schema/to-dsl.js'
 
-console.log(print(schema))
+console.log(toDSL(schema))
 ```
 
 

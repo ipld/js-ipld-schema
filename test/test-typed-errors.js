@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 
-import { create } from 'ipld-schema/typed.js'
+import { create } from '@ipld/schema/typed.js'
 import chai from 'chai'
 
 const { assert } = chai

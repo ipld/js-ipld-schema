@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 import fs from 'fs'
-import { fromDSL } from 'ipld-schema/from-dsl.js'
+import { fromDSL } from '@ipld/schema/from-dsl.js'
 import { assert } from 'chai'
 
 it('schema-schema', async () => {
