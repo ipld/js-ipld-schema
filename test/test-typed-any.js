@@ -10,7 +10,9 @@ const fauxCid = {}
 fauxCid.asCID = fauxCid
 
 describe('Any', () => {
-  it('AnyScalar', async () => {
+  it('AnyScalar', async function () {
+    this.timeout(5000) // first test with linting which can be expensive to warm up in CI
+
     const typed = create({ types: {} }, 'AnyScalar')
 
     await lint(typed.toTyped)
