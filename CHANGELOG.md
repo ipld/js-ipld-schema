@@ -1,3 +1,27 @@
+## [4.0.0](https://github.com/rvagg/js-ipld-schema/compare/v3.0.3...v4.0.0) (2022-08-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* change package name to @ipld/schema
+* add typed node interface, more complete TS checking
+
+### Features
+
+* add typed node interface, more complete TS checking ([d0b4866](https://github.com/rvagg/js-ipld-schema/commit/d0b4866ddf5ac3f3c756f02959c0e8a41b95d546))
+* change package name to @ipld/schema ([02d256d](https://github.com/rvagg/js-ipld-schema/commit/02d256d3a4fa1d91f88c87115271eda9ed293b43))
+
+
+### Bug Fixes
+
+* extend timeout of first test with linting ([9586242](https://github.com/rvagg/js-ipld-schema/commit/958624225814cd67cd2775b102276485f48194df))
+* make enums behave properly ([20d7030](https://github.com/rvagg/js-ipld-schema/commit/20d70309e3fe5e3b56ecaec11d5d8dca6f9789e9))
+
+
+### Trivial Changes
+
+* update docs, add typed example ([73a7a5e](https://github.com/rvagg/js-ipld-schema/commit/73a7a5ef0426816b7eaae0a83f2b2a3700c3bfad))
+
 ## [3.0.3](https://github.com/rvagg/js-ipld-schema/compare/v3.0.2...v3.0.3) (2022-08-16)
 
 
