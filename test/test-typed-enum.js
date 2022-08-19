@@ -61,10 +61,10 @@ describe('Enums', () => {
 
     await lint(typed.toTyped)
 
-    assert.strictEqual(typed.toTyped('f'), 'f')
+    assert.strictEqual(typed.toTyped('f'), 'Foo')
     assert.isUndefined(typed.toTyped('Foo'))
     assert.strictEqual(typed.toTyped('Bar'), 'Bar')
-    assert.strictEqual(typed.toTyped('b'), 'b')
+    assert.strictEqual(typed.toTyped('b'), 'Baz')
     assert.isUndefined(typed.toTyped('Baz'))
     assert.isUndefined(typed.toTyped('Blip'))
     assert.isUndefined(typed.toTyped(''))
@@ -97,9 +97,9 @@ describe('Enums', () => {
 
     await lint(typed.toTyped)
 
-    assert.strictEqual(typed.toTyped(0), 0)
-    assert.strictEqual(typed.toTyped(1), 1)
-    assert.strictEqual(typed.toTyped(100), 100)
+    assert.strictEqual(typed.toTyped(0), 'Foo')
+    assert.strictEqual(typed.toTyped(1), 'Bar')
+    assert.strictEqual(typed.toTyped(100), 'Baz')
     assert.isUndefined(typed.toTyped(-1))
     assert.isUndefined(typed.toTyped(-100))
     assert.isUndefined(typed.toTyped(10))
