@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/rvagg/js-ipld-schema/compare/v4.0.0...v4.0.1) (2022-08-19)
+
+
+### Trivial Changes
+
+* relicense with dual mit/apache ([1ad0ba9](https://github.com/rvagg/js-ipld-schema/commit/1ad0ba9efa81e19e42bff96b055b387d13930649))
+
 ## [4.0.0](https://github.com/rvagg/js-ipld-schema/compare/v3.0.3...v4.0.0) (2022-08-19)
 
 
