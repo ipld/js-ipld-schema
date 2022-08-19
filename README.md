@@ -1,12 +1,16 @@
-# ipld-schema
+# @ipld/schema
 
-[IPLD](http://ipld.io/) Schema DSL Parser and CLI utilities
+JavaScript [IPLD](http://ipld.io/) Schema utilities.
 
-Read more about IPLD Schemas at https://github.com/ipld/specs/tree/master/schemas
+**Since v4.0.0 this package has been renamed to `@ipld/schema`. It was previously published to npm as `ipld-schema`.**
 
-For validation of JavaScript object forms against an IPLD schema, see [ipld-schema-validator](https://github.com/rvagg/js-ipld-schema-validator).
+Read more about IPLD Schemas at https://ipld.io/docs/schemas/
 
 ## Usage
+
+### Parsing IPLD Schema DSL
+
+IPLD Schemas have a parsed form, called a Data Model Tree (DMT), which is consumed where schemas are used. We can parse the DSL into the DMT with `from-dsl.js`:
 
 ```js
 import { fromDSL } from '@ipld/schema/from-dsl.js'
@@ -20,7 +24,7 @@ let schema = fromDSL(`
   type MyMap { String: SimpleStruct }
 `)
 
-console.dir(schema, { depth: Infinity })
+console.dir(schema.types, { depth: Infinity })
 
 // →
 // {
@@ -30,101 +34,121 @@ console.dir(schema, { depth: Infinity })
 //         foo: { type: 'Int' },
 //         bar: { type: 'Bool' },
 //         baz: { type: 'String' }
-//       },
-//       representation: { map: {} }
+//       }
 //     }
 //   },
 //   MyMap: { map: { keyType: 'String', valueType: 'SimpleStruct' } }
 // }
 ```
 
-You can also convert the parsed form back to DSL form with the `toDSL` function:
+You can also convert the DMT form back to DSL form with `to-dsl.js`:
 
 ```js
 import { toDSL } from '@ipld/schema/to-dsl.js'
-
-console.log(toDSL(schema))
-```
-
-
-## Command line
-
-**ipld-schema also exports an executable**: if installed with `-g` you will get an `ipld-schema` command in your `PATH`.
-
-This executable has two commands that operate on files or stdin.
-
-  * `ipld-schema validate [files...]`
-  * `ipld-schema to-json [-t] [files...]`
-
-Both commands take either .ipldsch or .md files. When using .md files, `ipld-schema` will extract any \`\`\` code blocks using the `ipldsch` or `sh` language codes.
-
-### Validation
-
-The `validate` command will take an `.ipldsch` or `.md` file and validate its schema contents.
-
-```
-$ ipld-schema validate simple-struct.ipldsch
-Validated simple-struct.ipldsch ...
-```
-
-or
-
-```
-$ ipld-schema validate README.md
-Validated README.md ...
-```
-
-Alternatively, you can provide IPLD schema data via stdin:
-
-```
-$ cat simple-struct.ipldsch | ipld-schema validate
-Validated <stdin> ...
-```
-
-### JSONification
-
-The `to-json` command will take one or more .ipldsch or .md files and print a JSON form of the schemas found within.
-
-```
-$ ipld-schema to-json simple-struct.ipldsch
-{
-  "schema": {
-    "SimpleStruct": {
-      "struct": {
-        "fields": {
-          "foo": {
-            "type": "Int"
-          },
-          "bar": {
-            "type": "Bool"
-          },
-          "baz": {
-            "type": "String"
-          }
-        },
-        "representation": {
-          "map": {}
+const schema = {
+  types: {
+    SimpleStruct: {
+      struct: {
+        fields: {
+          foo: { type: 'Int' },
+          bar: { type: 'Bool' },
+          baz: { type: 'String' }
         }
       }
     },
-    "MyMap": {
-      "map": {
-        "keyType": "String",
-        "valueType": "SimpleStruct"
-      }
-    }
+    MyMap: { map: { keyType: 'String', valueType: 'SimpleStruct' } }
   }
 }
+
+console.log(toDSL(schema))
+
+// →
+// type SimpleStruct struct {
+//   foo Int
+//   bar Bool
+//   baz String
+// }
+//
+// type MyMap {String:SimpleStruct}
 ```
 
-Provide a `-t` to print with tabs instead of two-spaces.
+### Typed converters / validators
 
-`ipld-schema to-json` also accepts input via stdin:
+Use `typed.js` to create a converter/validator from an IPLD Schema that can receive IPLD block data and return either `undefined` if the data form doesn't match the Schema, or the same data if the Schema doesn't involve any transformation, _or_ a transformed form of the data according to the Schema.
 
+Note that `create()` will _create_ a `toTyped()` function for you to run. For best performance results, you should do this just once with any given schema and reuse function whenever you need to run it.
+
+```js
+import { fromDSL } from '@ipld/schema/from-dsl.js'
+import { create } from '@ipld/schema/typed.js'
+
+// a schema for a terse data format
+const schemaDsl = `
+type Garden struct {
+  name String
+  width Int
+  depth Int
+  plants [Plant]
+} representation tuple
+
+type Plant struct {
+  species PlantSpecies
+  height Int
+} representation tuple
+
+type PlantSpecies enum {
+  | Murraya     ("1")
+  | StarJasmine ("2")
+  | Lemon       ("3")
+  | Camellia    ("4")
+} representation int
+`
+
+// parse schema
+const schemaDmt = fromDSL(schemaDsl)
+
+// create a typed converter/validator
+const schemaTyped = create(schemaDmt, 'Garden')
+
+// some terse input data
+const data = ['Home', 460, 200, [[1, 30], [1, 28], [1, 29], [2, 10], [2, 11], [3, 140], [4, 230], [4, 200]]]
+
+// validate and transform
+const typedData = schemaTyped.toTyped(data)
+
+// what do we have?
+console.dir(typedData)
+
+// →
+// {
+//   name: 'Home',
+//   width: 460,
+//   depth: 200,
+//   plants: [
+//     { species: 'Murraya', height: 30 },
+//     { species: 'Murraya', height: 28 },
+//     { species: 'Murraya', height: 29 },
+//     { species: 'StarJasmine', height: 10 },
+//     { species: 'StarJasmine', height: 11 },
+//     { species: 'Lemon', height: 140 },
+//     { species: 'Camellia', height: 230 },
+//     { species: 'Camellia', height: 200 }
+//   ]
+// }
 ```
-$ cat simple-struct.ipldsch | ipld-schema to-json
-...
-```
+
+## Command line
+
+**@ipld/schema also exports an executable**: if installed with `-g` you will get an `ipld-schema` command in your `PATH`.
+
+This executable has two commands that operate on files or stdin.
+
+  * `ipld-schema validate [files...]`: Accepts .ipldsch and .md files, if none are passed will read from stdin, returns exit code 0 on successful validation
+  * `ipld-schema to-json [-t] [files...]`: Accepts .ipldsch files, if none are passed will read from stdin, prints the JSON form of the schema
+  * `ipld-schema to-schema [-t] [files...]`: Accepts .ipldsch and .md files, if none are passed will read from stdin, prints the canonical IPLD Schema form of the schema
+  * `ipld-schema json-to-schema [files...]`: Accepts .json files, if none are passed will read from stdin, prints the canonical IPLD Schema form of the schema represented by the JSON
+
+`validate` and `to-json` and `to-schema` take either .ipldsch or .md files. When using .md files, `ipld-schema` will extract any \`\`\` code blocks using the `ipldsch` or `sh` language codes.
 
 ## License and Copyright
 

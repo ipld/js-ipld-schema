@@ -4,3 +4,4 @@ coverage/
 package-lock.json
 tmp/
 types/test/
+types/example*
