@@ -33,7 +33,7 @@
     "ipld-schema": "bin/cli.js"
   },
   "author": "Rod <r@va.gg> (http://r.va.gg/)",
-  "license": "Apache-2.0",
+  "license": "(Apache-2.0 AND MIT)",
   "devDependencies": {
     "@types/chai": "^4.3.3",
     "@types/mocha": "^9.1.1",
