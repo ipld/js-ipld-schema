@@ -1,8 +1,7 @@
 /* eslint-env mocha */
 
-import { create } from '@ipld/schema/typed.js'
 import chai from 'chai'
-import { lint } from './lint.js'
+import { buildAndVerify } from './typed-util.js'
 
 const { assert } = chai
 
@@ -11,7 +10,7 @@ fauxCid.asCID = fauxCid
 
 describe('Structs', () => {
   it('struct with 3 different field kinds', async () => {
-    const typed = create({
+    const typed = await buildAndVerify({
       types: {
         SimpleStruct: {
           struct: {
@@ -26,20 +25,26 @@ describe('Structs', () => {
       }
     }, 'SimpleStruct')
 
-    await lint(typed.toTyped)
-
     const map = { foo: 100, bar: true, baz: 'this is baz' }
-    assert.deepStrictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
+    assert.deepStrictEqual(map, { foo: 100, bar: true, baz: 'this is baz' })
     assert.isUndefined(typed.toTyped({}))
     assert.isUndefined(typed.toTyped({ foo: 100, bar: true }))
     assert.isUndefined(typed.toTyped({ foo: 100, baz: 'this is baz' }))
     assert.isUndefined(typed.toTyped({ bar: true, baz: 'this is baz' }))
     assert.isUndefined(typed.toTyped({ foo: 100, bar: true, baz: 'this is baz', nope: 1 }))
     assert.isUndefined(typed.toTyped([100, true, 'nope']))
+    assert.isUndefined(typed.toRepresentation({}))
+    assert.isUndefined(typed.toRepresentation({ foo: 100, bar: true }))
+    assert.isUndefined(typed.toRepresentation({ foo: 100, baz: 'this is baz' }))
+    assert.isUndefined(typed.toRepresentation({ bar: true, baz: 'this is baz' }))
+    assert.isUndefined(typed.toRepresentation({ foo: 100, bar: true, baz: 'this is baz', nope: 1 }))
+    assert.isUndefined(typed.toRepresentation([100, true, 'nope']))
   })
 
   it('struct within a struct', async () => {
-    const typed = create({
+    const typed = await buildAndVerify({
       types: {
         $struct2: {
           struct: {
@@ -64,13 +69,17 @@ describe('Structs', () => {
       }
     }, '$struct1')
 
-    await lint(typed.toTyped)
-
     const map = { one: -1, two: { foo: 100, bar: true, baz: 'this is baz' }, three: fauxCid }
-    assert.deepStrictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
+    // sanity check no mutation
+    assert.deepStrictEqual(map, { one: -1, two: { foo: 100, bar: true, baz: 'this is baz' }, three: fauxCid })
     assert.isUndefined(typed.toTyped({}))
     assert.isUndefined(typed.toTyped({ one: -1, two: {}, three: fauxCid }))
     assert.isUndefined(typed.toTyped({ one: -1, two: [], three: fauxCid }))
+    assert.isUndefined(typed.toRepresentation({}))
+    assert.isUndefined(typed.toRepresentation({ one: -1, two: {}, three: fauxCid }))
+    assert.isUndefined(typed.toRepresentation({ one: -1, two: [], three: fauxCid }))
   })
 
   it('struct with maps and lists and structs', async () => {
@@ -91,7 +100,7 @@ describe('Structs', () => {
       three &Any
     }
     */
-    const typed = create({
+    const typed = await buildAndVerify({
       types: {
         $list: {
           list: {
@@ -127,14 +136,13 @@ describe('Structs', () => {
       }
     }, '$struct1')
 
-    await lint(typed.toTyped)
-
     let map = {
       one: { o: [fauxCid], t: [], th: [fauxCid, fauxCid, fauxCid] },
       two: { foo: 100, bar: true, baz: [fauxCid, fauxCid, fauxCid] },
       three: fauxCid
     }
-    assert.deepStrictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
     map = {
       // @ts-ignore
       one: {},
@@ -143,18 +151,26 @@ describe('Structs', () => {
       // @ts-ignore
       three: fauxCid
     }
-    assert.deepStrictEqual(typed.toTyped(map), map)
-    assert.isUndefined(typed.toTyped({
+    assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
+    map = {
+      // @ts-ignore
       one: {},
+      // @ts-ignore
       two: { foo: 100, bar: true, baz: [] },
+      // @ts-ignore
       three: fauxCid,
+      // @ts-ignore
       four: 'nope'
-    }))
+    }
+    assert.isUndefined(typed.toTyped(map))
+    assert.isUndefined(typed.toRepresentation(map))
     assert.isUndefined(typed.toTyped({}))
+    assert.isUndefined(typed.toRepresentation({}))
   })
 
   it('struct with tuple representation', async () => {
-    const typed = create({
+    const typed = await buildAndVerify({
       types: {
         SimpleStruct: {
           struct: {
@@ -169,23 +185,27 @@ describe('Structs', () => {
       }
     }, 'SimpleStruct')
 
-    await lint(typed.toTyped)
-
     assert.deepStrictEqual(typed.toTyped([100, true, 'this is baz']), { foo: 100, bar: true, baz: 'this is baz' })
+    assert.deepStrictEqual(typed.toRepresentation({ foo: 100, bar: true, baz: 'this is baz' }), [100, true, 'this is baz'])
     assert.isUndefined(typed.toTyped({ foo: 100, bar: true, baz: 'this is baz' }))
+    assert.isUndefined(typed.toRepresentation([100, true, 'this is baz']))
     assert.isUndefined(typed.toTyped([]))
+    assert.isUndefined(typed.toRepresentation({}))
     assert.isUndefined(typed.toTyped([100, true]))
+    assert.isUndefined(typed.toRepresentation({ foo: 100, bar: true }))
     assert.isUndefined(typed.toTyped([100, 'this is baz']))
+    assert.isUndefined(typed.toRepresentation({ foo: 100, baz: 'this is baz' }))
     assert.isUndefined(typed.toTyped([true, 'this is baz']))
+    assert.isUndefined(typed.toRepresentation({ bar: true, baz: 'this is baz' }))
     assert.isUndefined(typed.toTyped([100, true, 'this is baz', 1]))
+    assert.isUndefined(typed.toRepresentation({ foo: 100, bar: true, baz: 'this is baz', bam: 1 }))
     assert.isUndefined(typed.toTyped([1, 100, true, 'nope']))
-    assert.isUndefined(typed.toTyped([true, 100, 'nope']))
     assert.isUndefined(typed.toTyped([true, 100, 'nope']))
     assert.isUndefined(typed.toTyped([100, 'nope', true]))
   })
 
   it('struct with tuple representation containing structs', async () => {
-    const typed = create({
+    const typed = await buildAndVerify({
       types: {
         $struct: {
           struct: {
@@ -209,8 +229,6 @@ describe('Structs', () => {
       }
     }, 'SimpleStruct')
 
-    await lint(typed.toTyped)
-
     assert.deepStrictEqual(
       typed.toTyped([{ foo: 100, bar: true, baz: 'this is baz' }, { foo: -1100, bar: false, baz: '' }]),
       {
@@ -218,12 +236,23 @@ describe('Structs', () => {
         bar: { foo: -1100, bar: false, baz: '' }
       }
     )
+    assert.deepStrictEqual(
+      typed.toRepresentation(
+        {
+          foo: { foo: 100, bar: true, baz: 'this is baz' },
+          bar: { foo: -1100, bar: false, baz: '' }
+        }
+      ),
+      [{ foo: 100, bar: true, baz: 'this is baz' }, { foo: -1100, bar: false, baz: '' }]
+    )
     assert.isUndefined(typed.toTyped([{}, {}]))
+    assert.isUndefined(typed.toRepresentation({ foo: {}, bar: {} }))
     assert.isUndefined(typed.toTyped([]))
+    assert.isUndefined(typed.toRepresentation({}))
   })
 
   it('struct nullables', async () => {
-    const typed = create({
+    const typed = await buildAndVerify({
       types: {
         SimpleStruct: {
           struct: {
@@ -238,10 +267,10 @@ describe('Structs', () => {
       }
     }, 'SimpleStruct')
 
-    await lint(typed.toTyped)
-
     let map = { foo: 100, bar: true, baz: 'this is baz' }
-    assert.deepStrictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
+    assert.deepStrictEqual(map, { foo: 100, bar: true, baz: 'this is baz' }) // sanity check no mutation
     assert.isUndefined(typed.toTyped({}))
     assert.isUndefined(typed.toTyped({ foo: 100, bar: true }))
     assert.isUndefined(typed.toTyped({ foo: 100, baz: 'this is baz' }))
@@ -250,19 +279,30 @@ describe('Structs', () => {
     assert.isUndefined(typed.toTyped({ foo: undefined, bar: true, baz: '' }))
     assert.isUndefined(typed.toTyped({ foo: 1, bar: true, baz: undefined }))
     assert.isUndefined(typed.toTyped({ foo: undefined, bar: true, baz: undefined }))
+    assert.isUndefined(typed.toRepresentation({}))
+    assert.isUndefined(typed.toRepresentation({ foo: 100, bar: true }))
+    assert.isUndefined(typed.toRepresentation({ foo: 100, baz: 'this is baz' }))
+    assert.isUndefined(typed.toRepresentation({ bar: true, baz: 'this is baz' }))
+    assert.isUndefined(typed.toRepresentation({ foo: 100, bar: true, baz: 'this is baz', nope: 1 }))
+    assert.isUndefined(typed.toRepresentation({ foo: undefined, bar: true, baz: '' }))
+    assert.isUndefined(typed.toRepresentation({ foo: 1, bar: true, baz: undefined }))
+    assert.isUndefined(typed.toRepresentation({ foo: undefined, bar: true, baz: undefined }))
     // @ts-ignore
     map = { foo: null, bar: true, baz: '' }
-    assert.deepStrictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
     // @ts-ignore
     map = { foo: 1, bar: true, baz: null }
-    assert.deepStrictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
     // @ts-ignore
     map = { foo: null, bar: true, baz: null }
-    assert.deepStrictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
   })
 
   it('struct tuple nullables', async () => {
-    const typed = create({
+    const typed = await buildAndVerify({
       types: {
         SimpleStruct: {
           struct: {
@@ -277,9 +317,8 @@ describe('Structs', () => {
       }
     }, 'SimpleStruct')
 
-    await lint(typed.toTyped)
-
     assert.deepStrictEqual(typed.toTyped([100, true, 'this is baz']), { foo: 100, bar: true, baz: 'this is baz' })
+    assert.deepStrictEqual(typed.toRepresentation({ foo: 100, bar: true, baz: 'this is baz' }), [100, true, 'this is baz'])
     assert.isUndefined(typed.toTyped([]))
     assert.isUndefined(typed.toTyped([100, true]))
     assert.isUndefined(typed.toTyped([100, 'this is baz']))
@@ -289,12 +328,15 @@ describe('Structs', () => {
     assert.isUndefined(typed.toTyped([1, true, undefined]))
     assert.isUndefined(typed.toTyped([undefined, true, undefined]))
     assert.deepStrictEqual(typed.toTyped([null, true, '']), { foo: null, bar: true, baz: '' })
+    assert.deepStrictEqual(typed.toRepresentation({ foo: null, bar: true, baz: '' }), [null, true, ''])
     assert.deepStrictEqual(typed.toTyped([1, true, null]), { foo: 1, bar: true, baz: null })
+    assert.deepStrictEqual(typed.toRepresentation({ foo: 1, bar: true, baz: null }), [1, true, null])
     assert.deepStrictEqual(typed.toTyped([null, true, null]), { foo: null, bar: true, baz: null })
+    assert.deepStrictEqual(typed.toRepresentation({ foo: null, bar: true, baz: null }), [null, true, null])
   })
 
   it('struct optionals', async () => {
-    const typed = create({
+    const typed = await buildAndVerify({
       types: {
         SimpleStruct: {
           struct: {
@@ -308,8 +350,6 @@ describe('Structs', () => {
         }
       }
     }, 'SimpleStruct')
-
-    await lint(typed.toTyped)
 
     let map = { foo: 100, bar: true, baz: 'this is baz' }
     assert.strictEqual(typed.toTyped(map), map)
@@ -345,7 +385,7 @@ describe('Structs', () => {
         wozField {String:[nullable String]}
       }
     */
-    const typed = create({
+    const typed = await buildAndVerify({
       types: {
         StructWithAnonymousTypes: {
           struct: {
@@ -399,8 +439,6 @@ describe('Structs', () => {
       }
     }, 'StructWithAnonymousTypes')
 
-    await lint(typed.toTyped)
-
     assert.isUndefined(typed.toTyped({}))
 
     let map = {
@@ -410,13 +448,16 @@ describe('Structs', () => {
       wozField: { hack: ['fip', 'fop'], gack: [] }
     }
     assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
 
     // @ts-ignore
     map = { fooField: {}, barField: {}, bazField: {}, wozField: {} }
     assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
     // @ts-ignore
     map = { barField: {}, bazField: {}, wozField: {} }
     assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
 
     // @ts-ignore
     map = {
@@ -428,6 +469,7 @@ describe('Structs', () => {
       wozField: { hack: ['fip', 'fop'], gack: [] }
     }
     assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
 
     map = {
       // @ts-ignore
@@ -438,6 +480,7 @@ describe('Structs', () => {
       wozField: { hack: ['fip', 'fop'], gack: [] }
     }
     assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
 
     map = {
       // @ts-ignore
@@ -448,6 +491,7 @@ describe('Structs', () => {
       wozField: { hack: ['fip', 'fop'], gack: [] }
     }
     assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
 
     map = {
       // @ts-ignore
@@ -458,10 +502,11 @@ describe('Structs', () => {
       wozField: { hack: ['fip', null], gack: [] }
     }
     assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
   })
 
-  it('empty struct', () => {
-    const typed = create({
+  it('empty struct', async () => {
+    const typed = await buildAndVerify({
       types: {
         StructEmpty: {
           struct: {
@@ -474,11 +519,37 @@ describe('Structs', () => {
 
     for (const obj of [101, 1.01, 'a string', false, true, fauxCid, Uint8Array.from([1, 2, 3]), [1, 2, 3], null, undefined]) {
       assert.isUndefined(typed.toTyped(obj))
+      assert.isUndefined(typed.toRepresentation(obj))
     }
 
     const map = {}
     assert.strictEqual(typed.toTyped(map), map)
+    assert.strictEqual(typed.toRepresentation(map), map)
     assert.isUndefined(typed.toTyped({ a: 1 }))
+    assert.isUndefined(typed.toRepresentation({ a: 1 }))
+  })
+
+  it('empty tuple struct', async () => {
+    const typed = await buildAndVerify({
+      types: {
+        StructTupleEmpty: {
+          struct: {
+            fields: {},
+            representation: { tuple: {} }
+          }
+        }
+      }
+    }, 'StructTupleEmpty')
+
+    for (const obj of [101, 1.01, 'a string', false, true, fauxCid, Uint8Array.from([1, 2, 3]), [1, 2, 3], null, undefined]) {
+      assert.isUndefined(typed.toTyped(obj))
+      assert.isUndefined(typed.toRepresentation(obj))
+      assert.isUndefined(typed.toTyped([obj]))
+      assert.isUndefined(typed.toRepresentation([obj]))
+    }
+
+    assert.deepStrictEqual(typed.toTyped([]), {})
+    assert.deepStrictEqual(typed.toRepresentation({}), [])
   })
 
   it('struct with renames', async () => {
@@ -490,7 +561,7 @@ describe('Structs', () => {
         foo Int (rename "f" implicit "0")
       }
     */
-    const typed = create({
+    const typed = await buildAndVerify({
       types: {
         StructAsMapWithRenames: {
           struct: {
@@ -514,13 +585,17 @@ describe('Structs', () => {
       }
     }, 'StructAsMapWithRenames')
 
-    await lint(typed.toTyped)
-
     assert.isUndefined(typed.toTyped({ bar: true, boom: 'str', baz: 'str', foo: 100 }))
+    assert.isUndefined(typed.toRepresentation({ b: true, boom: 'str', z: 'str', f: 100 }))
     assert.isUndefined(typed.toTyped({ bar: true, boom: 'str', baz: 'str', b: 'str', z: 'str', f: 100, foo: 100 }))
+    assert.isUndefined(typed.toRepresentation({ bar: true, boom: 'str', baz: 'str', b: 'str', z: 'str', f: 100, foo: 100 }))
     assert.deepStrictEqual(
       typed.toTyped({ b: true, boom: 'str', z: 'str', f: 100 }),
       { bar: true, boom: 'str', baz: 'str', foo: 100 }
+    )
+    assert.deepStrictEqual(
+      typed.toRepresentation({ bar: true, boom: 'str', baz: 'str', foo: 100 }),
+      { b: true, boom: 'str', z: 'str', f: 100 }
     )
   })
 
@@ -533,7 +608,7 @@ describe('Structs', () => {
         foo Int (implicit "0")
       }
     */
-    const typed = create({
+    const typed = await buildAndVerify({
       types: {
         StructAsMapWithImplicits: {
           struct: {
@@ -556,8 +631,6 @@ describe('Structs', () => {
         }
       }
     }, 'StructAsMapWithImplicits')
-
-    await lint(typed.toTyped)
 
     const map = { bar: true, boom: 'str', baz: 'str', foo: 100 }
     assert.strictEqual(typed.toTyped(map), map)
@@ -586,7 +659,7 @@ describe('Structs', () => {
         fieldOrder ["baz", "bar", "foo"]
       }
     */
-    const typed = create({
+    const typed = await buildAndVerify({
       types: {
         StructAsTupleWithCustomFieldorder: {
           struct: {
@@ -604,8 +677,6 @@ describe('Structs', () => {
         }
       }
     }, 'StructAsTupleWithCustomFieldorder')
-
-    await lint(typed.toTyped)
 
     assert.isUndefined(typed.toTyped([100, true, 'this is baz']))
     assert.deepStrictEqual(

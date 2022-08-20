@@ -76,7 +76,11 @@ console.log(toDSL(schema))
 
 Use `typed.js` to create a converter/validator from an IPLD Schema that can receive IPLD block data and return either `undefined` if the data form doesn't match the Schema, or the same data if the Schema doesn't involve any transformation, _or_ a transformed form of the data according to the Schema.
 
-Note that `create()` will _create_ a `toTyped()` function for you to run. For best performance results, you should do this just once with any given schema and reuse function whenever you need to run it.
+Note that `create()` will _create_ a `toTyped()` / `toRepresentation()` function pair for you to run. For best performance results, you should do this just once with any given schema and reuse these functions whenever you need to process or validate data.
+
+Typically, your application will want to interact with typed data, particularly when the representation form is terse and not as easy to modify. IPLD Schemas give you the ability to validate, decode and transform representation data to safely hand off to your application layer.
+
+#### From representation form to typed form
 
 ```js
 import { fromDSL } from '@ipld/schema/from-dsl.js'
@@ -115,12 +119,15 @@ const data = ['Home', 460, 200, [[1, 30], [1, 28], [1, 29], [2, 10], [2, 11], [3
 
 // validate and transform
 const typedData = schemaTyped.toTyped(data)
+if (typedData === undefined) {
+  throw new TypeError('Invalid data form, does not match schema')
+}
 
 // what do we have?
-console.dir(typedData)
+console.log('Typed form:', typedData)
 
 // →
-// {
+// Typed form: {
 //   name: 'Home',
 //   width: 460,
 //   depth: 200,
@@ -135,6 +142,31 @@ console.dir(typedData)
 //     { species: 'Camellia', height: 200 }
 //   ]
 // }
+```
+
+#### From typed form to representation form
+
+Once your application has a typed form of data and makes modifications, the data can be validated and transformed back into the representation form.
+
+```js
+// modify our typed form now we have it in a form that makes sense to our application
+typedData.depth += 50
+typedData.plants[0].height += 2
+typedData.plants[1].height += 2
+typedData.plants[2].height += 1
+typedData.plants.push({ species: 'StarJasmine', height: 5 })
+
+// validate and transform back into representation form
+const newData = schemaTyped.toRepresentation(typedData)
+if (newData === undefined) {
+  throw new TypeError('Invalid data form, does not match schema')
+}
+
+// what do we have?
+console.log('Modified representation data:', JSON.stringify(newData))
+
+// →
+// ["Home",460,250,[[1,32],[1,30],[1,30],[2,10],[2,11],[3,140],[4,230],[4,200],[2,5]]]
 ```
 
 ## Command line
