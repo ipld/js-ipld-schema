@@ -11,10 +11,11 @@ export function safeFieldReference(name: string): string;
 /**
  * @param {Schema} schema
  * @param {string} root
- * @returns {{ toTyped: TypeTransformerFunction }}
+ * @returns {{ toTyped: TypeTransformerFunction, toRepresentation: TypeTransformerFunction }}
  */
 export function create(schema: Schema, root: string): {
     toTyped: TypeTransformerFunction;
+    toRepresentation: TypeTransformerFunction;
 };
 export class Builder {
     /**
@@ -30,6 +31,8 @@ export class Builder {
     };
     /** @type {Record<string, string>} */
     typeTransformers: Record<string, string>;
+    /** @type {Record<string, string>} */
+    reprTransformers: Record<string, string>;
     dumpTypeTransformers(): string;
     /**
      * @param {TypeName} typeName

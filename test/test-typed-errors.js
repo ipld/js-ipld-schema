@@ -218,6 +218,30 @@ describe('Errors', () => {
     }, 'SimpleStruct'), /Struct "SimpleStruct" includes "optional" fields for non-map struct/)
   })
 
+  it('unsupported struct implicit type', () => {
+    assert.throws(() => create({
+      types: {
+        SimpleStruct: {
+          struct: {
+            fields: {
+              foo: { type: 'Int' },
+              bar: { type: 'Bool' },
+              baz: { type: 'String' }
+            },
+            // @ts-ignore
+            representation: {
+              map: {
+                fields: {
+                  bar: { implicit: new Uint8Array(0) }
+                }
+              }
+            }
+          }
+        }
+      }
+    }, 'SimpleStruct'), /Unsupported implicit type for "SimpleStruct" -> "bar":/)
+  })
+
   it('tuple struct with bad fieldOrder field names', () => {
     assert.throws(() => create({
       types: {
