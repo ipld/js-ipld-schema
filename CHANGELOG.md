@@ -1,3 +1,10 @@
+## [4.1.0](https://github.com/rvagg/js-ipld-schema/compare/v4.0.1...v4.1.0) (2022-08-20)
+
+
+### Features
+
+* implement typed { toRepresentation(obj): obj } ([1ce5231](https://github.com/rvagg/js-ipld-schema/commit/1ce52314c89080c03a47497ff7b5eee1a18c8f0f))
+
 ## [4.0.1](https://github.com/rvagg/js-ipld-schema/compare/v4.0.0...v4.0.1) (2022-08-19)
 
 
