@@ -1,3 +1,17 @@
+## [4.1.1](https://github.com/rvagg/js-ipld-schema/compare/v4.1.0...v4.1.1) (2022-10-08)
+
+
+### Bug Fixes
+
+* remove "main" ([5ce0cc5](https://github.com/rvagg/js-ipld-schema/commit/5ce0cc5732f7b66245334084ebeff7a8163c1bdf))
+
+
+### Trivial Changes
+
+* **no-release:** bump @types/mocha from 9.1.1 to 10.0.0 ([#74](https://github.com/rvagg/js-ipld-schema/issues/74)) ([870bfb2](https://github.com/rvagg/js-ipld-schema/commit/870bfb217eceb11eb1d5b9effd095f67b9268c9a))
+* **no-release:** bump actions/checkout from 3.0.2 to 3.1.0 ([#75](https://github.com/rvagg/js-ipld-schema/issues/75)) ([9b67c21](https://github.com/rvagg/js-ipld-schema/commit/9b67c21ff430a10b9fa9aa62d53dd6bfd7db668d))
+* **no-release:** bump actions/setup-node from 3.4.1 to 3.5.0 ([#73](https://github.com/rvagg/js-ipld-schema/issues/73)) ([f456c38](https://github.com/rvagg/js-ipld-schema/commit/f456c38b2c594c5e014d806aea784618f0315ef5))
+
 ## [4.1.0](https://github.com/rvagg/js-ipld-schema/compare/v4.0.1...v4.1.0) (2022-08-20)
 
 
