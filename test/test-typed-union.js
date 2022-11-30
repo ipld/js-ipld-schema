@@ -314,8 +314,8 @@ describe('Unions', () => {
       type Bls12_381Signature bytes
       type Secp256k1Signature bytes
       type Signature union {
-        | Secp256k1Signature 0
-        | Bls12_381Signature 1
+        | Secp256k1Signature "00"
+        | Bls12_381Signature "01"
       } representation bytesprefix
     */
     const typed = await buildAndVerify({
@@ -330,8 +330,10 @@ describe('Unions', () => {
             ],
             representation: {
               bytesprefix: {
-                '00': 'Secp256k1Signature',
-                '01': 'Bls12_381Signature'
+                prefixes: {
+		  '00': 'Secp256k1Signature',
+		  '01': 'Bls12_381Signature'
+                }
               }
             }
           }
