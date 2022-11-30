@@ -1,16 +1,16 @@
-export declare type KindBool = boolean;
-export declare type KindString = string;
-export declare type KindBytes = Uint8Array;
-export declare type KindInt = number;
-export declare type KindFloat = number;
-export declare type KindNull = null;
-export declare type KindMap = {};
-export declare type KindList = [];
-export declare type KindLink = {};
-export declare type KindUnion = {};
-export declare type KindStruct = {};
-export declare type KindEnum = {};
-export declare type TypeDefn = {
+export type KindBool = boolean;
+export type KindString = string;
+export type KindBytes = Uint8Array;
+export type KindInt = number;
+export type KindFloat = number;
+export type KindNull = null;
+export type KindMap = {};
+export type KindList = [];
+export type KindLink = {};
+export type KindUnion = {};
+export type KindStruct = {};
+export type KindEnum = {};
+export type TypeDefn = {
     bool: TypeDefnBool;
 } | {
     string: TypeDefnString;
@@ -41,32 +41,32 @@ export declare type TypeDefn = {
 } | {
     null: TypeDefnNull;
 };
-export declare type TypeDefnBool = {};
-export declare type TypeDefnString = {
+export type TypeDefnBool = {};
+export type TypeDefnString = {
     representation?: StringRepresentation;
 };
-export declare type StringRepresentation = {
+export type StringRepresentation = {
     advanced: AdvancedDataLayoutName;
 };
-export declare type TypeDefnBytes = {
+export type TypeDefnBytes = {
     representation?: BytesRepresentation;
 };
-export declare type BytesRepresentation = {
+export type BytesRepresentation = {
     bytes: BytesRepresentation_Bytes;
 } | {
     advanced: AdvancedDataLayoutName;
 };
-export declare type BytesRepresentation_Bytes = {};
-export declare type TypeDefnInt = {};
-export declare type TypeDefnFloat = {};
-export declare type TypeDefnNull = {};
-export declare type TypeDefnMap = {
+export type BytesRepresentation_Bytes = {};
+export type TypeDefnInt = {};
+export type TypeDefnFloat = {};
+export type TypeDefnNull = {};
+export type TypeDefnMap = {
     keyType: TypeName;
     valueType: TypeNameOrInlineDefn;
     valueNullable?: KindBool;
     representation?: MapRepresentation;
 };
-export declare type MapRepresentation = {
+export type MapRepresentation = {
     map: MapRepresentation_Map;
 } | {
     stringpairs: MapRepresentation_StringPairs;
@@ -75,35 +75,35 @@ export declare type MapRepresentation = {
 } | {
     advanced: AdvancedDataLayoutName;
 };
-export declare type MapRepresentation_Map = {};
-export declare type MapRepresentation_StringPairs = {
+export type MapRepresentation_Map = {};
+export type MapRepresentation_StringPairs = {
     innerDelim: KindString;
     entryDelim: KindString;
 };
-export declare type MapRepresentation_ListPairs = {};
-export declare type TypeDefnList = {
+export type MapRepresentation_ListPairs = {};
+export type TypeDefnList = {
     valueType: TypeNameOrInlineDefn;
     valueNullable?: KindBool;
     representation?: ListRepresentation;
 };
-export declare type ListRepresentation = {
+export type ListRepresentation = {
     list: ListRepresentation_List;
 } | {
     advanced: AdvancedDataLayoutName;
 };
-export declare type ListRepresentation_List = {};
-export declare type TypeDefnLink = {
+export type ListRepresentation_List = {};
+export type TypeDefnLink = {
     expectedType?: KindString;
 };
-export declare type TypeDefnUnion = {
+export type TypeDefnUnion = {
     members: UnionMember[];
     representation: UnionRepresentation;
 };
-export declare type UnionMember = TypeName | UnionMemberInlineDefn;
-export declare type UnionMemberInlineDefn = {
+export type UnionMember = TypeName | UnionMemberInlineDefn;
+export type UnionMemberInlineDefn = {
     link: TypeDefnLink;
 };
-export declare type UnionRepresentation = {
+export type UnionRepresentation = {
     kinded: UnionRepresentation_Kinded;
 } | {
     keyed: UnionRepresentation_Keyed;
@@ -116,53 +116,57 @@ export declare type UnionRepresentation = {
 } | {
     bytesprefix: UnionRepresentation_BytesPrefix;
 };
-export declare type UnionRepresentation_Kinded = {
+export type UnionRepresentation_Kinded = {
     [k in RepresentationKind]?: TypeName;
 };
-export declare type UnionRepresentation_Keyed = {
+export type UnionRepresentation_Keyed = {
     [k in KindString]: UnionMember;
 };
-export declare type UnionRepresentation_Envelope = {
+export type UnionRepresentation_Envelope = {
     discriminantKey: KindString;
     contentKey: KindString;
     discriminantTable: {
         [k in KindString]: UnionMember;
     };
 };
-export declare type UnionRepresentation_Inline = {
+export type UnionRepresentation_Inline = {
     discriminantKey: KindString;
     discriminantTable: {
         [k in HexString]: TypeName;
     };
 };
-export declare type HexString = string;
-export declare type UnionRepresentation_StringPrefix = {
-    [k in KindString]: TypeName;
+export type HexString = string;
+export type UnionRepresentation_StringPrefix = {
+    prefixes: {
+        [k in KindString]: TypeName;
+    };
 };
-export declare type UnionRepresentation_BytesPrefix = {
-    [k in KindString]: TypeName;
+export type UnionRepresentation_BytesPrefix = {
+    prefixes: {
+        [k in KindString]: TypeName;
+    };
 };
-export declare type TypeDefnStruct = {
+export type TypeDefnStruct = {
     fields: {
         [k in FieldName]: StructField;
     };
     representation?: StructRepresentation;
 };
-export declare type FieldName = string;
-export declare type StructField = {
+export type FieldName = string;
+export type StructField = {
     type: TypeNameOrInlineDefn;
     optional?: KindBool;
     nullable?: KindBool;
 };
-export declare type TypeNameOrInlineDefn = TypeName | InlineDefn;
-export declare type InlineDefn = {
+export type TypeNameOrInlineDefn = TypeName | InlineDefn;
+export type InlineDefn = {
     map: TypeDefnMap;
 } | {
     list: TypeDefnList;
 } | {
     link: TypeDefnLink;
 };
-export declare type StructRepresentation = {
+export type StructRepresentation = {
     map: StructRepresentation_Map;
 } | {
     tuple: StructRepresentation_Tuple;
@@ -175,64 +179,64 @@ export declare type StructRepresentation = {
 } | {
     advanced: AdvancedDataLayoutName;
 };
-export declare type StructRepresentation_Map = {
+export type StructRepresentation_Map = {
     fields?: {
         [k in FieldName]: StructRepresentation_Map_FieldDetails;
     };
 };
-export declare type StructRepresentation_Map_FieldDetails = {
+export type StructRepresentation_Map_FieldDetails = {
     rename?: KindString;
     implicit?: AnyScalar;
 };
-export declare type StructRepresentation_Tuple = {
+export type StructRepresentation_Tuple = {
     fieldOrder?: FieldName[];
 };
-export declare type StructRepresentation_StringPairs = {
+export type StructRepresentation_StringPairs = {
     innerDelim: KindString;
     entryDelim: KindString;
 };
-export declare type StructRepresentation_StringJoin = {
+export type StructRepresentation_StringJoin = {
     join: KindString;
     fieldOrder?: FieldName[];
 };
-export declare type StructRepresentation_ListPairs = {};
-export declare type TypeDefnEnum = {
+export type StructRepresentation_ListPairs = {};
+export type TypeDefnEnum = {
     members: EnumMember[];
     representation: EnumRepresentation;
 };
-export declare type EnumMember = string;
-export declare type EnumRepresentation = {
+export type EnumMember = string;
+export type EnumRepresentation = {
     string: EnumRepresentation_String;
 } | {
     int: EnumRepresentation_Int;
 };
-export declare type EnumRepresentation_String = {
+export type EnumRepresentation_String = {
     [k in EnumMember]: KindString;
 };
-export declare type EnumRepresentation_Int = {
+export type EnumRepresentation_Int = {
     [k in EnumMember]: KindInt;
 };
-export declare type TypeDefnCopy = {
+export type TypeDefnCopy = {
     fromType: TypeName;
 };
-export declare type TypeDefnUnit = {
+export type TypeDefnUnit = {
     representation: UnitRepresentation;
 };
-export declare type UnitRepresentation = "null" | "true" | "false" | "emptymap";
-export declare type TypeDefnAny = {};
-export declare type TypeName = string;
-export declare type Schema = {
+export type UnitRepresentation = "null" | "true" | "false" | "emptymap";
+export type TypeDefnAny = {};
+export type TypeName = string;
+export type Schema = {
     types: {
         [k in TypeName]: TypeDefn;
     };
     advanced?: AdvancedDataLayoutMap;
 };
-export declare type AdvancedDataLayoutName = string;
-export declare type AdvancedDataLayoutMap = {
+export type AdvancedDataLayoutName = string;
+export type AdvancedDataLayoutMap = {
     [k in AdvancedDataLayoutName]: AdvancedDataLayout;
 };
-export declare type AdvancedDataLayout = {};
-export declare type TypeKind = KindBool | KindString | KindBytes | KindInt | KindFloat | KindMap | KindList | KindLink | KindUnion | KindStruct | KindEnum;
-export declare type RepresentationKind = "bool" | "string" | "bytes" | "int" | "float" | "null" | "map" | "list" | "link";
-export declare type AnyScalar = KindBool | KindString | KindBytes | KindInt | KindFloat;
+export type AdvancedDataLayout = {};
+export type TypeKind = KindBool | KindString | KindBytes | KindInt | KindFloat | KindMap | KindList | KindLink | KindUnion | KindStruct | KindEnum;
+export type RepresentationKind = "bool" | "string" | "bytes" | "int" | "float" | "null" | "map" | "list" | "link";
+export type AnyScalar = KindBool | KindString | KindBytes | KindInt | KindFloat;
 //# sourceMappingURL=schema-schema.d.ts.map

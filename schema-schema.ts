@@ -102,8 +102,12 @@ export type UnionRepresentation_Inline = {
   discriminantTable: { [ k in HexString]: TypeName }
 }
 export type HexString = string
-export type UnionRepresentation_StringPrefix = { [ k in KindString]: TypeName }
-export type UnionRepresentation_BytesPrefix = { [ k in KindString]: TypeName }
+export type UnionRepresentation_StringPrefix = { 
+  prefixes: { [ k in KindString]: TypeName }
+}
+export type UnionRepresentation_BytesPrefix = { 
+  prefixes: { [ k in KindString]: TypeName }
+}
 export type TypeDefnStruct = {
   fields: { [ k in FieldName]: StructField }
   representation?: StructRepresentation
