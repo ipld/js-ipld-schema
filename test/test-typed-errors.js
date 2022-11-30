@@ -569,9 +569,9 @@ describe('Errors', () => {
             representation: {
               bytesprefix: {
                 prefixes: {
-		  // @ts-ignore
-		  '00': {},
-		  '-01': 'Bls12_381Signature'
+                  // @ts-ignore
+                  '00': {},
+                  '-01': 'Bls12_381Signature'
                 }
               }
             }

@@ -331,8 +331,8 @@ describe('Unions', () => {
             representation: {
               bytesprefix: {
                 prefixes: {
-		  '00': 'Secp256k1Signature',
-		  '01': 'Bls12_381Signature'
+                  '00': 'Secp256k1Signature',
+                  '01': 'Bls12_381Signature'
                 }
               }
             }
