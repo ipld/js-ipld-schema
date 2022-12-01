@@ -1,3 +1,16 @@
+## [4.1.2](https://github.com/rvagg/js-ipld-schema/compare/v4.1.1...v4.1.2) (2022-12-01)
+
+
+### Bug Fixes
+
+* adjust type validation to respect prefixes ([711e5cf](https://github.com/rvagg/js-ipld-schema/commit/711e5cf2bc70e0dc88c268b479675847814da082))
+
+
+### Trivial Changes
+
+* lint ([8725a65](https://github.com/rvagg/js-ipld-schema/commit/8725a6540ea6dd070191ac2a115582e6ed3c029b))
+* **no-release:** bump actions/setup-node from 3.5.0 to 3.5.1 ([#78](https://github.com/rvagg/js-ipld-schema/issues/78)) ([582da87](https://github.com/rvagg/js-ipld-schema/commit/582da8772f9ae1f4802f05eb3f2466b0b922dac2))
+
 ## [4.1.1](https://github.com/rvagg/js-ipld-schema/compare/v4.1.0...v4.1.1) (2022-10-08)
 
 
