@@ -1,3 +1,11 @@
+## [4.1.4](https://github.com/rvagg/js-ipld-schema/compare/v4.1.3...v4.1.4) (2023-01-06)
+
+
+### Trivial Changes
+
+* **deps:** bump actions/checkout from 3.2.0 to 3.3.0 ([3cba15c](https://github.com/rvagg/js-ipld-schema/commit/3cba15c5d2e482753a4f762bcedd676cb737dcf4))
+* **deps:** bump actions/setup-node from 3.5.1 to 3.6.0 ([e7ab42f](https://github.com/rvagg/js-ipld-schema/commit/e7ab42f08378cd39a7cf68193441f775ddc05ea0))
+
 ## [4.1.3](https://github.com/rvagg/js-ipld-schema/compare/v4.1.2...v4.1.3) (2023-01-02)
 
 
