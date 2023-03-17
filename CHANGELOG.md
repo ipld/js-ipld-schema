@@ -1,3 +1,15 @@
+## [4.1.5](https://github.com/rvagg/js-ipld-schema/compare/v4.1.4...v4.1.5) (2023-03-17)
+
+
+### Bug Fixes
+
+* release with Node.js 18 ([a065600](https://github.com/rvagg/js-ipld-schema/commit/a065600afc2c17c01ca17d1a4b1a85435883ddf5))
+
+
+### Trivial Changes
+
+* **deps-dev:** bump typescript from 4.9.5 to 5.0.2 ([2e537a1](https://github.com/rvagg/js-ipld-schema/commit/2e537a1ce9255b60dd3fce193ba7f8c50830ffb1))
+
 ## [4.1.4](https://github.com/rvagg/js-ipld-schema/compare/v4.1.3...v4.1.4) (2023-01-06)
 
 
