@@ -30,9 +30,9 @@ const yargs = _yargs(hideBin(process.argv))
     // @ts-ignore
     toOpts)
   .command('to-js',
-    'Accepts .ipldsch and .md files, if none are passed will read from stdin, prints a JavaScript module implementing the schema for the <root type>. If --script is passed, prints a CommonJS module instead of an ES module.',
+    'Accepts .ipldsch and .md files, if none are passed will read from stdin, prints a JavaScript module implementing the schema for the <root type>. If --cjs is passed, prints a CommonJS module instead of an ES module.',
     {
-      script: { boolean: true }
+      cjs: { boolean: true }
     }
   )
   .command('json-to-schema',
@@ -44,7 +44,7 @@ const yargs = _yargs(hideBin(process.argv))
   .help()
 
 /**
- * @param {((s:string[], o:{tabs?:boolean})=>Promise<void>)|((s:string[], o:{script:boolean})=>Promise<void>)} fn
+ * @param {((s:string[], o:{tabs?:boolean})=>Promise<void>)|((s:string[], o:{cjs:boolean})=>Promise<void>)} fn
  */
 function runCommand (fn) {
   // @ts-ignore
