@@ -5,7 +5,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [16.x, lts/*, current]
+        node: [18.x, 20.x, lts/*, current]
         os: [macos-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -20,7 +20,10 @@ jobs:
           npm install --no-progress
       - name: Run tests
         run: |
-          npm test
+          npm config set script-shell bash
+          npm run test:ci
+      - name: Typecheck
+        uses: gozala/typescript-error-reporter-action@v1.0.9
   release:
     name: Release
     needs: test
@@ -38,17 +41,9 @@ jobs:
       - name: Install dependencies
         run: |
           npm install --no-progress --no-package-lock --no-save
-      - name: Install plugins
+      - name: Build
         run: |
-          npm install \
-            @semantic-release/commit-analyzer \
-            conventional-changelog-conventionalcommits \
-            @semantic-release/release-notes-generator \
-            @semantic-release/npm \
-            @semantic-release/github \
-            @semantic-release/git \
-            @semantic-release/changelog \
-            --no-progress --no-package-lock --no-save
+          npm run build
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -9,6 +9,7 @@
     "prepublishOnly": "npm run build",
     "peg": "echo '// @ts-nocheck' > lib/parser.cjs && npm_config_yes=true npx pegjs -o tmp.cjs ipld-schema.pegjs && cat tmp.cjs >> lib/parser.cjs && rm tmp.cjs",
     "lint": "standard",
+    "test:ci": "npm run test",
     "test:node": "c8 --check-coverage --exclude=lib/parser.cjs --exclude=test/** mocha test/test-*.js",
     "test:browser": "polendina --cleanup --webpack-config test/webpack.config.js test/test-typed-*.js",
     "test": "npm run lint && npm run build && npm run test:node && npm run test:browser",
@@ -34,23 +35,30 @@
   "author": "Rod <r@va.gg> (http://r.va.gg/)",
   "license": "(Apache-2.0 AND MIT)",
   "devDependencies": {
-    "@types/chai": "^4.3.5",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^10.0.4",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^9.0.6",
+    "@semantic-release/npm": "^10.0.6",
+    "@semantic-release/release-notes-generator": "^11.0.7",
+    "@types/chai": "^4.3.6",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^20.1.5",
-    "c8": "^8.0.0",
-    "chai": "^4.3.7",
+    "@types/node": "^20.6.0",
+    "@types/yargs": "^17.0.24",
+    "c8": "^8.0.1",
+    "chai": "^4.3.8",
+    "conventional-changelog-conventionalcommits": "^6.1.0",
     "js-yaml": "^4.1.0",
     "mocha": "^10.2.0",
     "polendina": "^3.2.1",
-    "standard": "^17.0.0",
-    "typescript": "^5.0.4"
+    "standard": "^17.1.0",
+    "typescript": "^5.2.2"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/rvagg/js-ipld-schema.git"
   },
   "dependencies": {
-    "@types/yargs": "^17.0.24",
     "get-stdin": "^9.0.0",
     "yargs": "^17.7.2"
   },
