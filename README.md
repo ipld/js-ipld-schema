@@ -179,7 +179,7 @@ This executable has two commands that operate on files or stdin.
   * `ipld-schema to-json [-t] [files...]`: Accepts .ipldsch files, if none are passed will read from stdin, prints the JSON form of the schema
   * `ipld-schema to-schema [-t] [files...]`: Accepts .ipldsch and .md files, if none are passed will read from stdin, prints the canonical IPLD Schema form of the schema
   * `ipld-schema json-to-schema [files...]`: Accepts .json files, if none are passed will read from stdin, prints the canonical IPLD Schema form of the schema represented by the JSON
-  * `ipld-schema to-js [--script] [files...]`: Accepts .ipldsch files, if none are passed will read from stdin, prints a JavaScript module that exports a typed and representation converter/validator pair. If `--script` is passed, the returned JavaScript with be in CJS form, otherwise it will be in ESM form. These are the same pair that are generated from a `@ipld/schema/typed.js#create()` call for the schema in question, except that all types discovered within the schema will be exported as well.
+  * `ipld-schema to-js [--cjs] [files...]`: Accepts .ipldsch files, if none are passed will read from stdin, prints a JavaScript module that exports a typed and representation converter/validator pair. If `--cjs` is passed, the returned JavaScript with be in CJS form, otherwise it will be in ESM form. These are the same pair that are generated from a `@ipld/schema/typed.js#create()` call for the schema in question, except that all types discovered within the schema will be exported as well.
 
 `validate`, `to-json`, `to-schema`, and `to-js` take either .ipldsch or .md files. When using .md files, `ipld-schema` will extract any \`\`\` code blocks using the `ipldsch` or `sh` language codes.
 
