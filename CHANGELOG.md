@@ -1,3 +1,21 @@
+## [4.2.0](https://github.com/rvagg/js-ipld-schema/compare/v4.1.11...v4.2.0) (2023-09-14)
+
+
+### Features
+
+* add `to-js` cli command to produce JS validator/transformers ([bc3ce5f](https://github.com/rvagg/js-ipld-schema/commit/bc3ce5fac8b7a79ed726836b8dfd4056bb51faf9))
+
+
+### Bug Fixes
+
+* --cjs instead of --script for to-js ([fd29426](https://github.com/rvagg/js-ipld-schema/commit/fd2942627a34483673800f7b6532b2e43d49660f))
+* make semantic-release work again, pin dependencies, udpate release workflow, rebuild ([4425e31](https://github.com/rvagg/js-ipld-schema/commit/4425e3186384d88a92a1baeaec99d636886a1865))
+
+
+### Trivial Changes
+
+* **deps:** bump actions/checkout from 3.6.0 to 4.0.0 ([8878815](https://github.com/rvagg/js-ipld-schema/commit/88788150e7cf1d964fc8cc38663c2b550bb1b635))
+
 ## [4.1.11](https://github.com/rvagg/js-ipld-schema/compare/v4.1.10...v4.1.11) (2023-08-25)
 
 
