@@ -3,6 +3,7 @@
 import { validate } from './validate.js'
 import { toJSON } from './to-json.js'
 import { toSchema } from './to-schema.js'
+import { toJS } from './to-js.js'
 import { jsonToSchema } from './json-to-schema.js'
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
@@ -28,6 +29,12 @@ const yargs = _yargs(hideBin(process.argv))
     'Accepts .ipldsch and .md files, if none are passed will read from stdin, prints the canonical IPLD Schema form of the schema',
     // @ts-ignore
     toOpts)
+  .command('to-js',
+    'Accepts .ipldsch and .md files, if none are passed will read from stdin, prints a JavaScript module implementing the schema for the <root type>. If --script is passed, prints a CommonJS module instead of an ES module.',
+    {
+      script: { boolean: true }
+    }
+  )
   .command('json-to-schema',
     'Accepts .json files, if none are passed will read from stdin, prints the canonical IPLD Schema form of the schema represented by the JSON',
     // @ts-ignore
@@ -37,7 +44,7 @@ const yargs = _yargs(hideBin(process.argv))
   .help()
 
 /**
- * @param {(s:string[], o:{tabs?:boolean})=>Promise<void>} fn
+ * @param {((s:string[], o:{tabs?:boolean})=>Promise<void>)|((s:string[], o:{script:boolean})=>Promise<void>)} fn
  */
 function runCommand (fn) {
   // @ts-ignore
@@ -59,6 +66,9 @@ switch (yargs.argv._[0]) {
     break
   case 'to-schema':
     runCommand(toSchema)
+    break
+  case 'to-js':
+    runCommand(toJS)
     break
   case 'json-to-schema':
     runCommand(jsonToSchema)
