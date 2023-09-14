@@ -12,7 +12,7 @@ import { Builder, safeReference } from '../lib/typed.js'
 
 /**
  * @param {string[]} files
- * @param {{script:boolean}} options
+ * @param {{cjs:boolean}} options
  * @returns
  */
 export async function toJS (files, options) {
@@ -45,18 +45,18 @@ export async function toJS (files, options) {
     builder.addType(type)
   }
   const schemaContent = input.map(({ contents }) => contents).join('\n').replace(/^/mg, ' * ').replace(/\s+$/mg, '')
-  console.log(`/** Auto-generated with ${await pkgDescriptor()} at ${new Date().toDateString()} from IPLD Schema:\n *\n${schemaContent}\n */\n`)
+  console.log(`/** Auto-generated with ${await pkgDecjsor()} at ${new Date().toDateString()} from IPLD Schema:\n *\n${schemaContent}\n */\n`)
   console.log(builder.dumpTypeTransformers())
   for (const type of types) {
     console.log(`
-${options.script === true ? `module.exports${safeReference(type)}` : `export const ${type}`} = {
+${options.cjs === true ? `module.exports${safeReference(type)}` : `export const ${type}`} = {
   toTyped: Types${safeReference(type)},
   toRepresentation: Reprs${safeReference(type)}
 }`)
   }
 }
 
-async function pkgDescriptor () {
+async function pkgDecjsor () {
   const p = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
   return `${p.name}@v${p.version}`
 }
