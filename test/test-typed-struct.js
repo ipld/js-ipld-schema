@@ -251,6 +251,99 @@ describe('Structs', () => {
     assert.isUndefined(typed.toRepresentation({}))
   })
 
+  it('struct with listpairs representation', async () => {
+    const typed = await buildAndVerify({
+      types: {
+        SimpleStruct: {
+          struct: {
+            fields: {
+              foo: { type: 'Int' },
+              bar: { type: 'Bool' },
+              baz: { type: 'String' }
+            },
+            representation: { listpairs: {} }
+          }
+        }
+      }
+    }, 'SimpleStruct')
+
+    assert.deepStrictEqual(typed.toTyped([['foo', 100], ['bar', true], ['baz', 'this is baz']]), { foo: 100, bar: true, baz: 'this is baz' })
+    assert.deepStrictEqual(typed.toTyped([['bar', true], ['foo', 100], ['baz', 'this is baz']]), { foo: 100, bar: true, baz: 'this is baz' })
+    assert.deepStrictEqual(typed.toTyped([['bar', true], ['baz', 'this is baz'], ['foo', 100]]), { foo: 100, bar: true, baz: 'this is baz' })
+    assert.deepStrictEqual(typed.toTyped([['baz', 'this is baz'], ['bar', true], ['foo', 100]]), { foo: 100, bar: true, baz: 'this is baz' })
+    assert.deepStrictEqual(typed.toRepresentation({ foo: 100, bar: true, baz: 'this is baz' }), [['foo', 100], ['bar', true], ['baz', 'this is baz']])
+    assert.isUndefined(typed.toTyped({ foo: 100, bar: true, baz: 'this is baz' }))
+    assert.isUndefined(typed.toRepresentation([100, true, 'this is baz']))
+    assert.isUndefined(typed.toTyped([]))
+    assert.isUndefined(typed.toRepresentation({}))
+    assert.isUndefined(typed.toTyped([['foo', 100], ['bar', true]]))
+    assert.isUndefined(typed.toRepresentation({ foo: 100, bar: true }))
+    assert.isUndefined(typed.toTyped([['foo', 100], ['baz', 'this is baz']]))
+    assert.isUndefined(typed.toRepresentation({ foo: 100, baz: 'this is baz' }))
+    assert.isUndefined(typed.toTyped([['bar', true], ['baz', 'this is baz']]))
+    assert.isUndefined(typed.toRepresentation({ bar: true, baz: 'this is baz' }))
+    assert.isUndefined(typed.toTyped([['foo', 100], ['bar', true], ['baz', 'this is baz'], ['bam', 1]]))
+    assert.isUndefined(typed.toTyped([['foo', 100], ['bar', true], ['baz', 'this is baz'], 1]))
+    assert.isUndefined(typed.toRepresentation({ foo: 100, bar: true, baz: 'this is baz', bam: 1 }))
+    assert.isUndefined(typed.toTyped([1, 100, true, 'nope']))
+  })
+
+  it('struct with listpairs representation containing structs', async () => {
+    const typed = await buildAndVerify({
+      types: {
+        $struct: {
+          struct: {
+            fields: {
+              foo: { type: 'Int' },
+              bar: { type: 'Bool' },
+              baz: { type: 'String' }
+            },
+            representation: { map: {} }
+          }
+        },
+        SimpleStruct: {
+          struct: {
+            fields: {
+              foo: { type: '$struct' },
+              bar: { type: '$struct' }
+            },
+            representation: { listpairs: {} }
+          }
+        }
+      }
+    }, 'SimpleStruct')
+
+    assert.deepStrictEqual(
+      typed.toTyped([['foo', { foo: 100, bar: true, baz: 'this is baz' }], ['bar', { foo: -1100, bar: false, baz: '' }]]),
+      {
+        foo: { foo: 100, bar: true, baz: 'this is baz' },
+        bar: { foo: -1100, bar: false, baz: '' }
+      }
+    )
+    assert.deepStrictEqual(
+      typed.toTyped([['bar', { foo: -1100, bar: false, baz: '' }], ['foo', { foo: 100, bar: true, baz: 'this is baz' }]]),
+      {
+        foo: { foo: 100, bar: true, baz: 'this is baz' },
+        bar: { foo: -1100, bar: false, baz: '' }
+      }
+    )
+    assert.deepStrictEqual(
+      typed.toRepresentation(
+        {
+          foo: { foo: 100, bar: true, baz: 'this is baz' },
+          bar: { foo: -1100, bar: false, baz: '' }
+        }
+      ),
+      [['foo', { foo: 100, bar: true, baz: 'this is baz' }], ['bar', { foo: -1100, bar: false, baz: '' }]]
+    )
+    assert.isUndefined(typed.toTyped([{}, {}]))
+    assert.isUndefined(typed.toTyped([['foo', {}], ['bar', {}]]))
+    assert.isUndefined(typed.toRepresentation({ foo: {}, bar: {} }))
+    assert.isUndefined(typed.toTyped([]))
+    assert.isUndefined(typed.toTyped([[], []]))
+    assert.isUndefined(typed.toRepresentation({}))
+  })
+
   it('struct nullables', async () => {
     const typed = await buildAndVerify({
       types: {
