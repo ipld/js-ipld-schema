@@ -1,3 +1,11 @@
+## [4.2.1](https://github.com/rvagg/js-ipld-schema/compare/v4.2.0...v4.2.1) (2023-09-16)
+
+
+### Bug Fixes
+
+* improved struct optional handling in typed validator ([c55cfe2](https://github.com/rvagg/js-ipld-schema/commit/c55cfe21f766ccecf739a8fcd56a78bd8c0c6b35))
+* s/--script/--cjs in docs ([5e8adc2](https://github.com/rvagg/js-ipld-schema/commit/5e8adc2b4842439eaa33bc39605c83d4c4377316))
+
 ## [4.2.0](https://github.com/rvagg/js-ipld-schema/compare/v4.1.11...v4.2.0) (2023-09-14)
 
 
