@@ -469,6 +469,42 @@ describe('Structs', () => {
     assert.strictEqual(typed.toTyped(map), map)
   })
 
+  it('struct with listpairs representation and optionals', async () => {
+    const typed = await buildAndVerify({
+      types: {
+        SimpleStruct: {
+          struct: {
+            fields: {
+              foo: { type: 'Int', optional: true },
+              bar: { type: 'Bool' },
+              baz: { type: 'String', optional: true }
+            },
+            representation: { listpairs: {} }
+          }
+        }
+      }
+    }, 'SimpleStruct')
+
+    assert.deepStrictEqual(typed.toTyped([['foo', 100], ['bar', true], ['baz', 'this is baz']]), { foo: 100, bar: true, baz: 'this is baz' })
+    assert.deepStrictEqual(typed.toRepresentation({ foo: 100, bar: true, baz: 'this is baz' }), [['foo', 100], ['bar', true], ['baz', 'this is baz']])
+    assert.isUndefined(typed.toTyped([]))
+    assert.deepStrictEqual(typed.toTyped([['foo', 100], ['bar', true]]), { foo: 100, bar: true })
+    assert.deepStrictEqual(typed.toRepresentation({ foo: 100, bar: true }), [['foo', 100], ['bar', true]])
+    assert.isUndefined(typed.toRepresentation({ foo: 100, baz: 'this is baz' }))
+    assert.deepStrictEqual(typed.toTyped([['bar', true], ['baz', 'this is baz']]), { bar: true, baz: 'this is baz' })
+    assert.deepStrictEqual(typed.toRepresentation({ bar: true, baz: 'this is baz' }), [['bar', true], ['baz', 'this is baz']])
+    assert.isUndefined(typed.toTyped([['foo', 100], ['bar', true], ['baz', 'this is baz'], ['nope', 1]]))
+    assert.isUndefined(typed.toTyped([['foo', undefined], ['bar', true], ['baz', '']])) // the next 3 don't validator because 'undefined' isn't in the data model
+    assert.isUndefined(typed.toTyped([['foo', 1], ['bar', true], ['baz', undefined]]))
+    assert.isUndefined(typed.toTyped([['foo', undefined], ['bar', true], ['baz', undefined]]))
+    assert.deepStrictEqual(typed.toTyped([['bar', true], ['baz', '']]), { bar: true, baz: '' })
+    assert.deepStrictEqual(typed.toRepresentation({ bar: true, baz: '' }), [['bar', true], ['baz', '']])
+    assert.deepStrictEqual(typed.toTyped([['foo', 1], ['bar', true]]), { foo: 1, bar: true })
+    assert.deepStrictEqual(typed.toRepresentation({ foo: 1, bar: true }), [['foo', 1], ['bar', true]])
+    assert.deepStrictEqual(typed.toTyped([['bar', true]]), { bar: true })
+    assert.deepStrictEqual(typed.toRepresentation({ bar: true }), [['bar', true]])
+  })
+
   it('struct with anonymous types', async () => {
     /*
       type StructWithAnonymousTypes struct {
