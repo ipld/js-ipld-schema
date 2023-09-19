@@ -1,3 +1,10 @@
+## [4.2.2](https://github.com/rvagg/js-ipld-schema/compare/v4.2.1...v4.2.2) (2023-09-19)
+
+
+### Trivial Changes
+
+* **deps:** upgrade devDeps ([e86407f](https://github.com/rvagg/js-ipld-schema/commit/e86407fd9950cff6046b22194266627be5f53967))
+
 ## [4.2.1](https://github.com/rvagg/js-ipld-schema/compare/v4.2.0...v4.2.1) (2023-09-16)
 
 
