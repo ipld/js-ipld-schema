@@ -1,5 +1,5 @@
 import { create, Builder } from '@ipld/schema/typed.js'
-import chai from 'chai'
+import * as chai from 'chai'
 // @ts-ignore
 import standard from 'standard'
 
