@@ -1,3 +1,10 @@
+## [4.2.8](https://github.com/rvagg/js-ipld-schema/compare/v4.2.7...v4.2.8) (2024-01-11)
+
+
+### Trivial Changes
+
+* **deps-dev:** bump chai from 4.3.10 to 5.0.0 ([736abfc](https://github.com/rvagg/js-ipld-schema/commit/736abfcfd1408131fd7617fb0275bfb35dfe520c))
+
 ## [4.2.7](https://github.com/rvagg/js-ipld-schema/compare/v4.2.6...v4.2.7) (2024-01-04)
 
 
