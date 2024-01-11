@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 
-import chai from 'chai'
+import * as chai from 'chai'
 import { buildAndVerify } from './typed-util.js'
 const { assert } = chai
 
