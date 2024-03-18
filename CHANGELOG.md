@@ -1,3 +1,10 @@
+## [4.2.11](https://github.com/rvagg/js-ipld-schema/compare/v4.2.10...v4.2.11) (2024-03-18)
+
+
+### Trivial Changes
+
+* **deps-dev:** bump @semantic-release/npm from 11.0.3 to 12.0.0 ([eafeed2](https://github.com/rvagg/js-ipld-schema/commit/eafeed250bdecd9a585249b73037a3ef24394818))
+
 ## [4.2.10](https://github.com/rvagg/js-ipld-schema/compare/v4.2.9...v4.2.10) (2024-03-13)
 
 
