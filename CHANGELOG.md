@@ -1,3 +1,10 @@
+## [4.2.12](https://github.com/rvagg/js-ipld-schema/compare/v4.2.11...v4.2.12) (2024-03-18)
+
+
+### Trivial Changes
+
+* **deps-dev:** bump @semantic-release/github from 9.2.6 to 10.0.2 ([9b15b49](https://github.com/rvagg/js-ipld-schema/commit/9b15b497806be88cad8e811256aa8b308db30f6d))
+
 ## [4.2.11](https://github.com/rvagg/js-ipld-schema/compare/v4.2.10...v4.2.11) (2024-03-18)
 
 
