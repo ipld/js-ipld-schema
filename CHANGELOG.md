@@ -1,3 +1,10 @@
+## [4.2.13](https://github.com/rvagg/js-ipld-schema/compare/v4.2.12...v4.2.13) (2024-03-19)
+
+
+### Trivial Changes
+
+* **deps-dev:** bump @semantic-release/commit-analyzer ([903b8bc](https://github.com/rvagg/js-ipld-schema/commit/903b8bcf509d448eceb7269e0c3828d5f68988ca))
+
 ## [4.2.12](https://github.com/rvagg/js-ipld-schema/compare/v4.2.11...v4.2.12) (2024-03-18)
 
 
