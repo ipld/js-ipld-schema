@@ -1,3 +1,10 @@
+## [4.2.14](https://github.com/rvagg/js-ipld-schema/compare/v4.2.13...v4.2.14) (2024-03-25)
+
+
+### Trivial Changes
+
+* **deps-dev:** bump @semantic-release/release-notes-generator ([aef6545](https://github.com/rvagg/js-ipld-schema/commit/aef6545284d2ef02517a6823fc0d6ccbc1909bda))
+
 ## [4.2.13](https://github.com/rvagg/js-ipld-schema/compare/v4.2.12...v4.2.13) (2024-03-19)
 
 
