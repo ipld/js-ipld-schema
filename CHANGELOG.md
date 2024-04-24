@@ -1,3 +1,10 @@
+## [4.2.15](https://github.com/rvagg/js-ipld-schema/compare/v4.2.14...v4.2.15) (2024-04-24)
+
+
+### Trivial Changes
+
+* **deps:** bump actions/checkout from 4.1.2 to 4.1.3 ([d402bbc](https://github.com/rvagg/js-ipld-schema/commit/d402bbc394aa19fb390821c382ce59e28fe856bd))
+
 ## [4.2.14](https://github.com/rvagg/js-ipld-schema/compare/v4.2.13...v4.2.14) (2024-03-25)
 
 
