@@ -1,9 +1,7 @@
 /* eslint-env mocha */
 
-import * as chai from 'chai'
+import { assert } from 'chai'
 import { buildAndVerify } from './typed-util.js'
-
-const { assert } = chai
 
 const fauxCid = {}
 fauxCid.asCID = fauxCid
