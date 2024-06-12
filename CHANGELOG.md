@@ -1,3 +1,9 @@
+## [4.2.17](https://github.com/rvagg/js-ipld-schema/compare/v4.2.16...v4.2.17) (2024-06-12)
+
+### Trivial Changes
+
+* remove typescript checker action ([54cacf4](https://github.com/rvagg/js-ipld-schema/commit/54cacf4605ffba3a578e476b85cf1a5ff124a6a5))
+
 ## [4.2.16](https://github.com/rvagg/js-ipld-schema/compare/v4.2.15...v4.2.16) (2024-06-12)
 
 ### Trivial Changes
