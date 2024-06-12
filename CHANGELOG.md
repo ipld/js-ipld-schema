@@ -1,3 +1,12 @@
+## [4.2.16](https://github.com/rvagg/js-ipld-schema/compare/v4.2.15...v4.2.16) (2024-06-12)
+
+### Trivial Changes
+
+* add node.js 22.x ([3122e29](https://github.com/rvagg/js-ipld-schema/commit/3122e29f20da9fae69d4fae0ea5beeac874ae223))
+* **deps:** bump actions/checkout from 4.1.3 to 4.1.4 ([19364c0](https://github.com/rvagg/js-ipld-schema/commit/19364c0b274182252443872751afcb4d276bc147))
+* **deps:** bump actions/checkout from 4.1.4 to 4.1.5 ([b8b0773](https://github.com/rvagg/js-ipld-schema/commit/b8b077392a8e988b13ee0ec6e2d28b0ff0e30433))
+* update deps, fix ts chai errors ([e325863](https://github.com/rvagg/js-ipld-schema/commit/e3258630a2f20af1bfee900a2f28d59666d07200))
+
 ## [4.2.15](https://github.com/rvagg/js-ipld-schema/compare/v4.2.14...v4.2.15) (2024-04-24)
 
 
