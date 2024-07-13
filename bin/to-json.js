@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import * as parser from '../lib/parser.cjs'
+import parser from '../lib/parser.cjs'
 import { transformError } from '../lib/util.js'
 import { collectInput } from './collect-input.js'
 

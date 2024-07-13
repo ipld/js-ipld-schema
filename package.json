@@ -7,7 +7,7 @@
     "build": "npm run build:types",
     "build:types": "tsc --build",
     "prepublishOnly": "npm run build",
-    "peg": "echo '// @ts-nocheck' > lib/parser.cjs && npm_config_yes=true npx pegjs -o tmp.cjs ipld-schema.pegjs && cat tmp.cjs >> lib/parser.cjs && rm tmp.cjs",
+    "peg": "echo '// @ts-nocheck' > lib/parser.cjs && npm_config_yes=true npx peggy -o tmp.cjs ipld-schema.pegjs && cat tmp.cjs >> lib/parser.cjs && rm tmp.cjs",
     "lint": "standard",
     "test:ci": "npm run test",
     "test:node": "c8 --check-coverage --exclude=lib/parser.cjs --exclude=test/** mocha test/test-*.js",
