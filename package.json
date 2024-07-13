@@ -1,6 +1,6 @@
 {
   "name": "@ipld/schema",
-  "version": "4.2.19",
+  "version": "5.0.0",
   "description": "IPLD Schema parser and CLI utilities for JavaScript",
   "type": "module",
   "scripts": {

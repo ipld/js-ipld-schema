@@ -1,3 +1,15 @@
+## [5.0.0](https://github.com/rvagg/js-ipld-schema/compare/v4.2.19...v5.0.0) (2024-07-13)
+
+### ⚠ BREAKING CHANGES
+
+* switch from peg.js to peggy
+
+### Trivial Changes
+
+* drop Node 18.x from CI ([ba51277](https://github.com/rvagg/js-ipld-schema/commit/ba512773a296c1cf0489c9edc4d046800de87f86))
+* switch from peg.js to peggy ([522bc68](https://github.com/rvagg/js-ipld-schema/commit/522bc68d566be580e4a1fe5ac0a2cef821a6167b))
+* update deps ([9c12b8f](https://github.com/rvagg/js-ipld-schema/commit/9c12b8f592a8ffd7adecca6a722e43691f590051))
+
 ## [4.2.19](https://github.com/rvagg/js-ipld-schema/compare/v4.2.18...v4.2.19) (2024-07-10)
 
 ### Trivial Changes
