@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { readFile } from 'fs/promises'
-import * as parser from '../lib/parser.cjs'
+import parser from '../lib/parser.cjs'
 import { transformError } from '../lib/util.js'
 import { collectInput } from './collect-input.js'
 import { Builder, safeReference } from '../lib/typed.js'
