@@ -26,6 +26,40 @@
     }
     return value
   }
+
+  function flattenArray (a) {
+    if (!Array.isArray(a)) {
+      return a
+    }
+    return a.reduce((p, c) => p.concat(flattenArray(c)), [])
+  }
+
+  function processComments (precomments, linecomment) {
+    let pcl = precomments.split('\n')
+    // trim trailing empty lines
+    while (pcl.length && !pcl[pcl.length - 1].trim()) {
+      pcl.pop()
+    }
+    // trim leading empty lines
+    while (pcl.length && !pcl[0].trim()) {
+      pcl.shift()
+    }
+    let lastempty = pcl.findLastIndex((l) => /^\s*$/.test(l))
+    if (lastempty !== -1) {
+      pcl = pcl.slice(lastempty + 1)
+    }
+    // trim leading space and # on each line
+    pcl = pcl.map((l) => l.replace(/^[ \t]*#[ \t]?/gm, ''))
+    linecomment = linecomment ? flattenArray(linecomment).join('').replace(/^[ \t]*#[ \t]?/, '') : null
+    const comments = (pcl.length || linecomment) ? {} : null
+    if (pcl.length) {
+      comments.precomments = pcl.join('\n')
+    }
+    if (linecomment) {
+      comments.linecomment = linecomment
+    }
+    return comments
+  }
 }
 
 Root = roots:RootConstructs+ {
@@ -50,7 +84,28 @@ RootConstructs
   = types:TypeDef { return { types } }
   / advanced:AdvancedDef { return { advanced } }
 
-TypeDef = _ 'type' _ name:TypeName _ definition:Definition _ {
+TypeDef =
+    ws*
+    precomments:capturedcomment
+    annotations:Annotation*
+    'type'
+    ws+
+    name:TypeName
+    ws+
+    definition:Definition
+    ws*
+    newline* {
+  if (Object.keys(definition).length !== 1) {
+    throw new Error('Unexpected definition for type: ' + JSON.stringify(definition))
+  }
+  const typ = Object.keys(definition)[0]
+  const comments = processComments(precomments)
+  if (comments) {
+    definition[typ].comments = extend(definition[typ].comments || {}, { type: comments })
+  }
+  if (annotations && annotations.length) {
+    definition[typ].annotations = extend(definition[typ].annotations || {}, { type: annotations })
+  }
   return { [name]: definition }
 }
 
@@ -67,10 +122,10 @@ Definition
   / descriptor:ListDescriptor { return descriptor } // "list" assumed if goes straight to a []
   / descriptor:LinkDescriptor { return descriptor } // "link" assumed if goes straight to a &
   / descriptor:CopyDescriptor { return descriptor } // "="
-  / EnumKind _ descriptor:EnumDescriptor { return descriptor }
-  / UnionKind _ descriptor:UnionDescriptor { return descriptor }
-  / StructKind _ descriptor:StructDescriptor { return descriptor }
-  / BytesKind _ descriptor:BytesDescriptor { return descriptor }
+  / EnumKind wsnl descriptor:EnumDescriptor { return descriptor }
+  / UnionKind wsnl descriptor:UnionDescriptor { return descriptor }
+  / StructKind wsnl descriptor:StructDescriptor { return descriptor }
+  / BytesKind wsnl descriptor:BytesDescriptor { return descriptor }
   / kind:SimpleKind { return { [kind]: {} } }
 
 MapKind = "map"
@@ -82,7 +137,7 @@ BytesKind = "bytes"
 
 SimpleKind = kind:BaseType { return kind }
 
-ListDescriptor = "[" _ fields:TypeDescriptor _ "]" _ representation:ListRepresentation? {
+ListDescriptor = "[" _ fields:TypeDescriptor _ "]" wsnl representation:ListRepresentation? {
   return { list: Object.assign({}, fields, representation ? { representation } : null) }
 }
 
@@ -95,11 +150,11 @@ LinkDescriptor = "&" expectedType:TypeName {
   return { link: { expectedType } }
 }
 
-CopyDescriptor = "=" _ fromType:TypeName {
+CopyDescriptor = "=" wsnl fromType:TypeName {
   return { copy: { fromType } }
 }
 
-EnumDescriptor = "{" members:EnumMember+ "}" _ representation:EnumRepresentation? _ {
+EnumDescriptor = "{" members:EnumMember+ "}" wsnl representation:EnumRepresentation? wsnl {
   if (!representation || !(representation.string || representation.int)) {
     representation = { string: {} }
   }
@@ -123,13 +178,13 @@ EnumDescriptor = "{" members:EnumMember+ "}" _ representation:EnumRepresentation
   return { enum: { members, representation } }
 }
 
-EnumMember = _ "|" _ name:EnumValue _ representationOptions:EnumFieldRepresentationOptions? _ {
+EnumMember = wsnl "|" wsnl name:EnumValue _ representationOptions:EnumFieldRepresentationOptions? wsnl {
   return { [name]: representationOptions }
 }
 
-EnumFieldRepresentationOptions = "(" _ value:QuotedString _ ")" { return value }
+EnumFieldRepresentationOptions = "(" ws* value:QuotedString ws* ")" { return value }
 
-UnionDescriptor = "{" values:UnionValue+ "}" _ representation:UnionRepresentation {
+UnionDescriptor = "{" values:UnionValue+ "}" wsnl representation:UnionRepresentation wsnl {
   let fields = values.reduce(extend, {})
   if (representation.keyed) {
     representation.keyed = fields
@@ -151,11 +206,11 @@ UnionDescriptor = "{" values:UnionValue+ "}" _ representation:UnionRepresentatio
 
 // TODO: tighten these up, kinded doesn't get quoted kinds, keyed and envelope does, this allows a kinded
 // union to pass through with quoted strings, it's currently just a messy duplication
-UnionValue = _ "|" _ type:(TypeName / LinkDescriptor) _ name:(QuotedString / BaseType) _ {
+UnionValue = wsnl "|" ws* type:(TypeName / LinkDescriptor) ws* name:(QuotedString / BaseType) _ {
   return { [name]: type }
 }
 
-MapDescriptor = "{" _ keyType:TypeName _ ":" _ valueType:TypeDescriptor _ "}" _ representation:MapRepresentation? {
+MapDescriptor = "{" _ keyType:TypeName _ ":" _ valueType:TypeDescriptor _ "}" wsnl representation:MapRepresentation? {
   let representationType = (representation && representation.type)
   if (representationType) {
     representation = { [representationType]: representation || {} }
@@ -164,17 +219,27 @@ MapDescriptor = "{" _ keyType:TypeName _ ":" _ valueType:TypeDescriptor _ "}" _ 
   return { map: Object.assign({ keyType }, valueType, representation ? { representation } : null) }
 }
 
-StructDescriptor = "{" _ values:StructValue* _ "}" _ representation:StructRepresentation? {
+StructDescriptor = "{" values:StructValues "}" ws* representation:StructRepresentation? {
   let fields = values.reduce(extend, {})
-  // field representation options can come in from parens following field definitions, we need
-  // to lift them out into the 'representation' object
-  const representationFields = Object.entries(fields).reduce((p, fieldEntry) => {
+  // Field representation options can come in from parens following field definitions,
+  // annotations comments prior to field definitions, and any additional precomments or line
+  // comments need to be captured from around the field. These all need to be lifted out of the
+  // entry and packaged separately.
+  const [representationFields, annotationsFields, commentsFields] = Object.entries(fields).reduce((p, fieldEntry) => {
     if (fieldEntry[1].representationOptions) {
-      p[fieldEntry[0]] = fieldEntry[1].representationOptions
+      p[0][fieldEntry[0]] = fieldEntry[1].representationOptions
       delete fieldEntry[1].representationOptions
     }
+    if (fieldEntry[1].annotations) {
+      p[1][fieldEntry[0]] = fieldEntry[1].annotations
+      delete fieldEntry[1].annotations
+    }
+    if (fieldEntry[1].comments) {
+      p[2][fieldEntry[0]] = fieldEntry[1].comments
+      delete fieldEntry[1].comments
+    }
     return p
-  }, {})
+  }, [{}, {}, {}])
   let representationType = (representation && representation.type)
   if (representationType) {
     // restructure from { type: 'foo', bar: 'baz' } to { foo: { bar: 'baz' } }
@@ -194,12 +259,46 @@ StructDescriptor = "{" _ values:StructValue* _ "}" _ representation:StructRepres
     }
     representation.map.fields = representationFields
   }
-  return { struct: extend({ fields }, { representation: representation || defaultStructRepresentation() }) }
+  return { struct:
+    extend(
+      extend(
+        extend({ fields }, { representation: representation || defaultStructRepresentation() }),
+        Object.keys(annotationsFields).length > 0 ? { annotations: { fields: annotationsFields } } : null
+      ), Object.keys(commentsFields).length > 0 ? { comments: { fields: commentsFields} } : null
+    )
+  }
 }
 
-// TODO: break these by newline || "}" (non-greedy match)
-StructValue = _ key:StringName _ options:StructFieldOption* _ type:StructType _ representationOptions:StructFieldRepresentationOptions? _ {
-  return { [key]: options.reduce(extend, extend({ type }, representationOptions ? { representationOptions } : null)) }
+StructValues
+  = values:StructValue+ {
+    return values
+  }
+  / _ { return [] }
+
+StructValue =
+    ws*
+    precomments:capturedcomment
+    annotations:Annotation*
+    key:StringName
+    ws+
+    options:(options:StructFieldOption ws+ { return options })*
+    type:StructType
+    ws*
+    representationOptions:StructFieldRepresentationOptions?
+    ws*
+    linecomment:comment?
+    ws*
+    newline* {
+  const comments = processComments(precomments, linecomment)
+  return { [key]: options.reduce(extend,
+     extend(
+        extend(
+          extend({ type }, comments ? { comments } : null),
+          representationOptions ? { representationOptions } : null),
+        annotations.length ? { annotations } : null
+     )
+    )
+  }
 }
 
 StructFieldOption
@@ -216,38 +315,38 @@ StructType
   / ListDescriptor
   / LinkDescriptor
 
-StructFieldRepresentationOptions = "(" _ options:StructFieldRepresentationOption* _ ")" {
+StructFieldRepresentationOptions = "(" ws* options:StructFieldRepresentationOption* ws* ")" {
   return options.reduce(extend, {})
 }
 
 StructFieldRepresentationOption
-  = "implicit" _ implicit:ImplicitOption { return { implicit } }
-  / "rename" _ rename:QuotedString _ { return { rename } }
+  = "implicit" ws* implicit:ImplicitOption { return { implicit } }
+  / "rename" ws* rename:QuotedString ws* { return { rename } }
 
 ImplicitOption
-  = implicit:QuotedString _ { return implicit }
-  / implicit:Integer _ { return parseInt(implicit, 10) }
+  = implicit:QuotedString ws* { return implicit }
+  / implicit:Integer ws* { return parseInt(implicit, 10) }
   / "true" { return true }
   / "false" { return false }
   // TODO: floats and bytes
 
-UnionRepresentation = "representation" _ representation:UnionRepresentationType _ {
+UnionRepresentation = "representation" wsnl representation:UnionRepresentationType {
   return representation
 }
 
-MapRepresentation = "representation" _ representation:MapRepresentationType _ {
+MapRepresentation = "representation" wsnl representation:MapRepresentationType {
   return representation
 }
 
-ListRepresentation = "representation" _ representation:ListRepresentationType _ {
+ListRepresentation = "representation" wsnl representation:ListRepresentationType {
   return representation
 }
 
-StructRepresentation = "representation" _ representation:StructRepresentationType _ {
+StructRepresentation = "representation" wsnl representation:StructRepresentationType {
   return representation
 }
 
-EnumRepresentation = "representation" _ representation:EnumRepresentationType _ {
+EnumRepresentation = "representation" wsnl representation:EnumRepresentationType {
   return representation
 }
 
@@ -256,26 +355,26 @@ UnionRepresentationType
   / "kinded" { return { kinded: {} } }
   / "stringprefix" { return { stringprefix: {} } } // TODO: check kind reprs for union types are all strings
   / "bytesprefix" { return { bytesprefix: {} } } // TODO: check kind reprs for union types are all bytes
-  / "inline" _ descriptor:UnionInlineKeyDefinition { return descriptor }
-  / "envelope" _ descriptor:UnionEnvelopeKeyDefinition { return descriptor }
+  / "inline" wsnl descriptor:UnionInlineKeyDefinition { return descriptor }
+  / "envelope" wsnl descriptor:UnionEnvelopeKeyDefinition { return descriptor }
 
-UnionInlineKeyDefinition = "{" _ ("discriminantKey" / "discriminantKey") _ discriminantKey:QuotedString _ "}" {
+UnionInlineKeyDefinition = "{" wsnl ("discriminantKey" / "discriminantKey") wsnl discriminantKey:QuotedString _ "}" {
   return { inline: { discriminantKey } }
 }
 
 // TODO: break these by newline || "}" (non-greedy match)
-UnionEnvelopeKeyDefinition = "{" _ ("discriminantKey" / "discriminantKey") _ discriminantKey:QuotedString _ "contentKey" _ contentKey:QuotedString _ "}" {
+UnionEnvelopeKeyDefinition = "{" wsnl ("discriminantKey" / "discriminantKey") wsnl discriminantKey:QuotedString wsnl "contentKey" wsnl contentKey:QuotedString _ "}" {
   return { envelope: { discriminantKey, contentKey } }
 }
 
 MapRepresentationType
   = "map" { return { type: 'map' } }
   / "listpairs" { return { type: 'listpairs' } }
-  / "stringpairs" _ representation:MapStringpairsRepresentation { return representation }
-  / "advanced" _ representation:AdvancedRepresentation { return representation }
+  / "stringpairs" wsnl representation:MapStringpairsRepresentation { return representation }
+  / "advanced" wsnl representation:AdvancedRepresentation { return representation }
 
 // TODO: break these by newline || "}" (non-greedy match)
-MapStringpairsRepresentation = "{" _ options:MapStringpairsRepresentationOptions* _ "}" {
+MapStringpairsRepresentation = "{" wsnl options:MapStringpairsRepresentationOptions* wsnl "}" {
   let representation = extend({ type: 'stringpairs' }, options.reduce(extend, {}))
   if (!representation.innerDelim || !representation.entryDelim) {
     throw new Error('"stringpairs" representation requires both "innerDelim" and "entryDelim" options')
@@ -284,22 +383,22 @@ MapStringpairsRepresentation = "{" _ options:MapStringpairsRepresentationOptions
 }
 
 MapStringpairsRepresentationOptions
-  = _ "innerDelim" _ innerDelim:QuotedString { return { innerDelim } }
-  / _ "entryDelim" _ entryDelim:QuotedString { return { entryDelim } }
+  = wsnl "innerDelim" wsnl innerDelim:QuotedString { return { innerDelim } }
+  / wsnl "entryDelim" wsnl entryDelim:QuotedString { return { entryDelim } }
 
-ListRepresentationType = "advanced" _ representation:AdvancedRepresentation { return representation }
+ListRepresentationType = "advanced" wsnl representation:AdvancedRepresentation { return representation }
 
 StructRepresentationType
   = "map" { return { type: 'map' } }
-  / "tuple" _ fieldOrder:StructTupleRepresentationFields? { return extend({ type: 'tuple' }, fieldOrder ? { fieldOrder } : null) }
-  / "stringjoin" _ fields:StructStringjoinRepresentationFields { return extend({ type: 'stringjoin' }, fields ) }
-  / "stringpairs" _ representation:MapStringpairsRepresentation { return representation }
+  / "tuple" wsnl fieldOrder:StructTupleRepresentationFields? { return extend({ type: 'tuple' }, fieldOrder ? { fieldOrder } : null) }
+  / "stringjoin" wsnl fields:StructStringjoinRepresentationFields { return extend({ type: 'stringjoin' }, fields ) }
+  / "stringpairs" wsnl representation:MapStringpairsRepresentation { return representation }
   / "listpairs" { return { type: 'listpairs' } }
 
 // TODO: break these by newline || "}" (non-greedy match)
 StructMapRepresentationFields = "{" _ "}"
 
-StructMapRepresentationField = "field" _ field:StringName _ isImplicit:"implicit" _ implicitValue:QuotedString _ {
+StructMapRepresentationField = "field" ws* field:StringName ws* isImplicit:"implicit" ws* implicitValue:QuotedString _ {
   return { [field]: extend({}, isImplicit ? { implicit: coerceValue(implicitValue) } : null) }
 }
 
@@ -336,7 +435,7 @@ EnumRepresentationType
   = "string" { return { string: {} } }
   / "int" { return { int: {} } }
 
-BytesDescriptor = "representation" _ "advanced" _ representation:AdvancedRepresentation { return { bytes: { representation } } }
+BytesDescriptor = "representation" wsnl "advanced" wsnl representation:AdvancedRepresentation { return { bytes: { representation } } }
 
 QuotedStringArray = "[" _ firstElement:QuotedString? subsequentElements:(_ "," _ s:QuotedString _ { return s })* _ "]" {
   if (!firstElement) {
@@ -370,14 +469,35 @@ BaseType
 	/ "null"
 	/ "any"
 
-__
-  = whitespace+
+// Annotation is '## @name(value)' or '## @name', swallowing any trailing comments
+Annotation = [ \t]* "##" [ \t]* "@" name:StringName value:("(" value:[^)]* ")" { return value })? [^\r\n]* newline ws* {
+  return { [name]: value ? value.join('') : '' }
+}
+
+capturedcomment = comments:_capturedcomment* {
+  return flattenArray(comments).join('')
+}
+
+_capturedcomment
+  = ws+
+  / newline+
   / comment+
+
+__
+  = ws+ { return }
+  / newline+ { return }
+  / comment+ { return }
 
 _ = __*
 
-whitespace = [ \t\n\r]
+_wsnl
+  = ws+ { return }
+  / newline+ { return }
 
-comment = "#" [^\r\n]*[\r\n]? { return }
+wsnl = _wsnl*
+
+comment = "#" !("#" [ \t]* "@" StringName) [^\r\n]*
+
+ws = [ \t]
 
 newline = "\r"? "\n"

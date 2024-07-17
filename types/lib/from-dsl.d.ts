@@ -6,5 +6,5 @@
  * @returns {Schema}
  */
 export function fromDSL(input: string): Schema;
-export type Schema = import('../schema-schema').Schema;
+export type Schema = import("../schema-schema").Schema;
 //# sourceMappingURL=from-dsl.d.ts.map
