@@ -13,14 +13,19 @@ This file is an input to a test case, using the [testmark](https://github.com/wa
 ```ipldsch
 type RecoveryDeclaration struct {
 	# The deadline to which the recovered sectors are assigned, in range [0..WPoStPeriodDeadlines)
-	## @unsigned
+	#
+	# @unsigned
 	Deadline Int
+
 	# Partition index within the deadline containing the recovered sectors.
-	## @unsigned
+	#
+	# @unsigned
 	Partition Int
+
 	# Sectors in the partition being declared recovered.
-	## @gotype(github.com/filecoin-project/go-bitfield.BitField)
-	## @rusttype(fvm_ipld_bitfield::BitField)
+	#
+	# @gotype(github.com/filecoin-project/go-bitfield.BitField)
+	# @rusttype(fvm_ipld_bitfield::BitField)
 	Sectors Bytes
 } representation tuple
 
@@ -30,14 +35,19 @@ type DeclareFaultsRecoveredParams struct {
 
 type FaultDeclaration struct {
 	# The deadline to which the faulty sectors are assigned, in range [0..WPoStPeriodDeadlines)
-	## @unsigned
+	#
+	# @unsigned
 	Deadline Int
+
 	# Partition index within the deadline containing the faulty sectors.
-	## @unsigned
+	#
+	# @unsigned
 	Partition Int
+
 	# Sectors in the partition being declared faulty.
-	## @gotype(github.com/filecoin-project/go-bitfield.BitField)
-	## @rusttype(fvm_ipld_bitfield::BitField)
+	#
+	# @gotype(github.com/filecoin-project/go-bitfield.BitField)
+	# @rusttype(fvm_ipld_bitfield::BitField)
 	Sectors Bytes
 } representation tuple
 
@@ -45,26 +55,26 @@ type DeclareFaultsParams struct {
 	Faults [FaultDeclaration]
 } representation tuple
 
-## @rustderive(Debug, Clone, PartialEq, Eq)
+# @rustderive(Debug, Clone, PartialEq, Eq)
 type ReplicaUpdate struct {
-	## @gotype(github.com/filecoin-project/go-state-types/abi.SectorNumber)
-	## @gorename(SectorID) - for historical reasons
-	## @rusttype(fvm_shared::sector::SectorNumber)
+	# @gotype(github.com/filecoin-project/go-state-types/abi.SectorNumber)
+	# @gorename(SectorID) - for historical reasons
+	# @rusttype(fvm_shared::sector::SectorNumber)
 	SectorNumber       Int
-	## @unsigned
+	# @unsigned
 	Deadline           Int
-	## @unsigned
+	# @unsigned
 	Partition          Int
-	## @gotag(`checked:"true"`)
-	## @rustrename(new_sealed_cid)
+	# @gotag(`checked:"true"`)
+	# @rustrename(new_sealed_cid)
 	NewSealedSectorCID Link
-	## @gotype(github.com/filecoin-project/go-state-types/abi.DealID)
-	## @rusttype(fvm_shared::deal::DealID)
+	# @gotype(github.com/filecoin-project/go-state-types/abi.DealID)
+	# @rusttype(fvm_shared::deal::DealID)
 	Deals              [Int]
-	## @gotype(github.com/filecoin-project/go-state-types/abi.RegisteredUpdateProof)
-	## @rusttype(fvm_shared::sector::RegisteredUpdateProof)
+	# @gotype(github.com/filecoin-project/go-state-types/abi.RegisteredUpdateProof)
+	# @rusttype(fvm_shared::sector::RegisteredUpdateProof)
 	UpdateProofType    Int
-	## @rusttype(fvm_ipld_encoding::RawBytes)
+	# @rusttype(fvm_ipld_encoding::RawBytes)
 	ReplicaProof       Bytes
 } representation tuple
 ```
@@ -174,7 +184,7 @@ pub struct ReplicaUpdate {
 
 ## Expected TypeScript output
 
-This is rough, I'm not a TypeScript expert and this is mostly a guess.
+This is rough, I'm not a TypeScript expert and this is mostly a guess. It should probably import schema-schema.ts from this package and use those types as a foundation since they contain the IPLD datamodel kinds and type kinds.
 
 [testmark]:# (test/typescript)
 ```typescript
