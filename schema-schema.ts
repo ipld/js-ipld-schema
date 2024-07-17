@@ -111,6 +111,8 @@ export type UnionRepresentation_BytesPrefix = {
 export type TypeDefnStruct = {
   fields: { [ k in FieldName]: StructField }
   representation?: StructRepresentation
+  annotations?: StructAnnotations
+  comments?: StructComments
 }
 export type FieldName = string
 export type StructField = {
@@ -151,6 +153,22 @@ export type StructRepresentation_StringJoin = {
   fieldOrder?: FieldName[]
 }
 export type StructRepresentation_ListPairs = {}
+export type StructAnnotations = {
+  type?: { [ k in KindString]: KindString }[]
+  fields?: { [ k in FieldName]: { [ k in KindString]: KindString }[] }
+}
+export type StructComments = {
+  type?: {
+    precomments: KindString,
+    linecomment: KindString
+  }
+  fields?: {
+    [ k in FieldName]: {
+      precomments: KindString,
+      linecomment: KindString
+    }
+  }
+}
 export type TypeDefnEnum = {
   members: EnumMember[]
   representation: EnumRepresentation
