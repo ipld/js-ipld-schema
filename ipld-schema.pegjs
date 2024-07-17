@@ -469,8 +469,8 @@ BaseType
 	/ "null"
 	/ "any"
 
-// Annotation is '## @name(value)' or '## @name', swallowing any trailing comments
-Annotation = [ \t]* "##" [ \t]* "@" name:StringName value:("(" value:[^)]* ")" { return value })? [^\r\n]* newline ws* {
+// Annotation is '# @name(value)' or '# @name', swallowing any trailing comments
+Annotation = [ \t]* "#" [ \t]* "@" name:StringName value:("(" value:[^)]* ")" { return value })? [^\r\n]* newline ws* {
   return { [name]: value ? value.join('') : '' }
 }
 
@@ -496,7 +496,7 @@ _wsnl
 
 wsnl = _wsnl*
 
-comment = "#" !("#" [ \t]* "@" StringName) [^\r\n]*
+comment = "#" !([ \t]* "@" StringName) [^\r\n]*
 
 ws = [ \t]
 
