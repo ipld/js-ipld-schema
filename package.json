@@ -32,6 +32,10 @@
       "import": "./lib/typed.js",
       "types": "./types/lib/typed.d.js"
     },
+    "./gen.js": {
+      "import": "./lib/gen.js",
+      "types": "./types/lib/gen.d.js"
+    },
     "./schema-schema.js": {
       "types": "./types/schema-schema.d.ts"
     }
@@ -59,7 +63,8 @@
     "mocha": "^11.0.1",
     "polendina": "^3.2.1",
     "standard": "^17.1.0",
-    "typescript": "^5.5.4"
+    "testmark.js": "^1.0.9",
+    "typescript": "^5.6.0-dev"
   },
   "repository": {
     "type": "git",

@@ -16,6 +16,8 @@ async function run () {
   let inType = null
   /** @type {boolean} */
   let head = true
+  /** @type {string[]} */
+  let typeComments = []
 
   async function writeBlock () {
     block[block.length - 1] = '```'
@@ -38,13 +40,22 @@ async function run () {
       inType = line.split(' ')[1]
       block.push('')
       block.push('```ipldsch')
+      block.push(typeComments.join('\n'))
+      typeComments = []
       const title = line.match(/^type ([A-Z]\w+)/)
       if (title == null) {
         throw new Error('Malformed schema-schema')
       }
       block.unshift(`# schema-schema: \`${title[1]}\``)
-    } else if (inType && line.startsWith('#')) {
-      await writeBlock()
+    } else if (line.startsWith('#')) {
+      typeComments.push(line)
+      if (inType) {
+        await writeBlock()
+      }
+    }
+
+    if (!inType && /^\s*$/.test(line)) {
+      typeComments = [] // reset
     }
 
     if (!block.length) {

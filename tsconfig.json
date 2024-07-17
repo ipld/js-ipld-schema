@@ -34,7 +34,7 @@
     }
   },
   "exclude": [
-    "parser.cjs",
+    "**/parser.*",
     "node_modules",
     "types"
   ],
