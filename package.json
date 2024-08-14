@@ -31,6 +31,9 @@
     "./typed.js": {
       "import": "./lib/typed.js",
       "types": "./types/lib/typed.d.js"
+    },
+    "./schema-schema.js": {
+      "types": "./types/schema-schema.d.ts"
     }
   },
   "bin": {
