@@ -17,16 +17,20 @@
   },
   "exports": {
     "./to-dsl.js": {
-      "import": "./lib/to-dsl.js"
+      "import": "./lib/to-dsl.js",
+      "types": "./types/lib/to-dsl.d.js"
     },
     "./bin/collect-input.js": {
-      "import": "./bin/collect-input.js"
+      "import": "./bin/collect-input.js",
+      "types": "./types/bin/collect-input.d.js"
     },
     "./from-dsl.js": {
-      "import": "./lib/from-dsl.js"
+      "import": "./lib/from-dsl.js",
+      "types": "./types/lib/from-dsl.d.js"
     },
     "./typed.js": {
-      "import": "./lib/typed.js"
+      "import": "./lib/typed.js",
+      "types": "./types/lib/typed.d.js"
     }
   },
   "bin": {
@@ -43,16 +47,16 @@
     "@semantic-release/release-notes-generator": "^14.0.1",
     "@types/chai": "^5.0.0",
     "@types/mocha": "^10.0.7",
-    "@types/node": "^22.1.0",
-    "@types/yargs": "^17.0.32",
+    "@types/node": "^22.2.0",
+    "@types/yargs": "^17.0.33",
     "c8": "^10.1.2",
     "chai": "^5.1.1",
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "js-yaml": "^4.1.0",
-    "mocha": "^10.6.0",
+    "mocha": "^10.7.3",
     "polendina": "^3.2.1",
     "standard": "^17.1.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.4"
   },
   "repository": {
     "type": "git",
@@ -66,28 +70,6 @@
     "ignore": [
       "parser.cjs"
     ]
-  },
-  "typesVersions": {
-    "*": {
-      "./to-dsl.js": [
-        "./lib/to-dsl.js"
-      ],
-      "./bin/collect-input.js": [
-        "./bin/collect-input.js"
-      ],
-      "./from-dsl.js": [
-        "./lib/from-dsl.js"
-      ],
-      "./typed.js": [
-        "./lib/typed.js"
-      ],
-      "*": [
-        "types/*"
-      ],
-      "types/*": [
-        "types/*"
-      ]
-    }
   },
   "release": {
     "branches": [
