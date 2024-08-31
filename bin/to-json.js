@@ -12,12 +12,19 @@ let indent = '  '
 
 /**
  * @param {string[]} files
- * @param {{tabs?:boolean}} options
+ * @param {{tabs?:boolean, 'include-comments'?:boolean, 'include-annotations'?:boolean}} options
  * @returns
  */
 export async function toJSON (files, options) {
   if (options.tabs) {
     indent = '\t'
+  }
+  const parseOptions = {}
+  if (options['include-comments']) {
+    parseOptions.includeComments = true
+  }
+  if (options['include-annotations']) {
+    parseOptions.includeAnnotations = true
   }
 
   const input = await collectInput(files)
@@ -26,7 +33,7 @@ export async function toJSON (files, options) {
   let schema = null
   for (const { filename, contents } of input) {
     try {
-      const parsed = parser.parse(contents)
+      const parsed = /** @type {Schema} */(parser.parse(contents, parseOptions))
       if (schema == null) {
         schema = parsed
       } else {

@@ -4,7 +4,7 @@ import parser from '../lib/parser.cjs'
 import { transformError } from '../lib/util.js'
 import { pkgDecjsor } from './util.js'
 import { collectInput } from './collect-input.js'
-import { Builder, safeReference } from '../lib/typed.js'
+import { generateTypeScript } from '../lib/gen.js'
 
 /**
  * @typedef {import('../schema-schema').Schema} Schema
@@ -12,16 +12,16 @@ import { Builder, safeReference } from '../lib/typed.js'
 
 /**
  * @param {string[]} files
- * @param {{cjs:boolean}} options
+ * @param {{cjs:boolean}} _options
  * @returns
  */
-export async function toJS (files, options) {
+export async function toTSDefs (files, _options) {
   const input = await collectInput(files)
   let schema
   for (const { filename, contents } of input) {
     try {
       /** @type {any} */
-      const parsed = parser.parse(contents)
+      const parsed = parser.parse(contents, { includeComments: true, includeAnnotations: true })
       if (!schema) {
         schema = parsed
       } else {
@@ -40,19 +40,7 @@ export async function toJS (files, options) {
     }
   }
 
-  const builder = new Builder(schema)
-  const types = Object.keys(schema.types)
-  for (const type of types) {
-    builder.addType(type)
-  }
   const schemaContent = input.map(({ contents }) => contents).join('\n').replace(/^/mg, ' * ').replace(/\s+$/mg, '')
   console.log(`/** Auto-generated with ${await pkgDecjsor()} at ${new Date().toDateString()} from IPLD Schema:\n *\n${schemaContent}\n */\n`)
-  console.log(builder.dumpTypeTransformers())
-  for (const type of types) {
-    console.log(`
-${options.cjs === true ? `module.exports${safeReference(type)}` : `export const ${type}`} = {
-  toTyped: Types${safeReference(type)},
-  toRepresentation: Reprs${safeReference(type)}
-}`)
-  }
+  console.log(generateTypeScript(schema))
 }

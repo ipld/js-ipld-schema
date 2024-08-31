@@ -4,6 +4,7 @@ import { validate } from './validate.js'
 import { toJSON } from './to-json.js'
 import { toSchema } from './to-schema.js'
 import { toJS } from './to-js.js'
+import { toTSDefs } from './to-tsdefs.js'
 import { jsonToSchema } from './json-to-schema.js'
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
@@ -13,6 +14,14 @@ const toOpts = {
     alias: 't',
     type: 'boolean',
     describe: 'print with tabs instead of spaces'
+  },
+  'include-comments': {
+    type: 'boolean',
+    describe: 'include comments in the output'
+  },
+  'include-annotations': {
+    type: 'boolean',
+    describe: 'include annotations in the output'
   }
 }
 
@@ -31,6 +40,12 @@ const yargs = _yargs(hideBin(process.argv))
     toOpts)
   .command('to-js',
     'Accepts .ipldsch and .md files, if none are passed will read from stdin, prints a JavaScript module implementing the schema for the <root type>. If --cjs is passed, prints a CommonJS module instead of an ES module.',
+    {
+      cjs: { boolean: true }
+    }
+  )
+  .command('to-tsdefs',
+    'Accepts .ipldsch and .md files, if none are passed will read from stdin, prints a TypeScript module implementing schema interfaces for the <root type>',
     {
       cjs: { boolean: true }
     }
@@ -69,6 +84,9 @@ switch (yargs.argv._[0]) {
     break
   case 'to-js':
     runCommand(toJS)
+    break
+  case 'to-tsdefs':
+    runCommand(toTSDefs)
     break
   case 'json-to-schema':
     runCommand(jsonToSchema)
