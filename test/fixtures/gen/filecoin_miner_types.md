@@ -188,41 +188,111 @@ This is rough, I'm not a TypeScript expert and this is mostly a guess. It should
 
 [testmark]:# (test/typescript)
 ```typescript
-import { CID } from 'multiformats/cid'
+import {
+  KindBytes,
+  KindInt,
+  KindLink,
+  KindMap,
+} from '@ipld/schema/schema-schema.js'
 
 export type RecoveryDeclaration = {
   // The deadline to which the recovered sectors are assigned, in range [0..WPoStPeriodDeadlines)
-  deadline: number
+  Deadline: KindInt
   // Partition index within the deadline containing the recovered sectors.
-  partition: number
+  Partition: KindInt
   // Sectors in the partition being declared recovered.
-  sectors: Uint8Array
+  Sectors: KindBytes
+}
+
+export namespace RecoveryDeclaration {
+  export function isRecoveryDeclaration(value: any): value is RecoveryDeclaration {
+    if (!KindMap.isKindMap(value)) {
+      return false
+    }
+    const keyCount = Object.keys(value).length
+    return keyCount === 3 &&
+      ('Deadline' in value && ((KindInt.isKindInt(value.Deadline)))) &&
+      ('Partition' in value && ((KindInt.isKindInt(value.Partition)))) &&
+      ('Sectors' in value && ((KindBytes.isKindBytes(value.Sectors))))
+  }
 }
 
 export type DeclareFaultsRecoveredParams = {
-  recoveries: RecoveryDeclaration[]
+  Recoveries: RecoveryDeclaration[]
+}
+
+export namespace DeclareFaultsRecoveredParams {
+  export function isDeclareFaultsRecoveredParams(value: any): value is DeclareFaultsRecoveredParams {
+    if (!KindMap.isKindMap(value)) {
+      return false
+    }
+    const keyCount = Object.keys(value).length
+    return keyCount === 1 &&
+      ('Recoveries' in value && ((Array.isArray(value.Recoveries) && value.Recoveries.every(RecoveryDeclaration.isRecoveryDeclaration))))
+  }
 }
 
 export type FaultDeclaration = {
   // The deadline to which the faulty sectors are assigned, in range [0..WPoStPeriodDeadlines)
-  deadline: number
+  Deadline: KindInt
   // Partition index within the deadline containing the faulty sectors.
-  partition: number
+  Partition: KindInt
   // Sectors in the partition being declared faulty.
-  sectors: Uint8Array
+  Sectors: KindBytes
+}
+
+export namespace FaultDeclaration {
+  export function isFaultDeclaration(value: any): value is FaultDeclaration {
+    if (!KindMap.isKindMap(value)) {
+      return false
+    }
+    const keyCount = Object.keys(value).length
+    return keyCount === 3 &&
+      ('Deadline' in value && ((KindInt.isKindInt(value.Deadline)))) &&
+      ('Partition' in value && ((KindInt.isKindInt(value.Partition)))) &&
+      ('Sectors' in value && ((KindBytes.isKindBytes(value.Sectors))))
+  }
 }
 
 export type DeclareFaultsParams = {
-  faults: FaultDeclaration[]
+  Faults: FaultDeclaration[]
+}
+
+export namespace DeclareFaultsParams {
+  export function isDeclareFaultsParams(value: any): value is DeclareFaultsParams {
+    if (!KindMap.isKindMap(value)) {
+      return false
+    }
+    const keyCount = Object.keys(value).length
+    return keyCount === 1 &&
+      ('Faults' in value && ((Array.isArray(value.Faults) && value.Faults.every(FaultDeclaration.isFaultDeclaration))))
+  }
 }
 
 export type ReplicaUpdate = {
-  sectorNumber: number
-  deadline: number
-  partition: number
-  newSealedSectorCID: CID
-  deals: number[]
-  updateProofType: number
-  replicaProof: Uint8Array
+  SectorNumber: KindInt
+  Deadline: KindInt
+  Partition: KindInt
+  NewSealedSectorCID: KindLink
+  Deals: KindInt[]
+  UpdateProofType: KindInt
+  ReplicaProof: KindBytes
+}
+
+export namespace ReplicaUpdate {
+  export function isReplicaUpdate(value: any): value is ReplicaUpdate {
+    if (!KindMap.isKindMap(value)) {
+      return false
+    }
+    const keyCount = Object.keys(value).length
+    return keyCount === 7 &&
+      ('SectorNumber' in value && ((KindInt.isKindInt(value.SectorNumber)))) &&
+      ('Deadline' in value && ((KindInt.isKindInt(value.Deadline)))) &&
+      ('Partition' in value && ((KindInt.isKindInt(value.Partition)))) &&
+      ('NewSealedSectorCID' in value && ((KindLink.isKindLink(value.NewSealedSectorCID)))) &&
+      ('Deals' in value && ((Array.isArray(value.Deals) && value.Deals.every(KindInt.isKindInt)))) &&
+      ('UpdateProofType' in value && ((KindInt.isKindInt(value.UpdateProofType)))) &&
+      ('ReplicaProof' in value && ((KindBytes.isKindBytes(value.ReplicaProof))))
+  }
 }
 ```

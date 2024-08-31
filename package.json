@@ -4,8 +4,9 @@
   "description": "IPLD Schema parser and CLI utilities for JavaScript",
   "type": "module",
   "scripts": {
-    "build": "npm run build:types",
+    "build": "npm run build:types && npm run build:schemaschemajs",
     "build:types": "tsc --build",
+    "build:schemaschemajs": "tsc --module NodeNext --moduleResolution NodeNext schema-schema.ts && echo '// @ts-nocheck' > lib/schema-schema.js && cat schema-schema.js >> lib/schema-schema.js && rm schema-schema.js",
     "prepublishOnly": "npm run build",
     "peg": "echo '// @ts-nocheck' > lib/parser.cjs && npm_config_yes=true npx peggy -o tmp.cjs ipld-schema.pegjs && cat tmp.cjs >> lib/parser.cjs && rm tmp.cjs",
     "lint": "standard",
@@ -37,6 +38,7 @@
       "types": "./types/lib/gen.d.js"
     },
     "./schema-schema.js": {
+      "import": "./lib/schema-schema.js",
       "types": "./types/schema-schema.d.ts"
     }
   },
@@ -72,11 +74,13 @@
   },
   "dependencies": {
     "get-stdin": "^9.0.0",
-    "yargs": "^18.0.0"
+    "yargs": "^18.0.0",
+    "multiformats": "^13.2.2"
   },
   "standard": {
     "ignore": [
-      "parser.cjs"
+      "parser.cjs",
+      "lib/schema-schema.js"
     ]
   },
   "release": {

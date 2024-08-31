@@ -100,10 +100,10 @@ TypeDef =
   }
   const typ = Object.keys(definition)[0]
   const comments = processComments(precomments)
-  if (comments) {
+  if (options.includeComments && comments) {
     definition[typ].comments = extend(definition[typ].comments || {}, { type: comments })
   }
-  if (annotations && annotations.length) {
+  if (options.includeComments && annotations && annotations.length) {
     definition[typ].annotations = extend(definition[typ].annotations || {}, { type: annotations })
   }
   return { [name]: definition }
