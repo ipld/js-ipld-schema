@@ -63,7 +63,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rvagg/js-ipld-schema.git"
+    "url": "https://github.com/ipld/js-ipld-schema.git"
   },
   "dependencies": {
     "get-stdin": "^9.0.0",
