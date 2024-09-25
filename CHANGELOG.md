@@ -1,3 +1,25 @@
+## [6.0.0](https://github.com/ipld/js-ipld-schema/compare/v5.0.0...v6.0.0) (2024-09-25)
+
+### ⚠ BREAKING CHANGES
+
+* remove typesVersions, add types exports, update deps
+
+### Features
+
+* export schema-schema types ([222b531](https://github.com/ipld/js-ipld-schema/commit/222b531f55671da2eb3d600701bdee3de7f8dd1e))
+
+### Bug Fixes
+
+* correct repo url ([383dc41](https://github.com/ipld/js-ipld-schema/commit/383dc41a596d46e4136d7718553ba49e8aa9a0bb))
+* remove typesVersions, add types exports, update deps ([c84ab1e](https://github.com/ipld/js-ipld-schema/commit/c84ab1ef05340aca45dafd9b89e4b4cc4c93e3fc))
+
+### Trivial Changes
+
+* **deps-dev:** bump @semantic-release/github from 10.3.5 to 11.0.0 ([9ed1cd6](https://github.com/ipld/js-ipld-schema/commit/9ed1cd6ad3861b5f5dfbbdab7a769ef36af83bd5))
+* **deps-dev:** bump @types/chai from 4.3.20 to 5.0.0 ([8792410](https://github.com/ipld/js-ipld-schema/commit/87924101e48ae221836cdbaec6f2369915e17ff3))
+* **deps-dev:** bump @types/node from 20.14.14 to 22.1.0 ([4bdc50f](https://github.com/ipld/js-ipld-schema/commit/4bdc50fd1ac9565c48d1753352b47a90190fe95e))
+* **deps:** bump actions/setup-node from 4.0.3 to 4.0.4 ([3e8381d](https://github.com/ipld/js-ipld-schema/commit/3e8381d5d2ae7e13aacdded979edd4785756bd0b))
+
 ## [5.0.0](https://github.com/rvagg/js-ipld-schema/compare/v4.2.19...v5.0.0) (2024-07-13)
 
 ### ⚠ BREAKING CHANGES
