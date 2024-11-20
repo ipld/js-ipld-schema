@@ -2,7 +2,7 @@ import { CID } from 'multiformats/cid';
 export type KindBool = boolean;
 export type KindString = string;
 export type KindBytes = Uint8Array;
-export type KindInt = number;
+export type KindInt = number | bigint;
 export type KindFloat = number;
 export type KindNull = null;
 export type KindMap = {};
