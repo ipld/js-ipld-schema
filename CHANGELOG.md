@@ -1,3 +1,9 @@
+## [6.0.5](https://github.com/ipld/js-ipld-schema/compare/v6.0.4...v6.0.5) (2024-12-04)
+
+### Trivial Changes
+
+* **deps-dev:** bump mocha from 10.8.2 to 11.0.1 ([af06dcf](https://github.com/ipld/js-ipld-schema/commit/af06dcfb1564a1204cede3f5dbd7f1c15ff46bf6))
+
 ## [6.0.4](https://github.com/ipld/js-ipld-schema/compare/v6.0.3...v6.0.4) (2024-10-25)
 
 ### Trivial Changes
