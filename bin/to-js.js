@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { readFile } from 'fs/promises'
 import parser from '../lib/parser.cjs'
 import { transformError } from '../lib/util.js'
+import { pkgDecjsor } from './util.js'
 import { collectInput } from './collect-input.js'
 import { Builder, safeReference } from '../lib/typed.js'
 
@@ -20,6 +20,7 @@ export async function toJS (files, options) {
   let schema
   for (const { filename, contents } of input) {
     try {
+      /** @type {any} */
       const parsed = parser.parse(contents)
       if (!schema) {
         schema = parsed
@@ -54,9 +55,4 @@ ${options.cjs === true ? `module.exports${safeReference(type)}` : `export const 
   toRepresentation: Reprs${safeReference(type)}
 }`)
   }
-}
-
-async function pkgDecjsor () {
-  const p = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
-  return `${p.name}@v${p.version}`
 }

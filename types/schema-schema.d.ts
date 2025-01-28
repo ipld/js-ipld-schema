@@ -1,15 +1,43 @@
+import { CID } from 'multiformats/cid';
 export type KindBool = boolean;
 export type KindString = string;
 export type KindBytes = Uint8Array;
-export type KindInt = number;
+export type KindInt = number | bigint;
 export type KindFloat = number;
 export type KindNull = null;
 export type KindMap = {};
 export type KindList = [];
-export type KindLink = {};
+export type KindLink = CID;
 export type KindUnion = {};
 export type KindStruct = {};
 export type KindEnum = {};
+export declare namespace KindBool {
+    function isKindBool(value: any): value is KindBool;
+}
+export declare namespace KindString {
+    function isKindString(value: any): value is KindString;
+}
+export declare namespace KindBytes {
+    function isKindBytes(value: any): value is KindBytes;
+}
+export declare namespace KindInt {
+    function isKindInt(value: any): value is KindInt;
+}
+export declare namespace KindFloat {
+    function isKindFloat(value: any): value is KindFloat;
+}
+export declare namespace KindNull {
+    function isKindNull(value: any): value is KindNull;
+}
+export declare namespace KindMap {
+    function isKindMap(value: any): value is KindMap;
+}
+export declare namespace KindList {
+    function isKindList(value: any): value is KindList;
+}
+export declare namespace KindLink {
+    function isKindLink(value: any): value is KindLink;
+}
 export type TypeDefn = {
     bool: TypeDefnBool;
 } | {
@@ -151,6 +179,8 @@ export type TypeDefnStruct = {
         [k in FieldName]: StructField;
     };
     representation?: StructRepresentation;
+    annotations?: StructAnnotations;
+    comments?: StructComments;
 };
 export type FieldName = string;
 export type StructField = {
@@ -200,6 +230,28 @@ export type StructRepresentation_StringJoin = {
     fieldOrder?: FieldName[];
 };
 export type StructRepresentation_ListPairs = {};
+export type StructAnnotations = {
+    type?: {
+        [k in KindString]: KindString;
+    }[];
+    fields?: {
+        [k in FieldName]: {
+            [k in KindString]: KindString;
+        }[];
+    };
+};
+export type StructComments = {
+    type?: {
+        precomments: KindString;
+        linecomment: KindString;
+    };
+    fields?: {
+        [k in FieldName]: {
+            precomments: KindString;
+            linecomment: KindString;
+        };
+    };
+};
 export type TypeDefnEnum = {
     members: EnumMember[];
     representation: EnumRepresentation;

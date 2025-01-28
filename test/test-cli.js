@@ -15,7 +15,7 @@ describe('cli', () => {
     const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
     const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples.ipldsch.json', import.meta.url), 'utf8'))
 
-    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', inFile])
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', '--include-comments', inFile])
     assert(!stderr)
     let schemaJson
     try {
@@ -31,7 +31,7 @@ describe('cli', () => {
     const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
     const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples-adl.ipldsch.json', import.meta.url), 'utf8'))
 
-    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', inFile])
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', '--include-comments', inFile])
     assert(!stderr)
     const schemaJson = JSON.parse(stdout)
     assert.deepStrictEqual(schemaJson, expectedSchema)
@@ -42,7 +42,7 @@ describe('cli', () => {
     const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
     const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples.ipldsch.json', import.meta.url), 'utf8'))
 
-    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', inFile])
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', '--include-comments', inFile])
     assert(!stderr)
 
     const schemaJson = JSON.parse(stdout)
@@ -111,7 +111,7 @@ describe('cli', () => {
     const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
     const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch.json', import.meta.url), 'utf8'))
 
-    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json'].concat(files))
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', '--include-comments'].concat(files))
     assert(!stderr)
 
     const schemaJson = JSON.parse(stdout)
@@ -124,7 +124,7 @@ describe('cli', () => {
     const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
     const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/schema-schema.ipldsch.json', import.meta.url), 'utf8'))
 
-    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json'].concat(files))
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', '--include-comments'].concat(files))
     assert(!stderr)
 
     const schemaJson = JSON.parse(stdout)
@@ -139,7 +139,7 @@ describe('cli', () => {
     const cli = fileURLToPath(new URL('../bin/cli.js', import.meta.url))
     const expectedSchema = JSON.parse(await fs.promises.readFile(new URL('./fixtures/examples-all.ipldsch.json', import.meta.url), 'utf8'))
 
-    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json'].concat(inFiles))
+    const { stdout, stderr } = await execFileP(process.execPath, [cli, 'to-json', '--include-comments'].concat(inFiles))
     assert(!stderr)
 
     const schemaJson = JSON.parse(stdout)
