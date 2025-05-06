@@ -1,15 +1,71 @@
+import { CID } from 'multiformats/cid'
+
 export type KindBool = boolean
 export type KindString = string
 export type KindBytes = Uint8Array
-export type KindInt = number
+export type KindInt = number | bigint
 export type KindFloat = number
 export type KindNull = null
 export type KindMap = {}
 export type KindList = []
-export type KindLink = {}
+export type KindLink = CID
 export type KindUnion = {}
 export type KindStruct = {}
 export type KindEnum = {}
+
+export namespace KindBool {
+  export function isKindBool(value: any): value is KindBool {
+    return typeof value === 'boolean'
+  }
+}
+
+export namespace KindString {
+  export function isKindString(value: any): value is KindString {
+    return typeof value === 'string'
+  }
+}
+
+export namespace KindBytes {
+  export function isKindBytes(value: any): value is KindBytes {
+    return value instanceof Uint8Array
+  }
+}
+
+export namespace KindInt {
+  export function isKindInt(value: any): value is KindInt {
+    return (typeof value === 'number' && Number.isInteger(value) && Number.isFinite(value)) || (typeof value === 'bigint')
+  }
+}
+
+export namespace KindFloat {
+  export function isKindFloat(value: any): value is KindFloat {
+    return typeof value === 'number' && Number.isFinite(value)
+  }
+}
+
+export namespace KindNull {
+  export function isKindNull(value: any): value is KindNull {
+    return value === null
+  }
+}
+
+export namespace KindMap {
+  export function isKindMap(value: any): value is KindMap {
+    return value !== null && typeof value === 'object' && value.asCID !== value && !Array.isArray(value) && !(value instanceof Uint8Array)
+  }
+}
+
+export namespace KindList {
+  export function isKindList(value: any): value is KindList {
+    return Array.isArray(value)
+  }
+}
+
+export namespace KindLink {
+  export function isKindLink(value: any): value is KindLink {
+    return value !== null && typeof value === 'object' && value.asCID === value
+  }
+}
 
 export type TypeDefn =
     { bool: TypeDefnBool }
@@ -111,6 +167,8 @@ export type UnionRepresentation_BytesPrefix = {
 export type TypeDefnStruct = {
   fields: { [ k in FieldName]: StructField }
   representation?: StructRepresentation
+  annotations?: StructAnnotations
+  comments?: StructComments
 }
 export type FieldName = string
 export type StructField = {
@@ -151,6 +209,22 @@ export type StructRepresentation_StringJoin = {
   fieldOrder?: FieldName[]
 }
 export type StructRepresentation_ListPairs = {}
+export type StructAnnotations = {
+  type?: { [ k in KindString]: KindString }[]
+  fields?: { [ k in FieldName]: { [ k in KindString]: KindString }[] }
+}
+export type StructComments = {
+  type?: {
+    precomments: KindString,
+    linecomment: KindString
+  }
+  fields?: {
+    [ k in FieldName]: {
+      precomments: KindString,
+      linecomment: KindString
+    }
+  }
+}
 export type TypeDefnEnum = {
   members: EnumMember[]
   representation: EnumRepresentation
