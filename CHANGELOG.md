@@ -1,3 +1,9 @@
+## [6.0.8](https://github.com/ipld/js-ipld-schema/compare/v6.0.7...v6.0.8) (2025-05-20)
+
+### Trivial Changes
+
+* **deps-dev:** bump conventional-changelog-conventionalcommits ([#152](https://github.com/ipld/js-ipld-schema/issues/152)) ([10f8e12](https://github.com/ipld/js-ipld-schema/commit/10f8e1248c7ed21dcb135c09beeead6f32d207ee))
+
 ## [6.0.7](https://github.com/ipld/js-ipld-schema/compare/v6.0.6...v6.0.7) (2025-03-18)
 
 ### Trivial Changes
