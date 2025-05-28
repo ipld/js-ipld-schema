@@ -1,3 +1,9 @@
+## [6.0.9](https://github.com/ipld/js-ipld-schema/compare/v6.0.8...v6.0.9) (2025-05-28)
+
+### Trivial Changes
+
+* **deps:** bump yargs from 17.7.2 to 18.0.0 ([#153](https://github.com/ipld/js-ipld-schema/issues/153)) ([2f3ff22](https://github.com/ipld/js-ipld-schema/commit/2f3ff2289b8d9228d0e4d71b946507807f2e3162))
+
 ## [6.0.8](https://github.com/ipld/js-ipld-schema/compare/v6.0.7...v6.0.8) (2025-05-20)
 
 ### Trivial Changes
