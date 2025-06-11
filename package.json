@@ -50,7 +50,7 @@
     "@semantic-release/release-notes-generator": "^14.0.1",
     "@types/chai": "^5.0.0",
     "@types/mocha": "^10.0.7",
-    "@types/node": "^22.2.0",
+    "@types/node": "^24.0.0",
     "@types/yargs": "^17.0.33",
     "c8": "^10.1.2",
     "chai": "^5.1.1",
