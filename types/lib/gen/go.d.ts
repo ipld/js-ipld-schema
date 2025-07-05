@@ -7,7 +7,7 @@
  * @param {Record<string, string>} [options]
  * @returns {string}
  */
-export function generateGo(schema: Schema, options?: Record<string, string> | undefined): string;
+export function generateGo(schema: Schema, options?: Record<string, string>): string;
 export type Schema = import("../../schema-schema").Schema;
 export type FieldName = import("../../schema-schema").FieldName;
 //# sourceMappingURL=go.d.ts.map

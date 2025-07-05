@@ -39,7 +39,7 @@ export class Builder {
      * @param {TypeDefn} [typeDef]
      * @returns {void}
      */
-    addType(typeName: TypeName, typeDef?: import("../schema-schema").TypeDefn | undefined): void;
+    addType(typeName: TypeName, typeDef?: TypeDefn): void;
 }
 export type EnumMember = import("../schema-schema").EnumMember;
 export type KindInt = import("../schema-schema").KindInt;
