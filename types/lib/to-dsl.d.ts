@@ -4,7 +4,7 @@
  * @param {Highlighter} [highlighter]
  * @returns {string}
  */
-export function toDSL(schema: Schema, indent?: string, highlighter?: Highlighter | undefined): string;
+export function toDSL(schema: Schema, indent?: string, highlighter?: Highlighter): string;
 export type Schema = import("../schema-schema").Schema;
 export type TypeName = import("../schema-schema").TypeName;
 export type TypeDefn = import("../schema-schema").TypeDefn;
