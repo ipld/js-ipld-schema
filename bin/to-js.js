@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-import parser from '../lib/parser.cjs'
-import { transformError } from '../lib/util.js'
+import { fromDSL } from '../lib/from-dsl.js'
 import { pkgDecjsor } from './util.js'
 import { collectInput } from './collect-input.js'
 import { Builder, safeReference } from '../lib/typed.js'
@@ -21,7 +20,7 @@ export async function toJS (files, options) {
   for (const { filename, contents } of input) {
     try {
       /** @type {any} */
-      const parsed = parser.parse(contents)
+      const parsed = fromDSL(contents)
       if (!schema) {
         schema = parsed
       } else {
@@ -35,7 +34,7 @@ export async function toJS (files, options) {
       }
     } catch (err) {
       // @ts-ignore
-      console.error(`Error parsing ${filename}: ${transformError(err).message}`)
+      console.error(`Error parsing ${filename}: ${err.message}`)
       process.exit(1)
     }
   }

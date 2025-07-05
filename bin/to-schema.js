@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
-import parser from '../lib/parser.cjs'
+import { fromDSL } from '../lib/from-dsl.js'
 import { toDSL } from '../lib/to-dsl.js'
-import { transformError } from '../lib/util.js'
 import { collectInput } from './collect-input.js'
 
 let indent = '  '
@@ -22,7 +21,7 @@ export async function toSchema (files, options) {
   let schema
   for (const { filename, contents } of input) {
     try {
-      const parsed = parser.parse(contents)
+      const parsed = fromDSL(contents)
       if (!schema) {
         schema = parsed
       } else {
@@ -36,10 +35,12 @@ export async function toSchema (files, options) {
       }
     } catch (err) {
       // @ts-ignore
-      console.error(`Error parsing ${filename}: ${transformError(err).message}`)
+      console.error(`Error parsing ${filename}: ${err.message}`)
       process.exit(1)
     }
   }
 
-  console.log(toDSL(schema, indent))
+  if (schema) {
+    console.log(toDSL(schema, indent))
+  }
 }

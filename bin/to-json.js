@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-import parser from '../lib/parser.cjs'
-import { transformError } from '../lib/util.js'
+import { fromDSL } from '../lib/from-dsl.js'
 import { collectInput } from './collect-input.js'
 
 /**
@@ -33,7 +32,7 @@ export async function toJSON (files, options) {
   let schema = null
   for (const { filename, contents } of input) {
     try {
-      const parsed = /** @type {Schema} */(parser.parse(contents, parseOptions))
+      const parsed = fromDSL(contents, parseOptions)
       if (schema == null) {
         schema = parsed
       } else {
@@ -62,7 +61,7 @@ export async function toJSON (files, options) {
       }
     } catch (err) {
       // @ts-ignore
-      console.error(`Error parsing ${filename}: ${transformError(err).message}`)
+      console.error(`Error parsing ${filename}: ${err.message}`)
       process.exit(1)
     }
   }
