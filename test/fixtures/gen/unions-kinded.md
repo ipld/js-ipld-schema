@@ -229,7 +229,7 @@ export namespace ListConfig {
 
 export type Settings = {
   name: KindString
-  config?: ConfigValue | null
+  config: ConfigValue | null
 }
 
 export namespace Settings {
@@ -238,9 +238,9 @@ export namespace Settings {
       return false
     }
     const keyCount = Object.keys(value).length
-    return keyCount >= 1 && keyCount <= 2 &&
+    return keyCount === 2 &&
       ('name' in value && ((KindString.isKindString(value.name)))) &&
-      (!('config' in value) || (value.config === null || (ConfigValue.isConfigValue(value.config))))
+      ('config' in value && (value.config === null || (ConfigValue.isConfigValue(value.config))))
   }
 }
 ```
