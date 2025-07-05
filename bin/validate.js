@@ -1,5 +1,4 @@
-import parser from '../lib/parser.cjs'
-import { transformError } from '../lib/util.js'
+import { fromDSL } from '../lib/from-dsl.js'
 import { collectInput } from './collect-input.js'
 
 /**
@@ -12,10 +11,10 @@ export async function validate (files, _) {
 
   for (const { filename, contents } of input) {
     try {
-      parser.parse(contents)
+      fromDSL(contents)
     } catch (err) {
       // @ts-ignore
-      console.error(`Could not validate ${filename}: ${transformError(err).message}`) // discard useless extra info
+      console.error(`Could not validate ${filename}: ${err.message}`) // discard useless extra info
       process.exit(1)
     }
     console.error(`Validated ${filename} ...`)

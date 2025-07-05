@@ -1,1 +1,1 @@
-{"version":3,"file":"to-tsdefs.d.ts","sourceRoot":"","sources":["../../bin/to-tsdefs.js"],"names":[],"mappings":";AAQA;;GAEG;AAEH;;;;GAIG;AACH,gCAJW,MAAM,EAAE,YACR;IAAC,GAAG,EAAC,OAAO,CAAA;CAAC,sBA+BvB;qBApCY,OAAO,kBAAkB,EAAE,MAAM"}
+{"version":3,"file":"to-tsdefs.d.ts","sourceRoot":"","sources":["../../bin/to-tsdefs.js"],"names":[],"mappings":";AAOA;;GAEG;AAEH;;;;GAIG;AACH,gCAJW,MAAM,EAAE,YACR;IAAC,GAAG,EAAC,OAAO,CAAA;CAAC,sBA+BvB;qBApCY,OAAO,kBAAkB,EAAE,MAAM"}
