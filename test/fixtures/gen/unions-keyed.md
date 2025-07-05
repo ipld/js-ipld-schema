@@ -79,7 +79,7 @@ type DeleteResult struct {
 package main
 
 type SimpleResult interface {
-	isSimpleResult()
+	simpleResult()
 }
 
 type Success struct {
@@ -87,31 +87,31 @@ type Success struct {
 	code int64
 }
 
-func (Success) isSimpleResult() {}
+func (Success) simpleResult() {}
 
 type Error struct {
 	message string
 	code int64
 }
 
-func (Error) isSimpleResult() {}
+func (Error) simpleResult() {}
 
 type ProveCommitResult interface {
-	isProveCommitResult()
+	proveCommitResult()
 }
 
 type ProveCommitSectors3Return struct {
 	results []PoStProof
 }
 
-func (ProveCommitSectors3Return) isProveCommitResult() {}
+func (ProveCommitSectors3Return) proveCommitResult() {}
 
 type ProveCommitAggregateReturn struct {
 	aggregateProof []byte
 	sectorNumbers []int64
 }
 
-func (ProveCommitAggregateReturn) isProveCommitResult() {}
+func (ProveCommitAggregateReturn) proveCommitResult() {}
 
 type PoStProof struct {
 	postProof int64
@@ -125,7 +125,7 @@ type Transaction struct {
 }
 
 type OperationResult interface {
-	isOperationResult()
+	operationResult()
 }
 
 type CreateResult struct {
@@ -133,21 +133,21 @@ type CreateResult struct {
 	resource SimpleResult
 }
 
-func (CreateResult) isOperationResult() {}
+func (CreateResult) operationResult() {}
 
 type UpdateResult struct {
 	id string
 	changes int64
 }
 
-func (UpdateResult) isOperationResult() {}
+func (UpdateResult) operationResult() {}
 
 type DeleteResult struct {
 	id string
 	confirmed bool
 }
 
-func (DeleteResult) isOperationResult() {}
+func (DeleteResult) operationResult() {}
 ```
 
 ## Expected Rust output
