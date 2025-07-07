@@ -1,1 +1,1 @@
-{"version":3,"file":"go.d.ts","sourceRoot":"","sources":["../../../lib/gen/go.js"],"names":[],"mappings":"AAAA;;;GAGG;AAEH;;;;GAIG;AACH,mCAJW,MAAM,YACN,MAAM,CAAC,MAAM,EAAE,MAAM,CAAC,GACpB,MAAM,CAkRlB;qBAzRY,OAAO,qBAAqB,EAAE,MAAM;wBACpC,OAAO,qBAAqB,EAAE,SAAS"}
+{"version":3,"file":"go.d.ts","sourceRoot":"","sources":["../../../lib/gen/go.js"],"names":[],"mappings":"AAAA;;;GAGG;AAEH;;;;GAIG;AACH,mCAJW,MAAM,YACN,MAAM,CAAC,MAAM,EAAE,MAAM,CAAC,GACpB,MAAM,CA8RlB;qBArSY,OAAO,qBAAqB,EAAE,MAAM;wBACpC,OAAO,qBAAqB,EAAE,SAAS"}
