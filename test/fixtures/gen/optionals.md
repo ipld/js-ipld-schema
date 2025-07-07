@@ -149,9 +149,9 @@ export namespace Profile {
     const keyCount = Object.keys(value).length
     return keyCount >= 2 && keyCount <= 4 &&
       ('userId' in value && (KindString.isKindString(value.userId))) &&
-      (!('bio' in value) || value.bio === null || (KindString.isKindString(value.bio))) &&
+      (!('bio' in value) || (value.bio === null || KindString.isKindString(value.bio))) &&
       (!('avatar' in value) || (KindString.isKindString(value.avatar))) &&
-      ('lastLogin' in value && value.lastLogin === null || (KindInt.isKindInt(value.lastLogin)))
+      ('lastLogin' in value && (value.lastLogin === null || KindInt.isKindInt(value.lastLogin)))
   }
 }
 

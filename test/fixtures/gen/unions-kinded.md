@@ -240,7 +240,7 @@ export namespace Settings {
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
       ('name' in value && (KindString.isKindString(value.name))) &&
-      ('config' in value && value.config === null || (ConfigValue.isConfigValue(value.config)))
+      ('config' in value && (value.config === null || ConfigValue.isConfigValue(value.config)))
   }
 }
 ```
