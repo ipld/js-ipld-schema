@@ -105,11 +105,11 @@ fn default_serverconfig_secure() -> bool {
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Defaults {
-    #[serde(default = "default_defaults_string_val")]
+    #[serde(rename = "stringVal", default = "default_defaults_string_val")]
     pub string_val: String,
-    #[serde(default = "default_defaults_int_val")]
+    #[serde(rename = "intVal", default = "default_defaults_int_val")]
     pub int_val: i64,
-    #[serde(default = "default_defaults_bool_val")]
+    #[serde(rename = "boolVal", default = "default_defaults_bool_val")]
     pub bool_val: bool,
 }
 

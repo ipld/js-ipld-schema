@@ -133,6 +133,7 @@ pub struct Team {
     pub name: String,
     pub members: Vec<Person>,
     pub scores: Vec<i64>,
+    #[serde(rename = "optionalTags")]
     pub optional_tags: Vec<Option<String>>,
 }
 

@@ -130,6 +130,7 @@ pub struct Config {
     pub name: String,
     pub settings: HashMap<String, String>,
     pub metadata: HashMap<String, i64>,
+    #[serde(rename = "optionalData")]
     pub optional_data: HashMap<String, Option<String>>,
 }
 

@@ -81,11 +81,13 @@ pub struct User {
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Profile {
+    #[serde(rename = "userId")]
     pub user_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bio: Option<Option<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub avatar: Option<String>,
+    #[serde(rename = "lastLogin")]
     pub last_login: Option<i64>,
 }
 
