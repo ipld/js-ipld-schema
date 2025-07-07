@@ -113,7 +113,7 @@ pub type BytesMap = HashMap<String, Vec<u8>>;
 
 pub type LinkMap = HashMap<String, Cid>;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Person {
     pub name: String,
     pub age: i64,
@@ -125,7 +125,7 @@ pub type OptionalStringMap = HashMap<String, Option<String>>;
 
 pub type OptionalPersonMap = HashMap<String, Option<Person>>;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Config {
     pub name: String,
     pub settings: HashMap<String, String>,
@@ -139,7 +139,7 @@ pub enum Status {
     Inactive,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Service {
     pub id: i64,
     pub status: Status,
@@ -216,8 +216,8 @@ export namespace Person {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('name' in value && ((KindString.isKindString(value.name)))) &&
-      ('age' in value && ((KindInt.isKindInt(value.age))))
+      ('name' in value && (KindString.isKindString(value.name))) &&
+      ('age' in value && (KindInt.isKindInt(value.age)))
   }
 }
 
@@ -268,7 +268,7 @@ export namespace Config {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 4 &&
-      ('name' in value && ((KindString.isKindString(value.name)))) &&
+      ('name' in value && (KindString.isKindString(value.name))) &&
       ('settings' in value && ((KindMap.isKindMap(value.settings) && Object.values(value.settings).every(v => KindString.isKindString(v))))) &&
       ('metadata' in value && ((KindMap.isKindMap(value.metadata) && Object.values(value.metadata).every(v => KindInt.isKindInt(v))))) &&
       ('optionalData' in value && ((KindMap.isKindMap(value.optionalData) && Object.values(value.optionalData).every(v => v === null || KindString.isKindString(v)))))
@@ -298,8 +298,8 @@ export namespace Service {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('id' in value && ((KindInt.isKindInt(value.id)))) &&
-      ('status' in value && ((Status.isStatus(value.status))))
+      ('id' in value && (KindInt.isKindInt(value.id))) &&
+      ('status' in value && (Status.isStatus(value.status)))
   }
 }
 

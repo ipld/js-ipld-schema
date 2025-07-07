@@ -120,7 +120,7 @@ pub enum MixedData {
 
 pub type EmptyList = Vec<String>;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct DataContainer {
     pub id: String,
     pub value: MixedData,
@@ -134,7 +134,7 @@ pub enum ConfigValue {
     String(String),
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct SimpleConfig {
     pub key: String,
     pub value: String,
@@ -142,7 +142,7 @@ pub struct SimpleConfig {
 
 pub type ListConfig = Vec<String>;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Settings {
     pub name: String,
     pub config: Option<ConfigValue>,
@@ -189,8 +189,8 @@ export namespace DataContainer {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('id' in value && ((KindString.isKindString(value.id)))) &&
-      ('value' in value && ((MixedData.isMixedData(value.value))))
+      ('id' in value && (KindString.isKindString(value.id))) &&
+      ('value' in value && (MixedData.isMixedData(value.value)))
   }
 }
 
@@ -214,8 +214,8 @@ export namespace SimpleConfig {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('key' in value && ((KindString.isKindString(value.key)))) &&
-      ('value' in value && ((KindString.isKindString(value.value))))
+      ('key' in value && (KindString.isKindString(value.key))) &&
+      ('value' in value && (KindString.isKindString(value.value)))
   }
 }
 
@@ -239,8 +239,8 @@ export namespace Settings {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('name' in value && ((KindString.isKindString(value.name)))) &&
-      ('config' in value && (value.config === null || (ConfigValue.isConfigValue(value.config))))
+      ('name' in value && (KindString.isKindString(value.name))) &&
+      ('config' in value && value.config === null || (ConfigValue.isConfigValue(value.config)))
   }
 }
 ```

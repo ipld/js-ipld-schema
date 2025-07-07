@@ -211,9 +211,9 @@ export namespace RecoveryDeclaration {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 3 &&
-      ('Deadline' in value && ((KindInt.isKindInt(value.Deadline)))) &&
-      ('Partition' in value && ((KindInt.isKindInt(value.Partition)))) &&
-      ('Sectors' in value && ((KindBytes.isKindBytes(value.Sectors))))
+      ('Deadline' in value && (KindInt.isKindInt(value.Deadline))) &&
+      ('Partition' in value && (KindInt.isKindInt(value.Partition))) &&
+      ('Sectors' in value && (KindBytes.isKindBytes(value.Sectors)))
   }
 }
 
@@ -248,9 +248,9 @@ export namespace FaultDeclaration {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 3 &&
-      ('Deadline' in value && ((KindInt.isKindInt(value.Deadline)))) &&
-      ('Partition' in value && ((KindInt.isKindInt(value.Partition)))) &&
-      ('Sectors' in value && ((KindBytes.isKindBytes(value.Sectors))))
+      ('Deadline' in value && (KindInt.isKindInt(value.Deadline))) &&
+      ('Partition' in value && (KindInt.isKindInt(value.Partition))) &&
+      ('Sectors' in value && (KindBytes.isKindBytes(value.Sectors)))
   }
 }
 
@@ -286,13 +286,13 @@ export namespace ReplicaUpdate {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 7 &&
-      ('SectorNumber' in value && ((KindInt.isKindInt(value.SectorNumber)))) &&
-      ('Deadline' in value && ((KindInt.isKindInt(value.Deadline)))) &&
-      ('Partition' in value && ((KindInt.isKindInt(value.Partition)))) &&
-      ('NewSealedSectorCID' in value && ((KindLink.isKindLink(value.NewSealedSectorCID)))) &&
+      ('SectorNumber' in value && (KindInt.isKindInt(value.SectorNumber))) &&
+      ('Deadline' in value && (KindInt.isKindInt(value.Deadline))) &&
+      ('Partition' in value && (KindInt.isKindInt(value.Partition))) &&
+      ('NewSealedSectorCID' in value && (KindLink.isKindLink(value.NewSealedSectorCID))) &&
       ('Deals' in value && ((Array.isArray(value.Deals) && value.Deals.every(KindInt.isKindInt)))) &&
-      ('UpdateProofType' in value && ((KindInt.isKindInt(value.UpdateProofType)))) &&
-      ('ReplicaProof' in value && ((KindBytes.isKindBytes(value.ReplicaProof))))
+      ('UpdateProofType' in value && (KindInt.isKindInt(value.UpdateProofType))) &&
+      ('ReplicaProof' in value && (KindBytes.isKindBytes(value.ReplicaProof)))
   }
 }
 ```

@@ -68,7 +68,7 @@ type TupleData struct {
 use serde::{Deserialize, Serialize};
 use serde_tuple::{Deserialize_tuple, Serialize_tuple};
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct User {
     pub id: String,
     pub name: String,
@@ -79,7 +79,7 @@ pub struct User {
     pub verified: bool,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Profile {
     pub user_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -126,11 +126,11 @@ export namespace User {
     }
     const keyCount = Object.keys(value).length
     return keyCount >= 3 && keyCount <= 5 &&
-      ('id' in value && ((KindString.isKindString(value.id)))) &&
-      ('name' in value && ((KindString.isKindString(value.name)))) &&
-      (!('email' in value) || ((KindString.isKindString(value.email)))) &&
-      (!('age' in value) || ((KindInt.isKindInt(value.age)))) &&
-      ('verified' in value && ((KindBool.isKindBool(value.verified))))
+      ('id' in value && (KindString.isKindString(value.id))) &&
+      ('name' in value && (KindString.isKindString(value.name))) &&
+      (!('email' in value) || (KindString.isKindString(value.email))) &&
+      (!('age' in value) || (KindInt.isKindInt(value.age))) &&
+      ('verified' in value && (KindBool.isKindBool(value.verified)))
   }
 }
 
@@ -148,10 +148,10 @@ export namespace Profile {
     }
     const keyCount = Object.keys(value).length
     return keyCount >= 2 && keyCount <= 4 &&
-      ('userId' in value && ((KindString.isKindString(value.userId)))) &&
-      (!('bio' in value) || (value.bio === null || (KindString.isKindString(value.bio)))) &&
-      (!('avatar' in value) || ((KindString.isKindString(value.avatar)))) &&
-      ('lastLogin' in value && (value.lastLogin === null || (KindInt.isKindInt(value.lastLogin))))
+      ('userId' in value && (KindString.isKindString(value.userId))) &&
+      (!('bio' in value) || value.bio === null || (KindString.isKindString(value.bio))) &&
+      (!('avatar' in value) || (KindString.isKindString(value.avatar))) &&
+      ('lastLogin' in value && value.lastLogin === null || (KindInt.isKindInt(value.lastLogin)))
   }
 }
 
@@ -169,10 +169,10 @@ export namespace TupleData {
     }
     const keyCount = Object.keys(value).length
     return keyCount >= 2 && keyCount <= 4 &&
-      ('required1' in value && ((KindString.isKindString(value.required1)))) &&
-      ('required2' in value && ((KindInt.isKindInt(value.required2)))) &&
-      (!('optional1' in value) || ((KindString.isKindString(value.optional1)))) &&
-      (!('optional2' in value) || ((KindBool.isKindBool(value.optional2))))
+      ('required1' in value && (KindString.isKindString(value.required1))) &&
+      ('required2' in value && (KindInt.isKindInt(value.required2))) &&
+      (!('optional1' in value) || (KindString.isKindString(value.optional1))) &&
+      (!('optional2' in value) || (KindBool.isKindBool(value.optional2)))
   }
 }
 ```

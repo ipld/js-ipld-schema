@@ -116,7 +116,7 @@ pub type Addresses = Vec<Vec<u8>>;
 
 pub type Links = Vec<Cid>;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Person {
     pub name: String,
     pub age: i64,
@@ -128,7 +128,7 @@ pub type OptionalNumbers = Vec<Option<i64>>;
 
 pub type OptionalPeople = Vec<Option<Person>>;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Team {
     pub name: String,
     pub members: Vec<Person>,
@@ -142,7 +142,7 @@ pub enum Status {
     Inactive,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Record {
     pub id: i64,
     pub status: Status,
@@ -207,8 +207,8 @@ export namespace Person {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('name' in value && ((KindString.isKindString(value.name)))) &&
-      ('age' in value && ((KindInt.isKindInt(value.age))))
+      ('name' in value && (KindString.isKindString(value.name))) &&
+      ('age' in value && (KindInt.isKindInt(value.age)))
   }
 }
 
@@ -250,7 +250,7 @@ export namespace Team {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 4 &&
-      ('name' in value && ((KindString.isKindString(value.name)))) &&
+      ('name' in value && (KindString.isKindString(value.name))) &&
       ('members' in value && ((Array.isArray(value.members) && value.members.every(Person.isPerson)))) &&
       ('scores' in value && ((Array.isArray(value.scores) && value.scores.every(KindInt.isKindInt)))) &&
       ('optionalTags' in value && ((Array.isArray(value.optionalTags) && value.optionalTags.every(v => v === null || KindString.isKindString(v)))))
@@ -280,8 +280,8 @@ export namespace Record {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('id' in value && ((KindInt.isKindInt(value.id)))) &&
-      ('status' in value && ((Status.isStatus(value.status))))
+      ('id' in value && (KindInt.isKindInt(value.id))) &&
+      ('status' in value && (Status.isStatus(value.status)))
   }
 }
 

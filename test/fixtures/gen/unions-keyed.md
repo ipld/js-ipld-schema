@@ -165,13 +165,13 @@ pub enum SimpleResult {
     Error(Error),
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Success {
     pub value: String,
     pub code: i64,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Error {
     pub message: String,
     pub code: i64,
@@ -186,24 +186,24 @@ pub enum ProveCommitResult {
     ProveCommitAggregateReturn(ProveCommitAggregateReturn),
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ProveCommitSectors3Return {
     pub results: Vec<PoStProof>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ProveCommitAggregateReturn {
     pub aggregate_proof: Vec<u8>,
     pub sector_numbers: Vec<i64>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct PoStProof {
     pub post_proof: i64,
     pub proof_bytes: Vec<u8>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Transaction {
     pub id: String,
     pub timestamp: i64,
@@ -221,19 +221,19 @@ pub enum OperationResult {
     DeleteResult(DeleteResult),
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct CreateResult {
     pub id: String,
     pub resource: SimpleResult,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct UpdateResult {
     pub id: String,
     pub changes: i64,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct DeleteResult {
     pub id: String,
     pub confirmed: bool,
@@ -285,8 +285,8 @@ export namespace Success {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('value' in value && ((KindString.isKindString(value.value)))) &&
-      ('code' in value && ((KindInt.isKindInt(value.code))))
+      ('value' in value && (KindString.isKindString(value.value))) &&
+      ('code' in value && (KindInt.isKindInt(value.code)))
   }
 }
 
@@ -302,8 +302,8 @@ export namespace Error {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('message' in value && ((KindString.isKindString(value.message)))) &&
-      ('code' in value && ((KindInt.isKindInt(value.code))))
+      ('message' in value && (KindString.isKindString(value.message))) &&
+      ('code' in value && (KindInt.isKindInt(value.code)))
   }
 }
 
@@ -355,7 +355,7 @@ export namespace ProveCommitAggregateReturn {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('aggregateProof' in value && ((KindBytes.isKindBytes(value.aggregateProof)))) &&
+      ('aggregateProof' in value && (KindBytes.isKindBytes(value.aggregateProof))) &&
       ('sectorNumbers' in value && ((Array.isArray(value.sectorNumbers) && value.sectorNumbers.every(KindInt.isKindInt))))
   }
 }
@@ -372,8 +372,8 @@ export namespace PoStProof {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('postProof' in value && ((KindInt.isKindInt(value.postProof)))) &&
-      ('proofBytes' in value && ((KindBytes.isKindBytes(value.proofBytes))))
+      ('postProof' in value && (KindInt.isKindInt(value.postProof))) &&
+      ('proofBytes' in value && (KindBytes.isKindBytes(value.proofBytes)))
   }
 }
 
@@ -390,9 +390,9 @@ export namespace Transaction {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 3 &&
-      ('id' in value && ((KindString.isKindString(value.id)))) &&
-      ('timestamp' in value && ((KindInt.isKindInt(value.timestamp)))) &&
-      ('result' in value && ((SimpleResult.isSimpleResult(value.result))))
+      ('id' in value && (KindString.isKindString(value.id))) &&
+      ('timestamp' in value && (KindInt.isKindInt(value.timestamp))) &&
+      ('result' in value && (SimpleResult.isSimpleResult(value.result)))
   }
 }
 
@@ -432,8 +432,8 @@ export namespace CreateResult {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('id' in value && ((KindString.isKindString(value.id)))) &&
-      ('resource' in value && ((SimpleResult.isSimpleResult(value.resource))))
+      ('id' in value && (KindString.isKindString(value.id))) &&
+      ('resource' in value && (SimpleResult.isSimpleResult(value.resource)))
   }
 }
 
@@ -449,8 +449,8 @@ export namespace UpdateResult {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('id' in value && ((KindString.isKindString(value.id)))) &&
-      ('changes' in value && ((KindInt.isKindInt(value.changes))))
+      ('id' in value && (KindString.isKindString(value.id))) &&
+      ('changes' in value && (KindInt.isKindInt(value.changes)))
   }
 }
 
@@ -466,8 +466,8 @@ export namespace DeleteResult {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 2 &&
-      ('id' in value && ((KindString.isKindString(value.id)))) &&
-      ('confirmed' in value && ((KindBool.isKindBool(value.confirmed))))
+      ('id' in value && (KindString.isKindString(value.id))) &&
+      ('confirmed' in value && (KindBool.isKindBool(value.confirmed)))
   }
 }
 ```
