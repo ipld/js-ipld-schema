@@ -193,13 +193,17 @@ pub struct ProveCommitSectors3Return {
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ProveCommitAggregateReturn {
+    #[serde(rename = "aggregateProof")]
     pub aggregate_proof: Vec<u8>,
+    #[serde(rename = "sectorNumbers")]
     pub sector_numbers: Vec<i64>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct PoStProof {
+    #[serde(rename = "postProof")]
     pub post_proof: i64,
+    #[serde(rename = "proofBytes")]
     pub proof_bytes: Vec<u8>,
 }
 
