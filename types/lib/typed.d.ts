@@ -11,17 +11,19 @@ export function safeFieldReference(name: string): string;
 /**
  * @param {Schema} schema
  * @param {string} root
+ * @param {TypedOptions} [options]
  * @returns {{ toTyped: TypeTransformerFunction, toRepresentation: TypeTransformerFunction }}
  */
-export function create(schema: Schema, root: string): {
+export function create(schema: Schema, root: string, options?: TypedOptions): {
     toTyped: TypeTransformerFunction;
     toRepresentation: TypeTransformerFunction;
 };
 export class Builder {
     /**
      * @param {Schema} schema
+     * @param {TypedOptions} [options]
      */
-    constructor(schema: Schema);
+    constructor(schema: Schema, options?: TypedOptions);
     schema: {
         types: {
             [x: string]: import("../schema-schema").TypeDefn;
@@ -33,6 +35,8 @@ export class Builder {
     typeTransformers: Record<string, string>;
     /** @type {Record<string, string>} */
     reprTransformers: Record<string, string>;
+    /** @type {CustomTransforms} */
+    customTransforms: CustomTransforms;
     dumpTypeTransformers(): string;
     /**
      * @param {TypeName} typeName
@@ -51,4 +55,14 @@ export type InlineDefn = import("../schema-schema").InlineDefn;
 export type TypeName = import("../schema-schema").TypeName;
 export type TypeNameOrInlineDefn = import("../schema-schema").TypeNameOrInlineDefn;
 export type TypeTransformerFunction = (obj: any) => undefined | any;
+export type CustomTransform = {
+    toTyped: string | ((value: any) => any | undefined);
+    toRepresentation?: string | ((value: any) => any | undefined);
+};
+export type CustomTransforms = {
+    [typeName: string]: CustomTransform;
+};
+export type TypedOptions = {
+    customTransforms?: CustomTransforms;
+};
 //# sourceMappingURL=typed.d.ts.map

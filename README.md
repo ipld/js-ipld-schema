@@ -169,6 +169,102 @@ console.log('Modified representation data:', JSON.stringify(newData))
 // ["Home",460,250,[[1,32],[1,30],[1,30],[2,10],[2,11],[3,140],[4,230],[4,200],[2,5]]]
 ```
 
+### Custom Transforms
+
+The `typed.js` module also supports custom transforms for specific types. This allows you to handle custom encoding/decoding logic when the wire format differs from the native JavaScript representation (e.g., base64-encoded bytes as strings, bigints as strings in JSON-RPC).
+
+```js
+import { fromDSL } from '@ipld/schema/from-dsl.js'
+import { create } from '@ipld/schema/typed.js'
+
+// Define a schema with custom types
+const schema = fromDSL(`
+  type Base64Bytes bytes
+  type StringBigInt int
+  type Transaction struct {
+    id Base64Bytes
+    amount StringBigInt
+  }
+`)
+
+// Define custom transforms for the types
+const customTransforms = {
+  Base64Bytes: {
+    // Convert base64 string to Uint8Array
+    toTyped: (obj) => {
+      if (typeof obj !== 'string') return undefined
+      try {
+        // Decode base64 to Uint8Array
+        const binary = atob(obj)
+        const bytes = new Uint8Array(binary.length)
+        for (let i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i)
+        }
+        return bytes
+      } catch {
+        return undefined
+      }
+    },
+    // Convert Uint8Array to base64 string
+    toRepresentation: (obj) => {
+      if (!(obj instanceof Uint8Array)) return undefined
+      // Encode Uint8Array to base64
+      let binary = ''
+      for (let i = 0; i < obj.length; i++) {
+        binary += String.fromCharCode(obj[i])
+      }
+      return btoa(binary)
+    }
+  },
+  StringBigInt: {
+    // Convert string to BigInt
+    toTyped: (obj) => {
+      if (typeof obj !== 'string') return undefined
+      try {
+        return BigInt(obj)
+      } catch {
+        return undefined
+      }
+    },
+    // Convert BigInt to string
+    toRepresentation: (obj) => {
+      if (typeof obj !== 'bigint') return undefined
+      return obj.toString()
+    }
+  }
+}
+
+// Create typed converter with custom transforms
+const { toTyped, toRepresentation } = create(schema, 'Transaction', { customTransforms })
+
+// Convert wire format to typed format
+const wireData = {
+  id: 'SGVsbG8gV29ybGQ=', // "Hello World" in base64
+  amount: '123456789012345678901234567890'
+}
+
+const typed = toTyped(wireData)
+console.log('Typed:', typed)
+// → Typed: {
+//     id: Uint8Array(11) [...], // decoded bytes
+//     amount: 123456789012345678901234567890n
+//   }
+
+// Convert back to wire format
+const repr = toRepresentation(typed)
+console.log('Representation:', repr)
+// → Representation: {
+//     id: 'SGVsbG8gV29ybGQ=',
+//     amount: '123456789012345678901234567890'
+//   }
+```
+
+Custom transforms can be provided as either:
+- Function objects (will be converted to source code for the generated validators)
+- String containing the function body (useful for code generation contexts)
+
+If only `toTyped` is provided, `toRepresentation` defaults to the identity function (returns input unchanged).
+
 ## Command line
 
 **@ipld/schema also exports an executable**: if installed with `-g` you will get an `ipld-schema` command in your `PATH`.
