@@ -8,7 +8,7 @@ This file tests enum type code generation for Go, Rust, and TypeScript.
 ```ipldsch
 type Status enum {
   | Pending
-  | Active  
+  | Active
   | Completed
   | Failed
 }
@@ -148,7 +148,7 @@ export namespace Status {
   export const Active: Status = "Active"
   export const Completed: Status = "Completed"
   export const Failed: Status = "Failed"
-  
+
   export function isStatus(value: any): value is Status {
     return value === "Pending" || value === "Active" || value === "Completed" || value === "Failed"
   }
@@ -161,7 +161,7 @@ export namespace Color {
   export const Green: Color = "g"
   export const Blue: Color = "b"
   export const Yellow: Color = "Yellow"
-  
+
   export function isColor(value: any): value is Color {
     return value === "r" || value === "g" || value === "b" || value === "Yellow"
   }
@@ -175,7 +175,7 @@ export namespace ErrorCode {
   export const Unauthorized: ErrorCode = 401
   export const NotFound: ErrorCode = 404
   export const ServerError: ErrorCode = 500
-  
+
   export function isErrorCode(value: any): value is ErrorCode {
     return value === 0 || value === 400 || value === 401 || value === 404 || value === 500
   }
@@ -194,7 +194,7 @@ export namespace RegisteredSealProof {
   export const StackedDrg512MiBV1_1: RegisteredSealProof = 7
   export const StackedDrg32GiBV1_1: RegisteredSealProof = 8
   export const StackedDrg64GiBV1_1: RegisteredSealProof = 9
-  
+
   export function isRegisteredSealProof(value: any): value is RegisteredSealProof {
     return value >= 0 && value <= 9 && Number.isInteger(value)
   }

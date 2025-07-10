@@ -26,7 +26,7 @@ type DataContainer struct {
 # Complex kinded union including struct and list
 type ConfigValue union {
   | SimpleConfig map
-  | ListConfig list  
+  | ListConfig list
   | String string
 } representation kinded
 

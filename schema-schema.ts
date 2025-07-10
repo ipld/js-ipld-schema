@@ -158,10 +158,10 @@ export type UnionRepresentation_Inline = {
   discriminantTable: { [ k in HexString]: TypeName }
 }
 export type HexString = string
-export type UnionRepresentation_StringPrefix = { 
+export type UnionRepresentation_StringPrefix = {
   prefixes: { [ k in KindString]: TypeName }
 }
-export type UnionRepresentation_BytesPrefix = { 
+export type UnionRepresentation_BytesPrefix = {
   prefixes: { [ k in KindString]: TypeName }
 }
 export type TypeDefnStruct = {
