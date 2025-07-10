@@ -263,7 +263,7 @@ export type Status = "Active" | "Inactive"
 export namespace Status {
   export const Active: Status = "Active"
   export const Inactive: Status = "Inactive"
-  
+
   export function isStatus(value: any): value is Status {
     return value === "Active" || value === "Inactive"
   }

@@ -56,22 +56,22 @@ import (
 	"github.com/ipfs/go-cid"
 )
 
-type UserID = string
+type UserID string
 
-type Age = int64
+type Age int64
 
-type Balance = float64
+type Balance float64
 
-type Data = []byte
+type Data []byte
 
-type Reference = cid.Cid
+type Reference cid.Cid
 
 type Person struct {
 	name string
 	age int64
 }
 
-type Employee = Person
+type Employee Person
 
 type Status string
 
@@ -81,25 +81,25 @@ const (
 	StatusPending Status = "Pending"
 )
 
-type UserStatus = Status
+type UserStatus Status
 
 type Names []string
 
-type TeamMembers = Names
+type TeamMembers Names
 
 type Settings map[string]string
 
-type Configuration = Settings
+type Configuration Settings
 
-type ID = string
+type ID string
 
-type UserIdentifier = ID
+type UserIdentifier ID
 
-type AdminID = UserIdentifier
+type AdminID UserIdentifier
 
-type SpecialInt = int64
+type SpecialInt int64
 
-type RegularInt = SpecialInt
+type RegularInt SpecialInt
 ```
 
 [testmark]:# (test/rust)
@@ -236,7 +236,7 @@ export namespace Status {
   export const Active: Status = "Active"
   export const Inactive: Status = "Inactive"
   export const Pending: Status = "Pending"
-  
+
   export function isStatus(value: any): value is Status {
     return value === "Active" || value === "Inactive" || value === "Pending"
   }
