@@ -1,287 +1,331 @@
 # @ipld/schema
 
-JavaScript [IPLD](http://ipld.io/) Schema utilities.
+JavaScript [IPLD](http://ipld.io/) Schema parser, validator, and code generator.
 
-**Since v4.0.0 this package has been renamed to `@ipld/schema`. It was previously published to npm as `ipld-schema`.**
+## What are IPLD Schemas?
 
-Read more about IPLD Schemas at https://ipld.io/docs/schemas/
+IPLD Schemas define a type system for content-addressed data. Think of them like TypeScript or Protocol Buffers, but designed for immutable, linked data structures. They help you:
 
-## Usage
+- 🛡️ **Validate** that your data matches an expected structure
+- 🔄 **Transform** between compact binary formats and developer-friendly JSON
+- 🏗️ **Generate** type-safe code in multiple languages (Go, Rust, TypeScript)
+- 🔗 **Link** between data structures using content identifiers (CIDs)
 
-### Parsing IPLD Schema DSL
+Learn more at https://ipld.io/docs/schemas/
 
-IPLD Schemas have a parsed form, called a Data Model Tree (DMT), which is consumed where schemas are used. We can parse the DSL into the DMT with `from-dsl.js`:
+## Features
 
-```js
-import { fromDSL } from '@ipld/schema/from-dsl.js'
+- **Parse and validate** IPLD Schema DSL (Domain Specific Language)
+- **Runtime validation** with automatic format conversion
+- **Code generation** for Go, Rust, and TypeScript
+- **Advanced type features**: optional fields, defaults, renames, type aliases
+- **Multiple data representations** for space-efficient storage
+- **CLI tools** for validation and code generation
 
-let schema = fromDSL(`
-  type SimpleStruct struct {
-    foo Int
-    bar Bool
-    baz String
-  }
-  type MyMap { String: SimpleStruct }
-`)
+## Installation
 
-console.dir(schema.types, { depth: Infinity })
-
-// →
-// {
-//   SimpleStruct: {
-//     struct: {
-//       fields: {
-//         foo: { type: 'Int' },
-//         bar: { type: 'Bool' },
-//         baz: { type: 'String' }
-//       }
-//     }
-//   },
-//   MyMap: { map: { keyType: 'String', valueType: 'SimpleStruct' } }
-// }
+```bash
+npm install @ipld/schema
 ```
 
-You can also convert the DMT form back to DSL form with `to-dsl.js`:
-
-```js
-import { toDSL } from '@ipld/schema/to-dsl.js'
-const schema = {
-  types: {
-    SimpleStruct: {
-      struct: {
-        fields: {
-          foo: { type: 'Int' },
-          bar: { type: 'Bool' },
-          baz: { type: 'String' }
-        }
-      }
-    },
-    MyMap: { map: { keyType: 'String', valueType: 'SimpleStruct' } }
-  }
-}
-
-console.log(toDSL(schema))
-
-// →
-// type SimpleStruct struct {
-//   foo Int
-//   bar Bool
-//   baz String
-// }
-//
-// type MyMap {String:SimpleStruct}
+For CLI usage:
+```bash
+npm install -g @ipld/schema
 ```
 
-### Typed converters / validators
+## Quick Start
 
-Use `typed.js` to create a converter/validator from an IPLD Schema that can receive IPLD block data and return either `undefined` if the data form doesn't match the Schema, or the same data if the Schema doesn't involve any transformation, _or_ a transformed form of the data according to the Schema.
+### Basic Schema Definition
 
-Note that `create()` will _create_ a `toTyped()` / `toRepresentation()` function pair for you to run. For best performance results, you should do this just once with any given schema and reuse these functions whenever you need to process or validate data.
-
-Typically, your application will want to interact with typed data, particularly when the representation form is terse and not as easy to modify. IPLD Schemas give you the ability to validate, decode and transform representation data to safely hand off to your application layer.
-
-#### From representation form to typed form
+IPLD Schemas use a simple, readable syntax:
 
 ```js
 import { fromDSL } from '@ipld/schema/from-dsl.js'
 import { create } from '@ipld/schema/typed.js'
 
-// a schema for a terse data format
-const schemaDsl = `
-type Garden struct {
-  name String
-  width Int
-  depth Int
-  plants [Plant]
-} representation tuple
+// Define your schema
+const schema = fromDSL(`
+  # A simple user profile schema
+  type UserProfile struct {
+    username String
+    email String
+    age Int
+    isActive Bool
+  }
+`)
 
-type Plant struct {
-  species PlantSpecies
-  height Int
-} representation tuple
+// Create a validator
+const validator = create(schema, 'UserProfile')
 
-type PlantSpecies enum {
-  | Murraya     ("1")
-  | StarJasmine ("2")
-  | Lemon       ("3")
-  | Camellia    ("4")
-} representation int
-`
-
-// parse schema
-const schemaDmt = fromDSL(schemaDsl)
-
-// create a typed converter/validator
-const schemaTyped = create(schemaDmt, 'Garden')
-
-// some terse input data
-const data = ['Home', 460, 200, [[1, 30], [1, 28], [1, 29], [2, 10], [2, 11], [3, 140], [4, 230], [4, 200]]]
-
-// validate and transform
-const typedData = schemaTyped.toTyped(data)
-if (typedData === undefined) {
-  throw new TypeError('Invalid data form, does not match schema')
+// Validate some data
+const userData = {
+  username: 'alice',
+  email: 'alice@example.com',
+  age: 25,
+  isActive: true
 }
 
-// what do we have?
-console.log('Typed form:', typedData)
-
-// →
-// Typed form: {
-//   name: 'Home',
-//   width: 460,
-//   depth: 200,
-//   plants: [
-//     { species: 'Murraya', height: 30 },
-//     { species: 'Murraya', height: 28 },
-//     { species: 'Murraya', height: 29 },
-//     { species: 'StarJasmine', height: 10 },
-//     { species: 'StarJasmine', height: 11 },
-//     { species: 'Lemon', height: 140 },
-//     { species: 'Camellia', height: 230 },
-//     { species: 'Camellia', height: 200 }
-//   ]
-// }
+const validatedData = validator.toTyped(userData)
+if (validatedData === undefined) {
+  console.error('Invalid data!')
+} else {
+  console.log('Valid user profile:', validatedData)
+}
 ```
 
-#### From typed form to representation form
+## Schema Language Basics
 
-Once your application has a typed form of data and makes modifications, the data can be validated and transformed back into the representation form.
+### Basic Types
 
-```js
-// modify our typed form now we have it in a form that makes sense to our application
-typedData.depth += 50
-typedData.plants[0].height += 2
-typedData.plants[1].height += 2
-typedData.plants[2].height += 1
-typedData.plants.push({ species: 'StarJasmine', height: 5 })
+```ipldsch
+type MyString String     # UTF-8 string
+type MyInt Int           # Signed integer
+type MyFloat Float       # Floating point
+type MyBool Bool         # Boolean
+type MyBytes Bytes       # Binary data
+type MyLink &Any         # IPLD Link (CID)
+```
 
-// validate and transform back into representation form
-const newData = schemaTyped.toRepresentation(typedData)
-if (newData === undefined) {
-  throw new TypeError('Invalid data form, does not match schema')
+### Structs (Objects)
+
+```ipldsch
+type Person struct {
+  name String
+  age Int
+  email String optional          # Optional field
+  nickname String (implicit "")  # Default value
+}
+```
+
+### Lists and Maps
+
+```ipldsch
+# List of strings
+type Names [String]
+
+# Map from string to integers
+type Scores {String: Int}
+
+# Nested structures
+type Team struct {
+  name String
+  members [Person]
+  metadata {String: String}
+}
+```
+
+### Enums
+
+```ipldsch
+type Status enum {
+  | Active
+  | Inactive
+  | Pending
 }
 
-// what do we have?
-console.log('Modified representation data:', JSON.stringify(newData))
+# With custom string values
+type Color enum {
+  | Red ("red")
+  | Green ("green")
+  | Blue ("blue")
+} representation string
+```
 
-// →
-// ["Home",460,250,[[1,32],[1,30],[1,30],[2,10],[2,11],[3,140],[4,230],[4,200],[2,5]]]
+### Type Aliases
+
+```ipldsch
+type UserID = String
+type Timestamp = Int
+type EmailAddress = String
+```
+
+## Data Representations
+
+IPLD Schemas separate the logical structure (what developers work with) from the storage format (how it's encoded). This allows for space-efficient storage while maintaining developer-friendly APIs.
+
+### Example: Tuple Representation
+
+```js
+import { fromDSL } from '@ipld/schema/from-dsl.js'
+import { create } from '@ipld/schema/typed.js'
+
+const schema = fromDSL(`
+  # Store as array instead of object to save space
+  type Point struct {
+    x Float
+    y Float
+  } representation tuple
+`)
+
+const validator = create(schema, 'Point')
+
+// Work with nice objects in your code
+const point = { x: 10.5, y: 20.3 }
+
+// But it's stored as a compact array
+const stored = validator.toRepresentation(point)
+console.log(stored) // [10.5, 20.3]
+
+// And automatically converted back
+const restored = validator.toTyped(stored)
+console.log(restored) // { x: 10.5, y: 20.3 }
+```
+
+## Code Generation
+
+Generate type-safe code from your schemas:
+
+### Go
+
+```js
+import { fromDSL } from '@ipld/schema/from-dsl.js'
+import { generateGo } from '@ipld/schema/gen/go.js'
+
+const schema = fromDSL(`
+  type Person struct {
+    name String
+    age Int optional
+  }
+`)
+
+const goCode = generateGo(schema, { packageName: 'person' })
+// Generates Go structs with proper JSON tags and pointer types for optionals
+```
+
+### Rust
+
+```js
+import { generateRust } from '@ipld/schema/gen/rust.js'
+
+const rustCode = generateRust(schema)
+// Generates Rust structs with serde derives and Option<T> for optionals
+```
+
+### TypeScript
+
+```js
+import { generateTypeScript } from '@ipld/schema/gen/typescript.js'
+
+const tsCode = generateTypeScript(schema)
+// Generates TypeScript interfaces and runtime validators
+```
+
+## Advanced Features
+
+### Field Renames
+
+Control JSON field names separately from your schema field names:
+
+```ipldsch
+type ServerConfig struct {
+  serverPort Int (rename "server_port")
+  debugMode Bool (rename "debug_mode")
+  apiKey String (rename "api_key")
+}
+```
+
+### Annotations
+
+Add language-specific type information:
+
+```ipldsch
+# Use big integers in Go
+# @gotype(big.Int)
+type Balance Int
+
+type Transaction struct {
+  # Custom serialization in Rust
+  # @rustserde(with = "chrono::serde::ts_seconds")
+  timestamp Int
+
+  # Multiple annotations
+  # @gotag(`json:"tx_id" db:"transaction_id"`)
+  id String
+}
 ```
 
 ### Custom Transforms
 
-The `typed.js` module also supports custom transforms for specific types. This allows you to handle custom encoding/decoding logic when the wire format differs from the native JavaScript representation (e.g., base64-encoded bytes as strings, bigints as strings in JSON-RPC).
+Handle special encoding requirements:
 
 ```js
-import { fromDSL } from '@ipld/schema/from-dsl.js'
-import { create } from '@ipld/schema/typed.js'
-
-// Define a schema with custom types
-const schema = fromDSL(`
-  type Base64Bytes bytes
-  type StringBigInt int
-  type Transaction struct {
-    id Base64Bytes
-    amount StringBigInt
-  }
-`)
-
-// Define custom transforms for the types
 const customTransforms = {
-  Base64Bytes: {
-    // Convert base64 string to Uint8Array
-    toTyped: (obj) => {
-      if (typeof obj !== 'string') return undefined
+  Base64String: {
+    // Decode base64 strings to bytes
+    toTyped: (str) => {
       try {
-        // Decode base64 to Uint8Array
-        const binary = atob(obj)
-        const bytes = new Uint8Array(binary.length)
-        for (let i = 0; i < binary.length; i++) {
-          bytes[i] = binary.charCodeAt(i)
-        }
-        return bytes
+        return Uint8Array.from(atob(str), c => c.charCodeAt(0))
       } catch {
         return undefined
       }
     },
-    // Convert Uint8Array to base64 string
-    toRepresentation: (obj) => {
-      if (!(obj instanceof Uint8Array)) return undefined
-      // Encode Uint8Array to base64
-      let binary = ''
-      for (let i = 0; i < obj.length; i++) {
-        binary += String.fromCharCode(obj[i])
-      }
-      return btoa(binary)
-    }
-  },
-  StringBigInt: {
-    // Convert string to BigInt
-    toTyped: (obj) => {
-      if (typeof obj !== 'string') return undefined
-      try {
-        return BigInt(obj)
-      } catch {
-        return undefined
-      }
-    },
-    // Convert BigInt to string
-    toRepresentation: (obj) => {
-      if (typeof obj !== 'bigint') return undefined
-      return obj.toString()
+    // Encode bytes to base64 strings
+    toRepresentation: (bytes) => {
+      return btoa(String.fromCharCode(...bytes))
     }
   }
 }
 
-// Create typed converter with custom transforms
-const { toTyped, toRepresentation } = create(schema, 'Transaction', { customTransforms })
-
-// Convert wire format to typed format
-const wireData = {
-  id: 'SGVsbG8gV29ybGQ=', // "Hello World" in base64
-  amount: '123456789012345678901234567890'
-}
-
-const typed = toTyped(wireData)
-console.log('Typed:', typed)
-// → Typed: {
-//     id: Uint8Array(11) [...], // decoded bytes
-//     amount: 123456789012345678901234567890n
-//   }
-
-// Convert back to wire format
-const repr = toRepresentation(typed)
-console.log('Representation:', repr)
-// → Representation: {
-//     id: 'SGVsbG8gV29ybGQ=',
-//     amount: '123456789012345678901234567890'
-//   }
+const validator = create(schema, 'MyType', { customTransforms })
 ```
 
-Custom transforms can be provided as either:
-- Function objects (will be converted to source code for the generated validators)
-- String containing the function body (useful for code generation contexts)
+## Command Line Interface
 
-If only `toTyped` is provided, `toRepresentation` defaults to the identity function (returns input unchanged).
+The `ipld-schema` command provides tools for working with schemas:
 
-## Command line
+### Validation
 
-**@ipld/schema also exports an executable**: if installed with `-g` you will get an `ipld-schema` command in your `PATH`.
+```bash
+# Validate schema files
+ipld-schema validate schema.ipldsch
 
-This executable has two commands that operate on files or stdin.
+# Extract and validate schemas from markdown
+ipld-schema validate README.md
+```
 
-  * `ipld-schema validate [files...]`: Accepts .ipldsch and .md files, if none are passed will read from stdin, returns exit code 0 on successful validation
-  * `ipld-schema to-json [-t] [files...]`: Accepts .ipldsch files, if none are passed will read from stdin, prints the JSON form of the schema
-  * `ipld-schema to-schema [-t] [files...]`: Accepts .ipldsch and .md files, if none are passed will read from stdin, prints the canonical IPLD Schema form of the schema
-  * `ipld-schema json-to-schema [files...]`: Accepts .json files, if none are passed will read from stdin, prints the canonical IPLD Schema form of the schema represented by the JSON
-  * `ipld-schema to-js [--cjs] [files...]`: Accepts .ipldsch files, if none are passed will read from stdin, prints a JavaScript module that exports a typed and representation converter/validator pair. If `--cjs` is passed, the returned JavaScript with be in CJS form, otherwise it will be in ESM form. These are the same pair that are generated from a `@ipld/schema/typed.js#create()` call for the schema in question, except that all types discovered within the schema will be exported as well.
+### Conversion
 
-`validate`, `to-json`, `to-schema`, and `to-js` take either .ipldsch or .md files. When using .md files, `ipld-schema` will extract any \`\`\` code blocks using the `ipldsch` or `sh` language codes.
+```bash
+# Convert to JSON format
+ipld-schema to-json schema.ipldsch
+
+# Pretty print as canonical schema
+ipld-schema to-schema schema.ipldsch
+```
+
+### Code Generation
+
+```bash
+# Generate JavaScript validators
+ipld-schema to-js schema.ipldsch
+
+# Generate TypeScript definitions
+ipld-schema to-tsdefs schema.ipldsch
+```
+
+## API Reference
+
+### Parsing Schemas
+
+- `fromDSL(dsl: string)` - Parse schema DSL into an AST
+- `toDSL(schema: Schema)` - Convert AST back to DSL
+
+### Validation
+
+- `create(schema: Schema, type: string, options?)` - Create a validator
+  - Returns `{ toTyped, toRepresentation }`
+  - `toTyped(data)` - Validate and convert from storage format
+  - `toRepresentation(data)` - Validate and convert to storage format
+
+### Code Generation
+
+- `generateGo(schema, options)` - Generate Go code
+- `generateRust(schema, options)` - Generate Rust code
+- `generateTypeScript(schema, options)` - Generate TypeScript code
 
 ## License & Copyright
 
-Copyright 2019 Rod Vagg
+Copyright 2019-2025 Rod Vagg
 
 Licensed under either of
 
