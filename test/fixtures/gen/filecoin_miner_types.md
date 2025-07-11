@@ -9,14 +9,20 @@ This file contains a set of Filecoin miner types to test code generation scenari
 # Basic numeric types from Filecoin
 type ChainEpoch = Int
 # @unsigned
+# @gotype(github.com/filecoin-project/go-state-types/abi.SectorNumber)
 type SectorNumber = Int
 # @unsigned
+# @gotype(github.com/filecoin-project/go-state-types/abi.DealID)
 type DealID = Int
 # @unsigned
 type ActorID = Int
+# @gotype(github.com/filecoin-project/go-state-types/abi.RegisteredSealProof)
 type RegisteredSealProof = Int
+# @gotype(github.com/filecoin-project/go-state-types/abi.RegisteredAggregationProof)
 type RegisteredAggregateProof = Int
+# @gotype(github.com/filecoin-project/go-state-types/abi.RegisteredPoStProof)
 type RegisteredPoStProof = Int
+# @gotype(github.com/filecoin-project/go-state-types/abi.RegisteredUpdateProof)
 type RegisteredUpdateProof = Int
 # @unsigned
 type SectorSize = Int
@@ -108,7 +114,6 @@ type SectorOnChainInfo struct {
   # @gotag(`json:"-"`)
   # @rustrename(deprecated_deal_ids)
   DeprecatedDealIDs [DealID]
-
   # Epoch during which the sector proof was accepted
   Activation ChainEpoch
   # Epoch during which the sector expires
@@ -249,19 +254,19 @@ import (
 
 type ChainEpoch int64
 
-type SectorNumber uint64
+type SectorNumber abi.SectorNumber
 
-type DealID uint64
+type DealID abi.DealID
 
 type ActorID uint64
 
-type RegisteredSealProof int64
+type RegisteredSealProof abi.RegisteredSealProof
 
-type RegisteredAggregateProof int64
+type RegisteredAggregateProof abi.RegisteredAggregationProof
 
-type RegisteredPoStProof int64
+type RegisteredPoStProof abi.RegisteredPoStProof
 
-type RegisteredUpdateProof int64
+type RegisteredUpdateProof abi.RegisteredUpdateProof
 
 type SectorSize uint64
 
@@ -877,7 +882,7 @@ export namespace SectorOnChainInfo {
       return false
     }
     const keyCount = Object.keys(value).length
-    return keyCount >= 10 && keyCount <= 14 &&
+    return keyCount >= 11 && keyCount <= 16 &&
       ('SectorNumber' in value && (SectorNumber.isSectorNumber(value.SectorNumber))) &&
       ('SealProof' in value && (RegisteredSealProof.isRegisteredSealProof(value.SealProof))) &&
       ('SealedCID' in value && (KindLink.isKindLink(value.SealedCID))) &&
@@ -887,12 +892,12 @@ export namespace SectorOnChainInfo {
       ('DealWeight' in value && (DealWeight.isDealWeight(value.DealWeight))) &&
       ('VerifiedDealWeight' in value && (DealWeight.isDealWeight(value.VerifiedDealWeight))) &&
       ('InitialPledge' in value && (TokenAmount.isTokenAmount(value.InitialPledge))) &&
+      ('PowerBaseEpoch' in value && (ChainEpoch.isChainEpoch(value.PowerBaseEpoch))) &&
+      ('Flags' in value && (SectorOnChainInfoFlags.isSectorOnChainInfoFlags(value.Flags))) &&
       (!('ExpectedDayReward' in value) || (TokenAmount.isTokenAmount(value.ExpectedDayReward))) &&
       (!('ExpectedStoragePledge' in value) || (TokenAmount.isTokenAmount(value.ExpectedStoragePledge))) &&
-      ('PowerBaseEpoch' in value && (ChainEpoch.isChainEpoch(value.PowerBaseEpoch))) &&
       (!('ReplacedDayReward' in value) || (TokenAmount.isTokenAmount(value.ReplacedDayReward))) &&
       (!('SectorKeyCID' in value) || (KindLink.isKindLink(value.SectorKeyCID))) &&
-      ('Flags' in value && (SectorOnChainInfoFlags.isSectorOnChainInfoFlags(value.Flags))) &&
       (!('DailyFee' in value) || (TokenAmount.isTokenAmount(value.DailyFee)))
   }
 }
@@ -1050,7 +1055,7 @@ export namespace DeclareFaultsParams {
 }
 
 export type ReplicaUpdate = {
-  SectorNumber: SectorNumber
+  SectorNumber: KindInt
   Deadline: KindInt
   Partition: KindInt
   NewSealedSectorCID: KindLink
@@ -1066,7 +1071,7 @@ export namespace ReplicaUpdate {
     }
     const keyCount = Object.keys(value).length
     return keyCount === 7 &&
-      ('SectorNumber' in value && (SectorNumber.isSectorNumber(value.SectorNumber))) &&
+      ('SectorNumber' in value && (KindInt.isKindInt(value.SectorNumber))) &&
       ('Deadline' in value && (KindInt.isKindInt(value.Deadline))) &&
       ('Partition' in value && (KindInt.isKindInt(value.Partition))) &&
       ('NewSealedSectorCID' in value && (KindLink.isKindLink(value.NewSealedSectorCID))) &&

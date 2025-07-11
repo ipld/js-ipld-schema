@@ -228,6 +228,15 @@ export type StructComments = {
 export type TypeDefnEnum = {
   members: EnumMember[]
   representation: EnumRepresentation
+  annotations?: {
+    type?: { [ k in KindString]: KindString }[]
+  }
+  comments?: {
+    type?: {
+      precomments: KindString,
+      linecomment: KindString
+    }
+  }
 }
 export type EnumMember = string
 export type EnumRepresentation =
@@ -237,6 +246,15 @@ export type EnumRepresentation_String = { [ k in EnumMember]: KindString }
 export type EnumRepresentation_Int = { [ k in EnumMember]: KindInt }
 export type TypeDefnCopy = {
   fromType: TypeName
+  annotations?: {
+    type?: { [ k in KindString]: KindString }[]
+  }
+  comments?: {
+    type?: {
+      precomments: KindString,
+      linecomment: KindString
+    }
+  }
 }
 export type TypeDefnUnit = {
   representation: UnitRepresentation

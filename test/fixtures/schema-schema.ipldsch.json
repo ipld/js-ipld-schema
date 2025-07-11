@@ -2,11 +2,6 @@
 	"types": {
 		"Schema": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# Schema is a the root element of an IPLD Schema document.\n#\n# A complete (if quite short) Schema might look like this:\n#\n# ```\n# {\n#   \"types\": {\n#     \"MyFooType\": {\n#       \"type\": \"string\"\n#     }\n#   }\n# }\n# ```\n#\n# The main bulk of a schema is the types map,\n# which is TypeName mapped to TypeDefn.\n#\n# Some additional top level fields are optional,\n# such as some maps which may store data about where ADLs\n# should be expected to be used within the data described by the schema.\n# However, not all schemas use these features.\n#"
-					}
-				},
 				"fields": {
 					"types": {
 						"type": {
@@ -23,6 +18,12 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# -----\n# This is the schema describing the schema declarations for IPLD Schemas.\n# Yes, it's self-describing! :)\n# -----",
+						"linecomment": "# Schema is a the root element of an IPLD Schema document.\n#\n# A complete (if quite short) Schema might look like this:\n#\n# ```\n# {\n#   \"types\": {\n#     \"MyFooType\": {\n#       \"type\": \"string\"\n#     }\n#   }\n# }\n# ```\n#\n# The main bulk of a schema is the types map,\n# which is TypeName mapped to TypeDefn.\n#\n# Some additional top level fields are optional,\n# such as some maps which may store data about where ADLs\n# should be expected to be used within the data described by the schema.\n# However, not all schemas use these features.\n#"
+					}
 				}
 			}
 		},
@@ -46,22 +47,17 @@
 		},
 		"AdvancedDataLayoutMap": {
 			"map": {
+				"keyType": "AdvancedDataLayoutName",
+				"valueType": "AdvancedDataLayout",
 				"comments": {
 					"type": {
 						"precomments": "# AdvancedDataLayoutMap defines the set of ADLs found within the schema. It\n# maps the name (AdvancedDataLayoutName) to the AdvancedDataLayout, which is\n# currently an empty map.\n#"
 					}
-				},
-				"keyType": "AdvancedDataLayoutName",
-				"valueType": "AdvancedDataLayout"
+				}
 			}
 		},
 		"TypeDefn": {
 			"union": {
-				"comments": {
-					"type": {
-						"precomments": "# TypeDefn is a union type, where each of the possible members describes one kind of type.\n# For example, TypeDefnBool is a member of the TypeDefn union, as is TypeDefnMap.\n#\n# The TypeDefn union is serialized using \"keyed\" union representation,\n# which means in the serial form, we will always see a map with one key,\n# and that key will indicate which member type is coming up as the value.\n#\n# Some of the kinds of type are so simple the union discriminant is the only\n# content at all, e.g. strings:\n#\n# ```\n# {\n#   \"string\": {}\n# }\n# ```\n#\n# Other types have more content.  Consider this example of a map type:\n#\n# ```\n# {\n#   \"map\": {\n#     \"keyType\": \"String\",\n#     \"valueType\": \"Int\"\n#   }\n# }\n# ```\n#"
-					}
-				},
 				"members": [
 					"TypeDefnBool",
 					"TypeDefnString",
@@ -95,16 +91,16 @@
 						"any": "TypeDefnAny",
 						"copy": "TypeDefnCopy"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# TypeDefn is a union type, where each of the possible members describes one kind of type.\n# For example, TypeDefnBool is a member of the TypeDefn union, as is TypeDefnMap.\n#\n# The TypeDefn union is serialized using \"keyed\" union representation,\n# which means in the serial form, we will always see a map with one key,\n# and that key will indicate which member type is coming up as the value.\n#\n# Some of the kinds of type are so simple the union discriminant is the only\n# content at all, e.g. strings:\n#\n# ```\n# {\n#   \"string\": {}\n# }\n# ```\n#\n# Other types have more content.  Consider this example of a map type:\n#\n# ```\n# {\n#   \"map\": {\n#     \"keyType\": \"String\",\n#     \"valueType\": \"Int\"\n#   }\n# }\n# ```\n#"
+					}
 				}
 			}
 		},
 		"TypeKind": {
 			"enum": {
-				"comments": {
-					"type": {
-						"precomments": "# TypeKind enumerates all the major kinds of type.\n# Notice this enum's members are the same as the set of strings used as\n# discriminants in the TypeDefn union.\n# (Almost!  TypeDefn also contains TypeDefnCopy, which is a slight outlier.\n# (TypeDefnCopy can be used to define a type, but isn't a typekind itself.))\n#\n# This enum is not actually used elsewhere in the schema-schema,\n# but does correspond to the discriminant values used in the TypeDefn union."
-					}
-				},
 				"members": [
 					"Bool",
 					"String",
@@ -136,16 +132,16 @@
 						"Unit": "unit",
 						"Any": "any"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# TypeKind enumerates all the major kinds of type.\n# Notice this enum's members are the same as the set of strings used as\n# discriminants in the TypeDefn union.\n# (Almost!  TypeDefn also contains TypeDefnCopy, which is a slight outlier.\n# (TypeDefnCopy can be used to define a type, but isn't a typekind itself.))\n#\n# This enum is not actually used elsewhere in the schema-schema,\n# but does correspond to the discriminant values used in the TypeDefn union."
+					}
 				}
 			}
 		},
 		"RepresentationKind": {
 			"enum": {
-				"comments": {
-					"type": {
-						"precomments": "# RepresentationKind is similar to TypeKind, but includes only those concepts\n# which exist at the IPLD *Data Model* level.\n#\n# In other words, structs, unions, and enumerations are not present:\n# those concepts are introduced in the IPLD Schema system, and when serialized,\n# all of them must be transformable to one of these representation kinds\n# (e.g. a \"struct\" TypeKind will usually be transformed to a \"map\"\n# RepresentationKind; \"enum\" TypeKind are typically a \"string\" RepresentationKind;\n# and so on; exactly what RepresentationKind a type defintion will have\n# is determined by its representation strategy).\n#\n# RepresentationKind strings are sometimes used to to indicate part of the\n# definition in the details of TypeDefn; for example, they're used describing\n# some of the detailed behaviors of a \"kinded\"-style union type."
-					}
-				},
 				"members": [
 					"Bool",
 					"String",
@@ -167,16 +163,16 @@
 						"List": "list",
 						"Link": "link"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# RepresentationKind is similar to TypeKind, but includes only those concepts\n# which exist at the IPLD *Data Model* level.\n#\n# In other words, structs, unions, and enumerations are not present:\n# those concepts are introduced in the IPLD Schema system, and when serialized,\n# all of them must be transformable to one of these representation kinds\n# (e.g. a \"struct\" TypeKind will usually be transformed to a \"map\"\n# RepresentationKind; \"enum\" TypeKind are typically a \"string\" RepresentationKind;\n# and so on; exactly what RepresentationKind a type defintion will have\n# is determined by its representation strategy).\n#\n# RepresentationKind strings are sometimes used to to indicate part of the\n# definition in the details of TypeDefn; for example, they're used describing\n# some of the detailed behaviors of a \"kinded\"-style union type."
+					}
 				}
 			}
 		},
 		"AnyScalar": {
 			"union": {
-				"comments": {
-					"type": {
-						"precomments": "# AnyScalar defines a union of the basic non-complex kinds.\n#\n# Useful defining usage of IPLD nodes that do compose from other nodes.\n#"
-					}
-				},
 				"members": [
 					"Bool",
 					"String",
@@ -192,55 +188,55 @@
 						"int": "Int",
 						"float": "Float"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# AnyScalar defines a union of the basic non-complex kinds.\n#\n# Useful defining usage of IPLD nodes that do compose from other nodes.\n#"
+					}
 				}
 			}
 		},
 		"AdvancedDataLayout": {
 			"struct": {
+				"fields": {},
+				"representation": {
+					"map": {}
+				},
 				"comments": {
 					"type": {
 						"precomments": "# AdvancedDataLayout defines `advanced` definitions which are stored in the\n# top-level \"advanced\" map (AdvancedDataLayoutMap)\n#\n# Used as `advanced Foo` rather than `type Foo` to indicate an advanced data\n# layout (ADL) with that name which can be used as a representation for type\n# definitions whose kind the ADL is able to support.\n#\n# The AdvancedDataLayoutName is currently the only identifier that can be used\n# to make a connection with the algorithm/logic behind this ADL. Future\n# iterations may formalize this connection by some other means.\n#"
 					}
-				},
-				"fields": {},
-				"representation": {
-					"map": {}
 				}
 			}
 		},
 		"TypeDefnBool": {
 			"struct": {
+				"fields": {},
+				"representation": {
+					"map": {}
+				},
 				"comments": {
 					"type": {
 						"precomments": "# TypeDefnBool describes a simple boolean type.\n# It has no details.\n#"
 					}
-				},
-				"fields": {},
-				"representation": {
-					"map": {}
 				}
 			}
 		},
 		"TypeDefnString": {
 			"struct": {
+				"fields": {},
+				"representation": {
+					"map": {}
+				},
 				"comments": {
 					"type": {
 						"precomments": "# TypeDefnString describes a simple string type.\n# It has no details.\n#"
 					}
-				},
-				"fields": {},
-				"representation": {
-					"map": {}
 				}
 			}
 		},
 		"TypeDefnBytes": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# TypeDefnBytes describes a simple byte array type.\n#"
-					}
-				},
 				"fields": {
 					"representation": {
 						"type": "BytesRepresentation"
@@ -248,16 +244,16 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# TypeDefnBytes describes a simple byte array type.\n#"
+					}
 				}
 			}
 		},
 		"BytesRepresentation": {
 			"union": {
-				"comments": {
-					"type": {
-						"precomments": "# BytesRepresentation specifies how a TypeDefnBytes is to be serialized. By\n# default it will be stored as bytes in the data model but it may be replaced\n# with an ADL.\n#"
-					}
-				},
 				"members": [
 					"BytesRepresentation_Bytes",
 					"AdvancedDataLayoutName"
@@ -267,55 +263,55 @@
 						"bytes": "BytesRepresentation_Bytes",
 						"advanced": "AdvancedDataLayoutName"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# BytesRepresentation specifies how a TypeDefnBytes is to be serialized. By\n# default it will be stored as bytes in the data model but it may be replaced\n# with an ADL.\n#"
+					}
 				}
 			}
 		},
 		"BytesRepresentation_Bytes": {
 			"struct": {
+				"fields": {},
+				"representation": {
+					"map": {}
+				},
 				"comments": {
 					"type": {
 						"precomments": "# BytesRepresentation_Bytes is the default representation for TypeDefnBytes and\n# will be used implicitly if no representation is specified.\n#"
 					}
-				},
-				"fields": {},
-				"representation": {
-					"map": {}
 				}
 			}
 		},
 		"TypeDefnInt": {
 			"struct": {
+				"fields": {},
+				"representation": {
+					"map": {}
+				},
 				"comments": {
 					"type": {
 						"precomments": "# TypeDefnInt describes a simple integer numeric type.\n# It has no details.\n#"
 					}
-				},
-				"fields": {},
-				"representation": {
-					"map": {}
 				}
 			}
 		},
 		"TypeDefnFloat": {
 			"struct": {
+				"fields": {},
+				"representation": {
+					"map": {}
+				},
 				"comments": {
 					"type": {
 						"precomments": "# TypeDefnFloat describes a simple floating point numeric type.\n# It has no details.\n#"
 					}
-				},
-				"fields": {},
-				"representation": {
-					"map": {}
 				}
 			}
 		},
 		"TypeDefnMap": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# TypeDefnMap describes a key-value map.\n# The keys and values of the map have some specific type of their own.\n#\n# A constraint on keyType is that the referenced type must have a string\n# representation kind. The IPLD Data Model only allows for string keys on maps,\n# so this constraint is imposed here.\n#"
-					}
-				},
 				"fields": {
 					"keyType": {
 						"type": "TypeName"
@@ -339,16 +335,16 @@
 							}
 						}
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# TypeDefnMap describes a key-value map.\n# The keys and values of the map have some specific type of their own.\n#\n# A constraint on keyType is that the referenced type must have a string\n# representation kind. The IPLD Data Model only allows for string keys on maps,\n# so this constraint is imposed here.\n#"
+					}
 				}
 			}
 		},
 		"MapRepresentation": {
 			"union": {
-				"comments": {
-					"type": {
-						"precomments": "# MapRepresentation describes how a map type should be mapped onto\n# its IPLD Data Model representation.\n#\n# By default, a map type is also represented as a map in the Data Model,\n# but other representation strategies can be configured\n#\n# Note that the `TypeDefnMap.representation` field is optional --\n# the default behavior is demarcated by the lack of any of these values.\n#"
-					}
-				},
 				"members": [
 					"MapRepresentation_StringPairs",
 					"MapRepresentation_ListPairs",
@@ -360,16 +356,16 @@
 						"listpairs": "MapRepresentation_ListPairs",
 						"advanced": "AdvancedDataLayoutName"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# MapRepresentation describes how a map type should be mapped onto\n# its IPLD Data Model representation.\n#\n# By default, a map type is also represented as a map in the Data Model,\n# but other representation strategies can be configured\n#\n# Note that the `TypeDefnMap.representation` field is optional --\n# the default behavior is demarcated by the lack of any of these values.\n#"
+					}
 				}
 			}
 		},
 		"MapRepresentation_StringPairs": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# MapRepresentation_StringPairs describes that a map should be encoded as a\n# string of delimited \"k/v\" entries, e.g. \"k1=v1,k2=v2\".\n# The separating delimiter may be specified with \"entryDelim\", and the k/v\n# delimiter may be specified with \"innerDelim\". So a \"k=v\" naive\n# comma-separated form would use an \"innerDelim\" of \"=\" and an \"entryDelim\"\n# of \",\".\n#\n# This serial representation is limited: the domain of keys must\n# exclude the \"innerDelim\" and values and keys must exclude \",\".\n# There is no facility for escaping, such as in escaped CSV.\n# This also leads to a further restriction that this representation is only\n# valid for maps whose keys and values may all be encoded to string form\n# without conflicts in delimiter character. It is recommended, therefore,\n# that its use be limited to maps containing values with the basic data\n# model kinds that exclude multiple values (i.e. no maps, lists, and therefore\n# structs or unions).\n#"
-					}
-				},
 				"fields": {
 					"innerDelim": {
 						"type": "String"
@@ -380,29 +376,29 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# MapRepresentation_StringPairs describes that a map should be encoded as a\n# string of delimited \"k/v\" entries, e.g. \"k1=v1,k2=v2\".\n# The separating delimiter may be specified with \"entryDelim\", and the k/v\n# delimiter may be specified with \"innerDelim\". So a \"k=v\" naive\n# comma-separated form would use an \"innerDelim\" of \"=\" and an \"entryDelim\"\n# of \",\".\n#\n# This serial representation is limited: the domain of keys must\n# exclude the \"innerDelim\" and values and keys must exclude \",\".\n# There is no facility for escaping, such as in escaped CSV.\n# This also leads to a further restriction that this representation is only\n# valid for maps whose keys and values may all be encoded to string form\n# without conflicts in delimiter character. It is recommended, therefore,\n# that its use be limited to maps containing values with the basic data\n# model kinds that exclude multiple values (i.e. no maps, lists, and therefore\n# structs or unions).\n#"
+					}
 				}
 			}
 		},
 		"MapRepresentation_ListPairs": {
 			"struct": {
+				"fields": {},
+				"representation": {
+					"map": {}
+				},
 				"comments": {
 					"type": {
 						"precomments": "# MapRepresentation_ListPairs describes that a map should be encoded as a\n# list in the IPLD Data Model. This list comprises a sub-list for each entry,\n# in the form: [[k1,v1],[k2,v2]].\n#\n# This representation type is similar to StructRepresentation_Tuple except\n# it includes the keys. This is critical for maps since the keys are not\n# defined in the schema (hence \"tuple\" representation isn't available for\n# maps).\n#"
 					}
-				},
-				"fields": {},
-				"representation": {
-					"map": {}
 				}
 			}
 		},
 		"TypeDefnList": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# TypeDefnList describes a list.\n# The values of the list have some specific type of their own.\n#"
-					}
-				},
 				"fields": {
 					"valueType": {
 						"type": "TypeNameOrInlineDefn"
@@ -423,16 +419,16 @@
 							}
 						}
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# TypeDefnList describes a list.\n# The values of the list have some specific type of their own.\n#"
+					}
 				}
 			}
 		},
 		"ListRepresentation": {
 			"union": {
-				"comments": {
-					"type": {
-						"precomments": "# ListRepresentation describes how a map type should be mapped onto\n# its IPLD Data Model representation.  By default a list is a list in the\n# data model but it may be replaced with an ADL.\n#\n# Note that the `TypeDefnList.representation` field is optional --\n# the default behavior is demarcated by the lack of any of these values.\n#"
-					}
-				},
 				"members": [
 					"AdvancedDataLayoutName"
 				],
@@ -440,16 +436,16 @@
 					"keyed": {
 						"advanced": "AdvancedDataLayoutName"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# ListRepresentation describes how a map type should be mapped onto\n# its IPLD Data Model representation.  By default a list is a list in the\n# data model but it may be replaced with an ADL.\n#\n# Note that the `TypeDefnList.representation` field is optional --\n# the default behavior is demarcated by the lack of any of these values.\n#"
+					}
 				}
 			}
 		},
 		"TypeDefnLink": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# TypeDefnLink describes an IPLD link, which is a content-addressable pointer to more data.\n# (Links in IPLD are implemented by CIDs: they're a hash that identifies another another block of data,\n# plus a codec hint for how to parse it into IPLD Data Model).\n#\n# A typed link can optionally state an \"expectedType\".\n# This provides a mechanism for suggesting what we should expect find\n# if we were to follow the link.\n# (Note that this cannot be strictly enforced by a node or block-level schema validation!\n# But may be enforced elsewhere in an application using a schema, and\n# is generally enforced as soon as possible when traversing typed links.)\n#\n# In the Schema DSL, links are specified with the `&FooBar` syntax --\n# The ampersand character denotes a link, and the rest of the declaration\n# is the name of the expected type for the linked content.\n#\n# If you want the equivalent of untyped links, in the DSL, you can say `&Any`.\n# This is also available in the Prelude, and that type is simply name \"Link\"\n# (in other words, the Prelude contains `type Link &Any`).\n#"
-					}
-				},
 				"fields": {
 					"expectedType": {
 						"type": "TypeName"
@@ -463,16 +459,16 @@
 							}
 						}
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# TypeDefnLink describes an IPLD link, which is a content-addressable pointer to more data.\n# (Links in IPLD are implemented by CIDs: they're a hash that identifies another another block of data,\n# plus a codec hint for how to parse it into IPLD Data Model).\n#\n# A typed link can optionally state an \"expectedType\".\n# This provides a mechanism for suggesting what we should expect find\n# if we were to follow the link.\n# (Note that this cannot be strictly enforced by a node or block-level schema validation!\n# But may be enforced elsewhere in an application using a schema, and\n# is generally enforced as soon as possible when traversing typed links.)\n#\n# In the Schema DSL, links are specified with the `&FooBar` syntax --\n# The ampersand character denotes a link, and the rest of the declaration\n# is the name of the expected type for the linked content.\n#\n# If you want the equivalent of untyped links, in the DSL, you can say `&Any`.\n# This is also available in the Prelude, and that type is simply name \"Link\"\n# (in other words, the Prelude contains `type Link &Any`).\n#"
+					}
 				}
 			}
 		},
 		"TypeDefnUnion": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# TypeDefnUnion describes a union (sometimes called a \"sum type\", or\n# more verbosely, a \"discriminated union\", or in yet other literature, a \"variant\" type).\n# A union is a type that can have a value of several different types, but\n# unlike maps or structs, in a union, only one of those values may be present\n# at a time.\n#\n# Unions can be represented in several significantly different ways:\n# see the documentation of the UnionRepresentation type for details.\n# Also note that there is no default representation for union types --\n# you must _always_ explicitly specify a representation strategy when defining unions!\n#"
-					}
-				},
 				"fields": {
 					"members": {
 						"type": {
@@ -487,16 +483,16 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# TypeDefnUnion describes a union (sometimes called a \"sum type\", or\n# more verbosely, a \"discriminated union\", or in yet other literature, a \"variant\" type).\n# A union is a type that can have a value of several different types, but\n# unlike maps or structs, in a union, only one of those values may be present\n# at a time.\n#\n# Unions can be represented in several significantly different ways:\n# see the documentation of the UnionRepresentation type for details.\n# Also note that there is no default representation for union types --\n# you must _always_ explicitly specify a representation strategy when defining unions!\n#"
+					}
 				}
 			}
 		},
 		"UnionMember": {
 			"union": {
-				"comments": {
-					"type": {
-						"precomments": "# UnionMember is a type for identifying the members of a union.\n# Most commonly, this is simply a TypeName string;\n# however, it can also be a UnionMemberInlineDefn,\n# which is used to allow inline link definitions within a kinded union as a shorthand\n# (rather than requiring all links be declared as a named type before being usable within a union)."
-					}
-				},
 				"members": [
 					"TypeName",
 					"UnionMemberInlineDefn"
@@ -506,16 +502,16 @@
 						"string": "TypeName",
 						"map": "UnionMemberInlineDefn"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# UnionMember is a type for identifying the members of a union.\n# Most commonly, this is simply a TypeName string;\n# however, it can also be a UnionMemberInlineDefn,\n# which is used to allow inline link definitions within a kinded union as a shorthand\n# (rather than requiring all links be declared as a named type before being usable within a union)."
+					}
 				}
 			}
 		},
 		"UnionMemberInlineDefn": {
 			"union": {
-				"comments": {
-					"type": {
-						"precomments": "# UnionMemberInlineDefn is a very similar purpose to InlineDefn,\n# but found specifically within UnionMember.\n# It only allows describing a link type (and not maps nor lists, as InlineDefn does),\n# which is a constraint applied to union membership largely to make sure\n# if there are errors in processing unions, we can make legible messages about it!"
-					}
-				},
 				"members": [
 					"TypeDefnLink"
 				],
@@ -523,16 +519,16 @@
 					"keyed": {
 						"link": "TypeDefnLink"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# UnionMemberInlineDefn is a very similar purpose to InlineDefn,\n# but found specifically within UnionMember.\n# It only allows describing a link type (and not maps nor lists, as InlineDefn does),\n# which is a constraint applied to union membership largely to make sure\n# if there are errors in processing unions, we can make legible messages about it!"
+					}
 				}
 			}
 		},
 		"UnionRepresentation": {
 			"union": {
-				"comments": {
-					"type": {
-						"precomments": "# UnionRepresentation is a union of all the distinct ways a TypeDefnUnion's values\n# can be mapped onto a serialized format for the IPLD Data Model.\n#\n# There are six strategies that can be used to encode a union:\n# \"keyed\", \"envelope\", \"inline\", \"stringprefix\", \"bytesprefix\", and \"kinded\".\n# The \"keyed\", \"envelope\", and \"inline\" strategies are all ways to produce\n# representations in a map format, using map keys as type discriminators\n# (some literature may describe this as a \"tagged\" style of union).\n# The \"stringprefix\" strategy, only available for unions in which all member\n# types themselves represent as strings in the data model, uses a prefix\n# string as the type discrimination hint (and like the map-oriented strategies,\n# may also be seen as a form of \"tagged\" style unions).\n# The \"bytesprefix\" strategy, only available for unions in which all member\n# types themselves represent as bytes in the data model, similar to\n# \"stringprefix\" but with bytes.\n# The \"kinded\" strategy can describe a union in which member types have\n# several different representation kinds, and uses the representation kind\n# itself as the type discrimination hint to do so.\n#\n# Note: Unions can be used to produce a \"nominative\" style of type declarations\n# -- yes, even given that IPLD Schema systems are natively \"structural\" typing!\n#"
-					}
-				},
 				"members": [
 					"UnionRepresentation_Kinded",
 					"UnionRepresentation_Keyed",
@@ -550,38 +546,38 @@
 						"stringprefix": "UnionRepresentation_StringPrefix",
 						"bytesprefix": "UnionRepresentation_BytesPrefix"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# UnionRepresentation is a union of all the distinct ways a TypeDefnUnion's values\n# can be mapped onto a serialized format for the IPLD Data Model.\n#\n# There are six strategies that can be used to encode a union:\n# \"keyed\", \"envelope\", \"inline\", \"stringprefix\", \"bytesprefix\", and \"kinded\".\n# The \"keyed\", \"envelope\", and \"inline\" strategies are all ways to produce\n# representations in a map format, using map keys as type discriminators\n# (some literature may describe this as a \"tagged\" style of union).\n# The \"stringprefix\" strategy, only available for unions in which all member\n# types themselves represent as strings in the data model, uses a prefix\n# string as the type discrimination hint (and like the map-oriented strategies,\n# may also be seen as a form of \"tagged\" style unions).\n# The \"bytesprefix\" strategy, only available for unions in which all member\n# types themselves represent as bytes in the data model, similar to\n# \"stringprefix\" but with bytes.\n# The \"kinded\" strategy can describe a union in which member types have\n# several different representation kinds, and uses the representation kind\n# itself as the type discrimination hint to do so.\n#\n# Note: Unions can be used to produce a \"nominative\" style of type declarations\n# -- yes, even given that IPLD Schema systems are natively \"structural\" typing!\n#"
+					}
 				}
 			}
 		},
 		"UnionRepresentation_Kinded": {
 			"map": {
+				"keyType": "RepresentationKind",
+				"valueType": "UnionMember",
 				"comments": {
 					"type": {
 						"precomments": "# \"Kinded\" union representations describe a bidirectional mapping between\n# a RepresentationKind and the type which should be the\n# union member decoded when one sees this RepresentationKind.\n#\n# The referenced type must of course produce the RepresentationKind it's\n# matched with!"
 					}
-				},
-				"keyType": "RepresentationKind",
-				"valueType": "UnionMember"
+				}
 			}
 		},
 		"UnionRepresentation_Keyed": {
 			"map": {
+				"keyType": "String",
+				"valueType": "UnionMember",
 				"comments": {
 					"type": {
 						"precomments": "# \"Keyed\" union representations will encode as a map, where the map has\n# exactly one entry, the key string of which will be used to look up the name\n# of the Type; and the value should be the content, and be of that Type.\n#\n# Note: when writing a new protocol, it may be wise to prefer keyed unions\n# over the other styles wherever possible; keyed unions tend to have good\n# performance characteristics, as they have most \"mechanical sympathy\" with\n# parsing and deserialization implementation order."
 					}
-				},
-				"keyType": "String",
-				"valueType": "UnionMember"
+				}
 			}
 		},
 		"UnionRepresentation_Envelope": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# \"Envelope\" union representations will encode as a map, where the map has\n# exactly two entries: the two keys should be of the exact strings specified\n# for this envelope representation.  The value for the discriminant key\n# should be one of the strings in the discriminant table.  The value for\n# the content key should be the content, and be of the Type matching the\n# lookup in the discriminant table."
-					}
-				},
 				"fields": {
 					"discriminantKey": {
 						"type": "String"
@@ -600,16 +596,16 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# \"Envelope\" union representations will encode as a map, where the map has\n# exactly two entries: the two keys should be of the exact strings specified\n# for this envelope representation.  The value for the discriminant key\n# should be one of the strings in the discriminant table.  The value for\n# the content key should be the content, and be of the Type matching the\n# lookup in the discriminant table."
+					}
 				}
 			}
 		},
 		"UnionRepresentation_Inline": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# \"Inline\" union representations require that all of their members encode\n# as a map, and encode their type info into the same map as the member data.\n# Thus, the map for an inline union may have any number of entries: it is\n# however many fields the member value has, plus one (for the discriminant).\n#\n# All members of an inline union must be struct types and must encode to\n# the map RepresentationKind.  Other types which encode to map (such as map\n# types themselves!) cannot be used: the potential for content values with\n# with keys overlapping with the discriminantKey would result in undefined\n# behavior!  Similarly, the member struct types may not have fields which\n# have names that collide with the discriminantKey.\n#\n# When designing a new protocol, use inline unions sparingly; despite\n# appearing simple, they have the most edge cases of any kind of union\n# representation, and their implementation is generally the most complex and\n# is difficult to optimize deserialization to support."
-					}
-				},
 				"fields": {
 					"discriminantKey": {
 						"type": "String"
@@ -625,16 +621,16 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# \"Inline\" union representations require that all of their members encode\n# as a map, and encode their type info into the same map as the member data.\n# Thus, the map for an inline union may have any number of entries: it is\n# however many fields the member value has, plus one (for the discriminant).\n#\n# All members of an inline union must be struct types and must encode to\n# the map RepresentationKind.  Other types which encode to map (such as map\n# types themselves!) cannot be used: the potential for content values with\n# with keys overlapping with the discriminantKey would result in undefined\n# behavior!  Similarly, the member struct types may not have fields which\n# have names that collide with the discriminantKey.\n#\n# When designing a new protocol, use inline unions sparingly; despite\n# appearing simple, they have the most edge cases of any kind of union\n# representation, and their implementation is generally the most complex and\n# is difficult to optimize deserialization to support."
+					}
 				}
 			}
 		},
 		"UnionRepresentation_StringPrefix": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# UnionRepresentation_StringPrefix describes a union representation for unions\n# whose member types are all strings. Strings used for this representation\n# strategy use the first characters as the discriminator, and the subsequent\n# characters as the discriminated type's value.\n#\n# There is currently no limitation on prefix length, other than needing to be\n# at least one character. Nor is there a requirement that they all be of the\n# same length, although they must all represent unique prefixes.\n#\n# stringprefix is an invalid representation for any union that contains a type\n# that does not have a string representation.\n#"
-					}
-				},
 				"fields": {
 					"prefixes": {
 						"type": {
@@ -647,16 +643,16 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# UnionRepresentation_StringPrefix describes a union representation for unions\n# whose member types are all strings. Strings used for this representation\n# strategy use the first characters as the discriminator, and the subsequent\n# characters as the discriminated type's value.\n#\n# There is currently no limitation on prefix length, other than needing to be\n# at least one character. Nor is there a requirement that they all be of the\n# same length, although they must all represent unique prefixes.\n#\n# stringprefix is an invalid representation for any union that contains a type\n# that does not have a string representation.\n#"
+					}
 				}
 			}
 		},
 		"UnionRepresentation_BytesPrefix": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# UnionRepresentation_BytesPrefix describes a union representation for unions\n# whose member types are all bytes. It is encoded to a byte array whose\n# first bytes are the discriminator and subsequent bytes form the discriminated\n# type.\n#\n# Discriminators are represented as hexadecimal strings. There is currently\n# no limitation on their length, other than needing to be at least one byte.\n# Nor is there a requirement that they all be of the same length, although\n# they must all represent unique prefixes.\n#\n# Only valid, upper-case, hexadecimal strings representing at least one byte\n# are allowed.\n#\n# bytesprefix is an invalid representation for any union that contains a type\n# that does not have a bytes representation.\n#"
-					}
-				},
 				"fields": {
 					"prefixes": {
 						"type": {
@@ -669,6 +665,11 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# UnionRepresentation_BytesPrefix describes a union representation for unions\n# whose member types are all bytes. It is encoded to a byte array whose\n# first bytes are the discriminator and subsequent bytes form the discriminated\n# type.\n#\n# Discriminators are represented as hexadecimal strings. There is currently\n# no limitation on their length, other than needing to be at least one byte.\n# Nor is there a requirement that they all be of the same length, although\n# they must all represent unique prefixes.\n#\n# Only valid, upper-case, hexadecimal strings representing at least one byte\n# are allowed.\n#\n# bytesprefix is an invalid representation for any union that contains a type\n# that does not have a bytes representation.\n#"
+					}
 				}
 			}
 		},
@@ -683,11 +684,6 @@
 		},
 		"TypeDefnStruct": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# TypeDefnStruct describes a type which has a group of fields of varying Type.\n# Each field has a name, which is used to access its value, similarly to\n# accessing values in a map.\n#\n# The most typical representation of a struct is as a map, in which case field\n# names also serve as the the map keys (though this is a default, and details\n# of this representation may be configured; and other representation strategies\n# also exist).\n#"
-					}
-				},
 				"fields": {
 					"fields": {
 						"type": {
@@ -703,6 +699,11 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# TypeDefnStruct describes a type which has a group of fields of varying Type.\n# Each field has a name, which is used to access its value, similarly to\n# accessing values in a map.\n#\n# The most typical representation of a struct is as a map, in which case field\n# names also serve as the the map keys (though this is a default, and details\n# of this representation may be configured; and other representation strategies\n# also exist).\n#"
+					}
 				}
 			}
 		},
@@ -717,11 +718,6 @@
 		},
 		"StructField": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# StructField describes the properties of each field declared by a TypeDefnStruct.\n#\n# StructField contains properties similar to TypeDefnMap -- namely, it describes\n# a content type (as a TypeNameOrInlineDefn -- it supports inline definitions) -- and\n# has a boolean property for whether or not the value is permitted to be null.\n#\n# In addition, StructField also has a property called \"optional\".\n# An \"optional\" field is one which is permitted to be absent entirely.\n# This is distinct from \"nullable\": a field can be optional=false and\n# nullable=true, in which case it's an error if the key is missing entirely,\n# but null is of course valid.  Conversely, if a field is optional=true and\n# nullable=false, it's an error if the field is present and assigned null, but\n# fine for a map to be missing a key of the field's name entirely and still be\n# recognized as this struct.\n# (The specific behavior of optionals may vary per StructRepresentation.)\n#\n# Note that the 'optional' and 'nullable' properties are not themselves\n# optional... however, in the IPLD serial representation of schemas, you'll\n# often see them absent from the map encoding a StructField.  This is because\n# these fields are specified to be implicitly false.\n# Implicits in a map representation of a struct mean that those entries may\n# be missing from the map encoding... but unlike with \"optional\" fields, there\n# is no \"undefined\" value; absence is simply interpreted as the value specified\n# as the implicit.\n# (With implicit fields, an explicitly encoded implicit value is actually an\n# error instead!)  \"Optional\" fields give rise to N+1 cardinality logic,\n# just like \"nullable\" fields; \"implicit\" fields *do not*.\n#"
-					}
-				},
 				"fields": {
 					"type": {
 						"type": "TypeNameOrInlineDefn"
@@ -744,16 +740,16 @@
 							}
 						}
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# StructField describes the properties of each field declared by a TypeDefnStruct.\n#\n# StructField contains properties similar to TypeDefnMap -- namely, it describes\n# a content type (as a TypeNameOrInlineDefn -- it supports inline definitions) -- and\n# has a boolean property for whether or not the value is permitted to be null.\n#\n# In addition, StructField also has a property called \"optional\".\n# An \"optional\" field is one which is permitted to be absent entirely.\n# This is distinct from \"nullable\": a field can be optional=false and\n# nullable=true, in which case it's an error if the key is missing entirely,\n# but null is of course valid.  Conversely, if a field is optional=true and\n# nullable=false, it's an error if the field is present and assigned null, but\n# fine for a map to be missing a key of the field's name entirely and still be\n# recognized as this struct.\n# (The specific behavior of optionals may vary per StructRepresentation.)\n#\n# Note that the 'optional' and 'nullable' properties are not themselves\n# optional... however, in the IPLD serial representation of schemas, you'll\n# often see them absent from the map encoding a StructField.  This is because\n# these fields are specified to be implicitly false.\n# Implicits in a map representation of a struct mean that those entries may\n# be missing from the map encoding... but unlike with \"optional\" fields, there\n# is no \"undefined\" value; absence is simply interpreted as the value specified\n# as the implicit.\n# (With implicit fields, an explicitly encoded implicit value is actually an\n# error instead!)  \"Optional\" fields give rise to N+1 cardinality logic,\n# just like \"nullable\" fields; \"implicit\" fields *do not*.\n#"
+					}
 				}
 			}
 		},
 		"TypeNameOrInlineDefn": {
 			"union": {
-				"comments": {
-					"type": {
-						"precomments": "# TypeNameOrInlineDefn is a union of either TypeName or an InlineDefn.\n# It's used for the value type in the recursive types (maps, lists, and the fields of structs),\n# which allows the use of InlineDefn in any of those positions.\n#\n# TypeNameOrInlineDefn is simply a TypeName if the kind of data is a string;\n# this is simple and common case.\n# If the data is a map, then it requires further recognition as an InlineDefn.\n#\n# Note that TypeNameOrInlineDefn isn't used to describe *keys* in the recursive types that\n# have them (maps, structs) -- recursive types in keys would not lend itself\n# well to serialization!\n# TypeNameOrInlineDefn also isn't used to describe members in Unions -- this is a choice\n# aimed to limit syntactical complexity (both at type definition authoring\n# time, as well as for the sake of error messaging during typechecking).\n#"
-					}
-				},
 				"members": [
 					"TypeName",
 					"InlineDefn"
@@ -763,16 +759,16 @@
 						"string": "TypeName",
 						"map": "InlineDefn"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# TypeNameOrInlineDefn is a union of either TypeName or an InlineDefn.\n# It's used for the value type in the recursive types (maps, lists, and the fields of structs),\n# which allows the use of InlineDefn in any of those positions.\n#\n# TypeNameOrInlineDefn is simply a TypeName if the kind of data is a string;\n# this is simple and common case.\n# If the data is a map, then it requires further recognition as an InlineDefn.\n#\n# Note that TypeNameOrInlineDefn isn't used to describe *keys* in the recursive types that\n# have them (maps, structs) -- recursive types in keys would not lend itself\n# well to serialization!\n# TypeNameOrInlineDefn also isn't used to describe members in Unions -- this is a choice\n# aimed to limit syntactical complexity (both at type definition authoring\n# time, as well as for the sake of error messaging during typechecking).\n#"
+					}
 				}
 			}
 		},
 		"InlineDefn": {
 			"union": {
-				"comments": {
-					"type": {
-						"precomments": "# InlineDefn represents a declaration of an anonymous type of one of the simple\n# recursive kinds (e.g. map or list) which is found \"inline\" in another type's definition.\n# InlineDefn also allows description of anonymous but typed links for similar reasons.\n# InlineDefn is the more complex option of the TypeNameOrInlineDefn union.\n#\n# Note that the representation of this union -- the use of a keyed representation,\n# as well as the keywords for its members -- align exactly with those\n# in the TypeNameOrInlineDefn union.  Technically, this isn't a necessary property (in that\n# nothing would break if that sameness was violated) but it's awfully nice for\n# sanity; what we're saying here is that the representation of the types in an\n# InlineDefn should look *exactly the same* as the top-level type declarations...\n# it's just that within an InlineDefn, we're restricted to a subset of the members.\n#"
-					}
-				},
 				"members": [
 					"TypeDefnMap",
 					"TypeDefnList",
@@ -784,16 +780,16 @@
 						"list": "TypeDefnList",
 						"link": "TypeDefnLink"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# InlineDefn represents a declaration of an anonymous type of one of the simple\n# recursive kinds (e.g. map or list) which is found \"inline\" in another type's definition.\n# InlineDefn also allows description of anonymous but typed links for similar reasons.\n# InlineDefn is the more complex option of the TypeNameOrInlineDefn union.\n#\n# Note that the representation of this union -- the use of a keyed representation,\n# as well as the keywords for its members -- align exactly with those\n# in the TypeNameOrInlineDefn union.  Technically, this isn't a necessary property (in that\n# nothing would break if that sameness was violated) but it's awfully nice for\n# sanity; what we're saying here is that the representation of the types in an\n# InlineDefn should look *exactly the same* as the top-level type declarations...\n# it's just that within an InlineDefn, we're restricted to a subset of the members.\n#"
+					}
 				}
 			}
 		},
 		"StructRepresentation": {
 			"union": {
-				"comments": {
-					"type": {
-						"precomments": "# StructRepresentation describes how a struct type should be mapped onto\n# its IPLD Data Model representation.\n#\n# The default representation strategy for struct types is a map,\n# with the struct's field names as keys.\n# However, that can be configured.\n# For example, the map representation can be configured with\n# directives to use different keys in the representation form;\n# or, configured to consider some fields as having values which should be seen as the implicit value for that field,\n# meaning the entire field shouldn't get an entry in the representation map if that value is found in that field.\n# Or, wholly different representation strategies can be used\n# (such as the tuple strategy, which results in a data model list kind,\n# or stringjoin, which results a data model string kind!).\n#"
-					}
-				},
 				"members": [
 					"StructRepresentation_Map",
 					"StructRepresentation_Tuple",
@@ -809,16 +805,16 @@
 						"stringjoin": "StructRepresentation_StringJoin",
 						"listpairs": "StructRepresentation_ListPairs"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# StructRepresentation describes how a struct type should be mapped onto\n# its IPLD Data Model representation.\n#\n# The default representation strategy for struct types is a map,\n# with the struct's field names as keys.\n# However, that can be configured.\n# For example, the map representation can be configured with\n# directives to use different keys in the representation form;\n# or, configured to consider some fields as having values which should be seen as the implicit value for that field,\n# meaning the entire field shouldn't get an entry in the representation map if that value is found in that field.\n# Or, wholly different representation strategies can be used\n# (such as the tuple strategy, which results in a data model list kind,\n# or stringjoin, which results a data model string kind!).\n#"
+					}
 				}
 			}
 		},
 		"StructRepresentation_Map": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# StructRepresentation_Map describes a way to map a struct type onto a map\n# representation. Field serialization options may optionally be configured to\n# enable mapping serialized keys using the 'rename' option, or implicit values\n# specified where the field is omitted from the serialized form using the\n# 'implicit' option.\n#\n# See StructRepresentation_Map_FieldDetails for details on the 'rename' and\n# 'implicit' options.\n#"
-					}
-				},
 				"fields": {
 					"fields": {
 						"type": {
@@ -832,16 +828,16 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# StructRepresentation_Map describes a way to map a struct type onto a map\n# representation. Field serialization options may optionally be configured to\n# enable mapping serialized keys using the 'rename' option, or implicit values\n# specified where the field is omitted from the serialized form using the\n# 'implicit' option.\n#\n# See StructRepresentation_Map_FieldDetails for details on the 'rename' and\n# 'implicit' options.\n#"
+					}
 				}
 			}
 		},
 		"StructRepresentation_Map_FieldDetails": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# StructRepresentation_Map_FieldDetails describes additional properties of a\n# struct field when represented as a map.  For example, fields may be renamed,\n# or implicit values associated.\n#\n# If an implicit value is defined, then during marshalling, if the actual value\n# is the implicit value, that field will be omitted from the map; and during\n# unmarshalling, correspondingly, the absence of that field will be interpreted\n# as being the implicit value.\n#\n# Note that fields with implicits are distinct from fields which are optional!\n# The cardinality of membership of an optional field is is incremented:\n# e.g., the cardinality of \"fieldname Bool\" is 2; \"fieldname optional Bool\" is\n# membership cardinality *3*, because it may also be undefined.\n# By contrast, the cardinality of membership of a field with an implicit value\n# remains unchanged; there is serial state which can map to an undefined value.\n#\n# Note that 'rename' supports exactly one string, and not a list: this is\n# intentional.  The rename feature is meant to allow serial representations\n# to use a different key string than the schema type definition field name;\n# it is not intended to be used for migration purposes.\n#"
-					}
-				},
 				"fields": {
 					"rename": {
 						"type": "String",
@@ -854,16 +850,16 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# StructRepresentation_Map_FieldDetails describes additional properties of a\n# struct field when represented as a map.  For example, fields may be renamed,\n# or implicit values associated.\n#\n# If an implicit value is defined, then during marshalling, if the actual value\n# is the implicit value, that field will be omitted from the map; and during\n# unmarshalling, correspondingly, the absence of that field will be interpreted\n# as being the implicit value.\n#\n# Note that fields with implicits are distinct from fields which are optional!\n# The cardinality of membership of an optional field is is incremented:\n# e.g., the cardinality of \"fieldname Bool\" is 2; \"fieldname optional Bool\" is\n# membership cardinality *3*, because it may also be undefined.\n# By contrast, the cardinality of membership of a field with an implicit value\n# remains unchanged; there is serial state which can map to an undefined value.\n#\n# Note that 'rename' supports exactly one string, and not a list: this is\n# intentional.  The rename feature is meant to allow serial representations\n# to use a different key string than the schema type definition field name;\n# it is not intended to be used for migration purposes.\n#"
+					}
 				}
 			}
 		},
 		"StructRepresentation_Tuple": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# StructRepresentation_Tuple describes a way to map a struct type into a list\n# representation.\n#\n# Tuple representations are less flexible than map representations:\n# field order can be specified in order to override the order defined\n# in the type, but optionals and implicits are not (currently) supported.\n# A `fieldOrder` list must include quoted strings (FieldName is a string\n# type) which are coerced to the names of the struct fields. e.g.:\n#   fieldOrder [\"Foo\", \"Bar\", \"Baz\"]\n#"
-					}
-				},
 				"fields": {
 					"fieldOrder": {
 						"type": {
@@ -876,16 +872,16 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# StructRepresentation_Tuple describes a way to map a struct type into a list\n# representation.\n#\n# Tuple representations are less flexible than map representations:\n# field order can be specified in order to override the order defined\n# in the type, but optionals and implicits are not (currently) supported.\n# A `fieldOrder` list must include quoted strings (FieldName is a string\n# type) which are coerced to the names of the struct fields. e.g.:\n#   fieldOrder [\"Foo\", \"Bar\", \"Baz\"]\n#"
+					}
 				}
 			}
 		},
 		"StructRepresentation_StringPairs": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# StructRepresentation_StringPairs describes that a struct should be encoded\n# as a string of delimited \"k/v\" entries, e.g. \"k1=v1,k2=v2\".\n# The separating delimiter may be specified with \"entryDelim\", and the k/v\n# delimiter may be specified with \"innerDelim\". So a \"k=v\" naive\n# comma-separated form would use an \"innerDelim\" of \"=\" and an \"entryDelim\"\n# of \",\".\n#\n# Serialization a struct with stringpairs works the same way as serializing\n# a map with stringpairs and the same character limitations exist. See\n# MapRepresentation_StringPairs for more details on these limitations.\n#"
-					}
-				},
 				"fields": {
 					"innerDelim": {
 						"type": "String"
@@ -896,16 +892,16 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# StructRepresentation_StringPairs describes that a struct should be encoded\n# as a string of delimited \"k/v\" entries, e.g. \"k1=v1,k2=v2\".\n# The separating delimiter may be specified with \"entryDelim\", and the k/v\n# delimiter may be specified with \"innerDelim\". So a \"k=v\" naive\n# comma-separated form would use an \"innerDelim\" of \"=\" and an \"entryDelim\"\n# of \",\".\n#\n# Serialization a struct with stringpairs works the same way as serializing\n# a map with stringpairs and the same character limitations exist. See\n# MapRepresentation_StringPairs for more details on these limitations.\n#"
+					}
 				}
 			}
 		},
 		"StructRepresentation_StringJoin": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# StructRepresentation_StringJoin describes a way to encode a struct to\n# a string in the IPLD Data Model. Similar to tuple representation, the\n# keys are dropped as they may be inferred from the struct definition.\n# values are concatenated, in order, and separated by a \"join\" delimiter.\n# For example, specifying \":\" as the \"join\": \"v1,v2,v3\".\n#\n# stringjoin is necessarily restrictive and therefore only valid for structs\n# whose values may all be encoded to string form without conflicts in \"join\"\n# character. It is recommended, therefore, that its use be limited to structs\n# containing values with the basic data model kinds that exclude multiple\n# values (i.e. no maps, lists, and therefore structs or unions).\n#"
-					}
-				},
 				"fields": {
 					"join": {
 						"type": "String"
@@ -921,29 +917,29 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# StructRepresentation_StringJoin describes a way to encode a struct to\n# a string in the IPLD Data Model. Similar to tuple representation, the\n# keys are dropped as they may be inferred from the struct definition.\n# values are concatenated, in order, and separated by a \"join\" delimiter.\n# For example, specifying \":\" as the \"join\": \"v1,v2,v3\".\n#\n# stringjoin is necessarily restrictive and therefore only valid for structs\n# whose values may all be encoded to string form without conflicts in \"join\"\n# character. It is recommended, therefore, that its use be limited to structs\n# containing values with the basic data model kinds that exclude multiple\n# values (i.e. no maps, lists, and therefore structs or unions).\n#"
+					}
 				}
 			}
 		},
 		"StructRepresentation_ListPairs": {
 			"struct": {
+				"fields": {},
+				"representation": {
+					"map": {}
+				},
 				"comments": {
 					"type": {
 						"precomments": "# StructRepresentation_ListPairs describes that a struct, should be encoded as\n# a list in the IPLD Data Model. This list comprises a sub-list for each\n# entry, in the form: [[k1,v1],[k2,v2]].\n#\n# This representation type encodes in the same way as\n# MapStructRepresentation_Tuple. It is also similar to\n# StructRepresentation_Tuple except it includes the keys in nested lists.\n# A tuple representation for a struct will encode more compact than listpairs.\n#"
 					}
-				},
-				"fields": {},
-				"representation": {
-					"map": {}
 				}
 			}
 		},
 		"TypeDefnEnum": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# TypeDefnEnum describes a type which has a known, pre-defined set of possible values.\n# Each of the member values is named by a string (of EnumMember type).\n#\n# Enums can have either string or int-based representations.\n# Integer and string values (for int and string representations respectively)\n# are provided in parens in the DSL. Where the string used in serialization is\n# the same as the EnumMember, it may be omitted. For int representation enums,\n# all int values are required.\n#"
-					}
-				},
 				"fields": {
 					"members": {
 						"type": {
@@ -958,6 +954,11 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# TypeDefnEnum describes a type which has a known, pre-defined set of possible values.\n# Each of the member values is named by a string (of EnumMember type).\n#\n# Enums can have either string or int-based representations.\n# Integer and string values (for int and string representations respectively)\n# are provided in parens in the DSL. Where the string used in serialization is\n# the same as the EnumMember, it may be omitted. For int representation enums,\n# all int values are required.\n#"
+					}
 				}
 			}
 		},
@@ -972,11 +973,6 @@
 		},
 		"EnumRepresentation": {
 			"union": {
-				"comments": {
-					"type": {
-						"precomments": "# EnumRepresentation describes how an enum type should be mapped onto\n# its IPLD Data Model representation. By default an enum is represented as a\n# string kind but it may also be represented as an int kind.\n#"
-					}
-				},
 				"members": [
 					"EnumRepresentation_String",
 					"EnumRepresentation_Int"
@@ -986,38 +982,38 @@
 						"string": "EnumRepresentation_String",
 						"int": "EnumRepresentation_Int"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# EnumRepresentation describes how an enum type should be mapped onto\n# its IPLD Data Model representation. By default an enum is represented as a\n# string kind but it may also be represented as an int kind.\n#"
+					}
 				}
 			}
 		},
 		"EnumRepresentation_String": {
 			"map": {
+				"keyType": "EnumMember",
+				"valueType": "String",
 				"comments": {
 					"type": {
 						"precomments": "# EnumRepresentation_String describes the way an enum is represented as a\n# string in the data model. By default, the strings used as EnumMember will be\n# used at the serialization. A custom string may be provided (with `Foo (\"x\")`\n# in the DSL) which will be stored here in the representation block. Missing\n# entries in this map will use the default.\n#"
 					}
-				},
-				"keyType": "EnumMember",
-				"valueType": "String"
+				}
 			}
 		},
 		"EnumRepresentation_Int": {
 			"map": {
+				"keyType": "EnumMember",
+				"valueType": "Int",
 				"comments": {
 					"type": {
 						"precomments": "# EnumRepresentation_Int describes the way an enum is represented as an int\n# in the data model. A mapping of names to ints is required to perform the\n# conversion from int to enum value. In the DSL, int values _must_ be provided\n# for each EnumMember (with `Foo (\"100\")`, those are stored here.\n#"
 					}
-				},
-				"keyType": "EnumMember",
-				"valueType": "Int"
+				}
 			}
 		},
 		"TypeDefnUnit": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# TypeDefnUnit describes a type which contains no data at all (other than that fact of its existence).\n# (If this seems strange, consider that the cardinality of a bool type is 2;\n# the cardinality of a unit type is simply 1.)\n#"
-					}
-				},
 				"fields": {
 					"representation": {
 						"type": "UnitRepresentation"
@@ -1025,16 +1021,16 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# TypeDefnUnit describes a type which contains no data at all (other than that fact of its existence).\n# (If this seems strange, consider that the cardinality of a bool type is 2;\n# the cardinality of a unit type is simply 1.)\n#"
+					}
 				}
 			}
 		},
 		"UnitRepresentation": {
 			"enum": {
-				"comments": {
-					"type": {
-						"precomments": "# UnitRepresentation is an enum for describing how a TypeDefnUnit should be represented in the data model.\n#\n# Unit types are commonly seen represented in several ways.\n# A null token is a common one.\n# A true token is sometimes seen (especially, when people encode \"sets\" in json:\n# often this will be seen as a map where the values are keys and the map values are 'true').\n# Also, an empty map can be a useful unit value;\n# an empty map accurately communicates a lack of data.\n# (The emptymap strategy can be a particularly interesting choice if you want to\n# have a schema that is evolvable in the future to start using a struct or map\n# in the same place as the unit type currently stands, while having older documents\n# continue to be parsable by the evolved schema.)\n#\n# Unlike many of the other representation information types seen in the schema-schema,\n# this one is just an enum, rather than being a union.\n# That's because there's no possibility of every needing to annotate more customization\n# onto values in the unit type... because there are no possible values in the unit type.\n#\n# Note that there is no discernible logical difference between\n# `type Foo struct {}` and `type Foo unit representation emptymap`;\n# only that the latter can be said to be a more explicit description of intent.\n# Both will result in identical representations, and both have identical cardinality (which is 1).\n#"
-					}
-				},
 				"members": [
 					"Null",
 					"True",
@@ -1048,29 +1044,29 @@
 						"False": "false",
 						"Emptymap": "emptymap"
 					}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# UnitRepresentation is an enum for describing how a TypeDefnUnit should be represented in the data model.\n#\n# Unit types are commonly seen represented in several ways.\n# A null token is a common one.\n# A true token is sometimes seen (especially, when people encode \"sets\" in json:\n# often this will be seen as a map where the values are keys and the map values are 'true').\n# Also, an empty map can be a useful unit value;\n# an empty map accurately communicates a lack of data.\n# (The emptymap strategy can be a particularly interesting choice if you want to\n# have a schema that is evolvable in the future to start using a struct or map\n# in the same place as the unit type currently stands, while having older documents\n# continue to be parsable by the evolved schema.)\n#\n# Unlike many of the other representation information types seen in the schema-schema,\n# this one is just an enum, rather than being a union.\n# That's because there's no possibility of every needing to annotate more customization\n# onto values in the unit type... because there are no possible values in the unit type.\n#\n# Note that there is no discernible logical difference between\n# `type Foo struct {}` and `type Foo unit representation emptymap`;\n# only that the latter can be said to be a more explicit description of intent.\n# Both will result in identical representations, and both have identical cardinality (which is 1).\n#"
+					}
 				}
 			}
 		},
 		"TypeDefnAny": {
 			"struct": {
+				"fields": {},
+				"representation": {
+					"map": {}
+				},
 				"comments": {
 					"type": {
 						"precomments": "# TypeDefnAny describes a type which can contain data of any kind.\n# It's essentially an escape valve; it says \"we don't really know what lies beyond here\".\n# The type-level data model kind of an \"any\" type can be anything;\n# it depends on what the inhabitant value is.\n# The representation-level kind can similarly be anything;\n# it will match whatever the type-level kind is.\n#\n# It is not possible to regain useful types on deeper values after using an 'any' type;\n# from then on, the rest of the data is locked in on having exactly that 'any' type,\n# and having no further ability to have separate type-level and representation-level behaviors.\n#\n# 'any' was introduced as a typekind after discovering it is not possible\n# to emulate its behavior by constructing a union; see\n# https://github.com/ipld/specs/issues/318 for some discussion of this."
 					}
-				},
-				"fields": {},
-				"representation": {
-					"map": {}
 				}
 			}
 		},
 		"TypeDefnCopy": {
 			"struct": {
-				"comments": {
-					"type": {
-						"precomments": "# TypeDefnCopy describes a special \"copy\" unit that indicates that a type name\n# should copy the type descriptor of another type. TypeDefnCopy does not redirect a\n# name to another type. Instead, it copies the entire type definition and\n# assigns it to another type.\n#\n# The DSL defines a TypeDefnCopy as `type NewThing = CopiedThing`, where\n# \"CopiedThing\" refers to a `type` defined elsewhere in a schema and is not\n# one of TypeKind or an inline type descriptor (`{}`, `[]`, `&`).\n#"
-					}
-				},
 				"fields": {
 					"fromType": {
 						"type": "TypeName"
@@ -1078,6 +1074,11 @@
 				},
 				"representation": {
 					"map": {}
+				},
+				"comments": {
+					"type": {
+						"precomments": "# TypeDefnCopy describes a special \"copy\" unit that indicates that a type name\n# should copy the type descriptor of another type. TypeDefnCopy does not redirect a\n# name to another type. Instead, it copies the entire type definition and\n# assigns it to another type.\n#\n# The DSL defines a TypeDefnCopy as `type NewThing = CopiedThing`, where\n# \"CopiedThing\" refers to a `type` defined elsewhere in a schema and is not\n# one of TypeKind or an inline type descriptor (`{}`, `[]`, `&`).\n#"
+					}
 				}
 			}
 		}
