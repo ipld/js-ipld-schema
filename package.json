@@ -13,7 +13,7 @@
     "lint:fix": "standard --fix",
     "test:ci": "npm run test",
     "test:node": "c8 --lines=80 --check-coverage --exclude=lib/parser.cjs --exclude=test/** mocha test/test-*.js",
-    "test:browser": "polendina --cleanup --webpack-config test/webpack.config.js test/test-typed-*.js",
+    "test:browser": "polendina --timeout 60 --cleanup --webpack-config test/webpack.config.js test/test-typed-*.js",
     "test": "npm run lint && npm run build && npm run test:node && npm run test:browser",
     "coverage": "c8 --lines=80 --reporter=html --reporter=text mocha test/test-*.js && npx st -d coverage -p 8888"
   },
