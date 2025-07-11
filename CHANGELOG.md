@@ -1,3 +1,43 @@
+## [7.0.0](https://github.com/ipld/js-ipld-schema/compare/v6.0.10...v7.0.0) (2025-07-11)
+
+### ⚠ BREAKING CHANGES
+
+* code generation for Go, Rust, TypeScript
+
+### Features
+
+* code generation for Go, Rust, TypeScript ([0d8012d](https://github.com/ipld/js-ipld-schema/commit/0d8012dbdf62850ad26da1406bde1df7ba1b7b23))
+* **gen:** copy types ([4747f23](https://github.com/ipld/js-ipld-schema/commit/4747f234a0b09f669ec540b7368ad9273dce2c1c))
+* **gen:** enums ([de8421d](https://github.com/ipld/js-ipld-schema/commit/de8421d49268c7abd0085df1fe4e7b887fa0c80b))
+* **gen:** implicits ([c0cba18](https://github.com/ipld/js-ipld-schema/commit/c0cba18dceb552d37eb73f0a7106a1e84223a349))
+* **gen:** keyed unions ([2e7edd2](https://github.com/ipld/js-ipld-schema/commit/2e7edd2a443b2c80d6a7cdc7cf3db9d970d1b16c))
+* **gen:** lists ([ce1fa70](https://github.com/ipld/js-ipld-schema/commit/ce1fa70a8966c694da9a6cd1c7eb90f6faec752b))
+* **gen:** maps ([78cfdcf](https://github.com/ipld/js-ipld-schema/commit/78cfdcfe5feb9462ca00878192526ba205d886d2))
+* **gen:** optionals ([91ec414](https://github.com/ipld/js-ipld-schema/commit/91ec4143489f78601954f12334e789c99936c217))
+* **gen:** renames ([ec523ab](https://github.com/ipld/js-ipld-schema/commit/ec523abc3e14b3c37f4b45ac7d75679bf47e8a12))
+* tsdefs improvements & cli, expose & build schema-schema, fix type exports ([8bd1aa8](https://github.com/ipld/js-ipld-schema/commit/8bd1aa8fe83d2b90d436fdfcd156350a75d9ee20))
+* **typed:** custom transformers for typed converters/validators ([b2244bb](https://github.com/ipld/js-ipld-schema/commit/b2244bbc15eed8a93ca4104bdec77f421874bc13))
+* **typed:** support copy types in typed validators/converters ([db587f0](https://github.com/ipld/js-ipld-schema/commit/db587f05604d786d31384d6762dd49ade031fb79))
+
+### Bug Fixes
+
+* allow KindInt to be bigint ([6e8daf5](https://github.com/ipld/js-ipld-schema/commit/6e8daf5a1965372807d593997ba9c6770d5cfdcc))
+* don't make annotations require a double-# ([4be4cf3](https://github.com/ipld/js-ipld-schema/commit/4be4cf34001295c89d711b7de866b826c83b1cdc))
+* **gen:** improve test coverage, improve using more Filecoin miner types ([b33ead6](https://github.com/ipld/js-ipld-schema/commit/b33ead645eabdaaa736dd2fa1842be35977c6899))
+* **gen:** kinded unions ([8699a41](https://github.com/ipld/js-ipld-schema/commit/8699a41f9c71a1d9b58e52922d7b13116998cf91))
+* **gen:** minor parser & type improvements & fixes ([9b74eb8](https://github.com/ipld/js-ipld-schema/commit/9b74eb8db11a60d237741fa8b7d37a37b46670cd))
+* **gen:** properly handle nullables ([db43aa0](https://github.com/ipld/js-ipld-schema/commit/db43aa0a49419c027c4a5e80f7f5f3692445985e))
+* windows crlf ([699dabc](https://github.com/ipld/js-ipld-schema/commit/699dabc5c552b054df34ac1fc17b05bbf02ed48c))
+
+### Trivial Changes
+
+* add parser types ([94ff357](https://github.com/ipld/js-ipld-schema/commit/94ff3578807859061e9cd2631f8c4950424b9f43))
+* **deps:** bump actions/setup-node from 4.3.0 to 4.4.0 ([013bcae](https://github.com/ipld/js-ipld-schema/commit/013bcaeb135a025d4e0b9b4fd801b3eaa2f2d1ff))
+* **doc:** add LLM context docs ([e98df2f](https://github.com/ipld/js-ipld-schema/commit/e98df2f5a3e911b6601322554f36631b23ac8c8f))
+* **doc:** README refresh ([13ed424](https://github.com/ipld/js-ipld-schema/commit/13ed4242173349911bc8cbbfd055839be8e312cc))
+* **test:** extend polendina timeout for slower systems ([80be1bf](https://github.com/ipld/js-ipld-schema/commit/80be1bf1ebc9d4cac7d9dcff49dd4053fe5c73ed))
+* update deps ([ef42ad7](https://github.com/ipld/js-ipld-schema/commit/ef42ad7efb750502367adefa836c505e5e14e66e))
+
 ## [6.0.10](https://github.com/ipld/js-ipld-schema/compare/v6.0.9...v6.0.10) (2025-06-11)
 
 ### Trivial Changes
