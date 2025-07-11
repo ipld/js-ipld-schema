@@ -44,13 +44,42 @@
     while (pcl.length && !pcl[0].trim()) {
       pcl.shift()
     }
-    let lastempty = pcl.findLastIndex((l) => /^\s*$/.test(l))
-    if (lastempty !== -1) {
-      pcl = pcl.slice(lastempty + 1)
+
+    // Check if there's a blank line followed by comments
+    // If so, those comments should be linecomments for the previous field
+    let firstCommentAfterBlank = -1
+    let hasBlankLine = false
+    for (let i = 0; i < pcl.length; i++) {
+      if (/^\s*$/.test(pcl[i])) {
+        hasBlankLine = true
+      } else if (hasBlankLine && /^\s*#/.test(pcl[i])) {
+        firstCommentAfterBlank = i
+        break
+      }
+    }
+
+    if (firstCommentAfterBlank !== -1 && !linecomment) {
+      // Move comments after blank line to linecomment
+      const commentLines = pcl.slice(firstCommentAfterBlank)
+      linecomment = commentLines.join('\n')
+      pcl = pcl.slice(0, firstCommentAfterBlank)
+      // Remove any trailing empty lines from pcl
+      while (pcl.length && !pcl[pcl.length - 1].trim()) {
+        pcl.pop()
+      }
+    } else {
+      // Original behavior: only keep comments after the last empty line
+      let lastempty = pcl.findLastIndex((l) => /^\s*$/.test(l))
+      if (lastempty !== -1) {
+        pcl = pcl.slice(lastempty + 1)
+      }
     }
     // trim leading space and # on each line
     pcl = pcl.map((l) => l.replace(/^[ \t]*#[ \t]?/gm, ''))
-    linecomment = linecomment ? flattenArray(linecomment).join('').replace(/^[ \t]*#[ \t]?/, '') : null
+    if (linecomment && typeof linecomment !== 'string') {
+      linecomment = flattenArray(linecomment).join('')
+    }
+    linecomment = linecomment ? linecomment.replace(/^[ \t]*#[ \t]?/gm, '') : null
     const comments = (pcl.length || linecomment) ? {} : null
     if (pcl.length) {
       comments.precomments = pcl.join('\n')
