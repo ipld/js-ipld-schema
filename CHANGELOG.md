@@ -1,3 +1,12 @@
+## [7.0.2](https://github.com/ipld/js-ipld-schema/compare/v7.0.1...v7.0.2) (2025-10-14)
+
+### Trivial Changes
+
+* **ci:** only test Node.js lts and current ([ff54c02](https://github.com/ipld/js-ipld-schema/commit/ff54c0280bce2deac429bc1dc539a0f8ce57bd2d))
+* **deps-dev:** bump @semantic-release/npm from 12.0.2 to 13.0.0 ([97515b3](https://github.com/ipld/js-ipld-schema/commit/97515b3d05a1ec211ef24641d50fc63b4b014b0a))
+* **deps-dev:** bump chai from 5.3.3 to 6.0.1 ([#156](https://github.com/ipld/js-ipld-schema/issues/156)) ([0380a4b](https://github.com/ipld/js-ipld-schema/commit/0380a4b2608b217fe729efef4ca6effe5360ce45))
+* **deps:** bump actions/setup-node from 4.4.0 to 5.0.0 ([#157](https://github.com/ipld/js-ipld-schema/issues/157)) ([113f02a](https://github.com/ipld/js-ipld-schema/commit/113f02a0188957ca6dcd06433146d321531ea50d))
+
 ## [7.0.1](https://github.com/ipld/js-ipld-schema/compare/v7.0.0...v7.0.1) (2025-08-12)
 
 ### Trivial Changes
