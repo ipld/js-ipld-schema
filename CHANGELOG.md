@@ -1,3 +1,9 @@
+## [7.0.4](https://github.com/ipld/js-ipld-schema/compare/v7.0.3...v7.0.4) (2025-10-16)
+
+### Trivial Changes
+
+* **deps-dev:** bump @semantic-release/github from 11.0.6 to 12.0.0 ([#160](https://github.com/ipld/js-ipld-schema/issues/160)) ([762421e](https://github.com/ipld/js-ipld-schema/commit/762421e7a64c2b6925606b47f6eba502330ad22c))
+
 ## [7.0.3](https://github.com/ipld/js-ipld-schema/compare/v7.0.2...v7.0.3) (2025-10-15)
 
 ### Trivial Changes
