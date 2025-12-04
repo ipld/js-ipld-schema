@@ -1,3 +1,9 @@
+## [7.0.7](https://github.com/ipld/js-ipld-schema/compare/v7.0.6...v7.0.7) (2025-12-04)
+
+### Trivial Changes
+
+* **deps:** bump actions/setup-node from 6.0.0 to 6.1.0 ([#164](https://github.com/ipld/js-ipld-schema/issues/164)) ([887ca79](https://github.com/ipld/js-ipld-schema/commit/887ca79df2b1c9e57ab3f435dd7f5402444cc970))
+
 ## [7.0.6](https://github.com/ipld/js-ipld-schema/compare/v7.0.5...v7.0.6) (2025-12-03)
 
 ### Trivial Changes
