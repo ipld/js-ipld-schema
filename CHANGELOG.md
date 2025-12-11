@@ -1,3 +1,9 @@
+## [7.0.8](https://github.com/ipld/js-ipld-schema/compare/v7.0.7...v7.0.8) (2025-12-11)
+
+### Trivial Changes
+
+* **deps-dev:** bump @types/node from 24.10.3 to 25.0.0 ([#165](https://github.com/ipld/js-ipld-schema/issues/165)) ([f5badf2](https://github.com/ipld/js-ipld-schema/commit/f5badf2a4825848ddabbcdf0e8f014c0915a04b0))
+
 ## [7.0.7](https://github.com/ipld/js-ipld-schema/compare/v7.0.6...v7.0.7) (2025-12-04)
 
 ### Trivial Changes
