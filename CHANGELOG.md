@@ -1,3 +1,9 @@
+## [7.0.10](https://github.com/ipld/js-ipld-schema/compare/v7.0.9...v7.0.10) (2026-01-23)
+
+### Trivial Changes
+
+* **deps:** bump actions/checkout from 6.0.1 to 6.0.2 ([#167](https://github.com/ipld/js-ipld-schema/issues/167)) ([e9c2702](https://github.com/ipld/js-ipld-schema/commit/e9c27027523407938decd26241c946435f2b825f))
+
 ## [7.0.9](https://github.com/ipld/js-ipld-schema/compare/v7.0.8...v7.0.9) (2026-01-21)
 
 ### Trivial Changes
