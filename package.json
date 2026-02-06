@@ -74,7 +74,7 @@
     "url": "https://github.com/ipld/js-ipld-schema.git"
   },
   "dependencies": {
-    "get-stdin": "^9.0.0",
+    "get-stdin": "^10.0.0",
     "multiformats": "^13.3.7",
     "yargs": "^18.0.0"
   },
