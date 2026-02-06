@@ -1,3 +1,9 @@
+## [7.0.11](https://github.com/ipld/js-ipld-schema/compare/v7.0.10...v7.0.11) (2026-02-06)
+
+### Trivial Changes
+
+* **deps:** bump get-stdin from 9.0.0 to 10.0.0 ([#168](https://github.com/ipld/js-ipld-schema/issues/168)) ([630df5d](https://github.com/ipld/js-ipld-schema/commit/630df5d3da90d337c83c7f24d9c4fe743dca74f3))
+
 ## [7.0.10](https://github.com/ipld/js-ipld-schema/compare/v7.0.9...v7.0.10) (2026-01-23)
 
 ### Trivial Changes
