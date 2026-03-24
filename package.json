@@ -67,7 +67,7 @@
     "polendina": "^3.2.11",
     "standard": "^17.1.2",
     "testmark.js": "^1.0.13",
-    "typescript": "^5.8.3"
+    "typescript": "^6.0.2"
   },
   "repository": {
     "type": "git",
