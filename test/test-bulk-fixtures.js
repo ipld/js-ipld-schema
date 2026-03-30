@@ -8,7 +8,7 @@ import { toDSL } from '@ipld/schema/to-dsl.js'
 import { assert } from 'chai'
 
 /**
- * @typedef {import('../schema-schema').Schema} Schema
+ * @typedef {import('../schema-schema.js').Schema} Schema
  */
 
 describe('fixtures/bulk', () => {

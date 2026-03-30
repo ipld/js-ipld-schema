@@ -1,6 +1,6 @@
 /**
- * @typedef {import('../../schema-schema').Schema} Schema
- * @typedef {import('../../schema-schema').FieldName} FieldName
+ * @typedef {import('../../schema-schema.js').Schema} Schema
+ * @typedef {import('../../schema-schema.js').FieldName} FieldName
  */
 /**
  * @param {Schema} schema
@@ -8,6 +8,6 @@
  * @returns {string}
  */
 export function generateGo(schema: Schema, options?: Record<string, string>): string;
-export type Schema = import("../../schema-schema").Schema;
-export type FieldName = import("../../schema-schema").FieldName;
+export type Schema = import("../../schema-schema.js").Schema;
+export type FieldName = import("../../schema-schema.js").FieldName;
 //# sourceMappingURL=go.d.ts.map

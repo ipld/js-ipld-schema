@@ -1,5 +1,5 @@
 /**
- * @typedef {import('../schema-schema').Schema} Schema
+ * @typedef {import('../schema-schema.js').Schema} Schema
  */
 /**
  * @param {string} input
@@ -7,5 +7,5 @@
  * @returns {Schema}
  */
 export function fromDSL(input: string, options?: Record<string, any>): Schema;
-export type Schema = import("../schema-schema").Schema;
+export type Schema = import("../schema-schema.js").Schema;
 //# sourceMappingURL=from-dsl.d.ts.map

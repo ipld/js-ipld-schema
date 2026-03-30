@@ -6,7 +6,7 @@ import { collectInput } from './collect-input.js'
 import { generateTypeScript } from '../lib/gen.js'
 
 /**
- * @typedef {import('../schema-schema').Schema} Schema
+ * @typedef {import('../schema-schema.js').Schema} Schema
  */
 
 /**

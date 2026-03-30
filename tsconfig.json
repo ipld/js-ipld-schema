@@ -17,8 +17,8 @@
     "alwaysStrict": true,
     "esModuleInterop": true,
     "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "declaration": true,
     "declarationMap": true,
     "outDir": "types",
@@ -26,12 +26,7 @@
     "stripInternal": true,
     "resolveJsonModule": true,
     "emitDeclarationOnly": true,
-    "baseUrl": ".",
-    "paths": {
-      "@ipld/schema/to-dsl.js": [ "lib/to-dsl.js" ],
-      "@ipld/schema/from-dsl.js": [ "lib/from-dsl.js" ],
-      "@ipld/schema/typed.js": [ "lib/typed.js" ]
-    }
+    "types": ["node", "mocha"]
   },
   "exclude": [
     "**/parser.*",
