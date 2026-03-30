@@ -32,7 +32,7 @@ export async function lintPlainJS (plainJs) {
 }
 
 /**
- * @param {import('schema-schema.js').Schema} schema
+ * @param {import('../schema-schema.js').Schema} schema
  * @param {string} rootType
  * @returns {Promise<{ toTyped: TypeTransformerFunction, toRepresentation: TypeTransformerFunction }>}
  */

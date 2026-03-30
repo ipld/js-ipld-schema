@@ -6,7 +6,7 @@ import { collectInput } from './collect-input.js'
 import { Builder, safeReference } from '../lib/typed.js'
 
 /**
- * @typedef {import('../schema-schema').Schema} Schema
+ * @typedef {import('../schema-schema.js').Schema} Schema
  */
 
 /**

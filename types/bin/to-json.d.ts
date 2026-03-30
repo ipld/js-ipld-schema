@@ -9,5 +9,5 @@ export function toJSON(files: string[], options: {
     "include-comments"?: boolean;
     "include-annotations"?: boolean;
 }): Promise<void>;
-export type Schema = import("../schema-schema").Schema;
+export type Schema = import("../schema-schema.js").Schema;
 //# sourceMappingURL=to-json.d.ts.map

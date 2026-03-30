@@ -26,9 +26,9 @@ export class Builder {
     constructor(schema: Schema, options?: TypedOptions);
     schema: {
         types: {
-            [x: string]: import("../schema-schema").TypeDefn;
+            [x: string]: import("../schema-schema.js").TypeDefn;
         } & {
-            [x: string]: import("../schema-schema").TypeDefn;
+            [x: string]: import("../schema-schema.js").TypeDefn;
         };
     };
     /** @type {Record<string, string>} */
@@ -45,15 +45,15 @@ export class Builder {
      */
     addType(typeName: TypeName, typeDef?: TypeDefn): void;
 }
-export type EnumMember = import("../schema-schema").EnumMember;
-export type KindInt = import("../schema-schema").KindInt;
-export type KindString = import("../schema-schema").KindString;
-export type AnyScalar = import("../schema-schema").AnyScalar;
-export type Schema = import("../schema-schema").Schema;
-export type TypeDefn = import("../schema-schema").TypeDefn;
-export type InlineDefn = import("../schema-schema").InlineDefn;
-export type TypeName = import("../schema-schema").TypeName;
-export type TypeNameOrInlineDefn = import("../schema-schema").TypeNameOrInlineDefn;
+export type EnumMember = import("../schema-schema.js").EnumMember;
+export type KindInt = import("../schema-schema.js").KindInt;
+export type KindString = import("../schema-schema.js").KindString;
+export type AnyScalar = import("../schema-schema.js").AnyScalar;
+export type Schema = import("../schema-schema.js").Schema;
+export type TypeDefn = import("../schema-schema.js").TypeDefn;
+export type InlineDefn = import("../schema-schema.js").InlineDefn;
+export type TypeName = import("../schema-schema.js").TypeName;
+export type TypeNameOrInlineDefn = import("../schema-schema.js").TypeNameOrInlineDefn;
 export type TypeTransformerFunction = (obj: any) => undefined | any;
 export type CustomTransform = {
     toTyped: string | ((value: any) => any | undefined);

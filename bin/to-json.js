@@ -4,7 +4,7 @@ import { fromDSL } from '../lib/from-dsl.js'
 import { collectInput } from './collect-input.js'
 
 /**
- * @typedef {import('../schema-schema').Schema} Schema
+ * @typedef {import('../schema-schema.js').Schema} Schema
  */
 
 let indent = '  '
