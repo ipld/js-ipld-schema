@@ -1,3 +1,10 @@
+## [7.0.12](https://github.com/ipld/js-ipld-schema/compare/v7.0.11...v7.0.12) (2026-03-30)
+
+### Trivial Changes
+
+* **deps:** bump actions/setup-node from 6.2.0 to 6.3.0 ([#171](https://github.com/ipld/js-ipld-schema/issues/171)) ([0d5f86f](https://github.com/ipld/js-ipld-schema/commit/0d5f86fe0ea5d2ca32d53d9e3e7c3e8fc3622e69))
+* update deps & upgrade to typescript 6 ([2052be6](https://github.com/ipld/js-ipld-schema/commit/2052be619dd0f074f9fc13df2993535321a6cb28))
+
 ## [7.0.11](https://github.com/ipld/js-ipld-schema/compare/v7.0.10...v7.0.11) (2026-02-06)
 
 ### Trivial Changes
