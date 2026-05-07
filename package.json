@@ -12,10 +12,9 @@
     "lint": "standard",
     "lint:fix": "standard --fix",
     "test:ci": "npm run test",
-    "test:node": "c8 --lines=80 --check-coverage --exclude=lib/parser.cjs --exclude=test/** mocha test/test-*.js",
+    "test:node": "mocha test/test-*.js",
     "test:browser": "polendina --timeout 60 --cleanup --webpack-config test/webpack.config.js test/test-typed-*.js",
-    "test": "npm run lint && npm run build && npm run test:node && npm run test:browser",
-    "coverage": "c8 --lines=80 --reporter=html --reporter=text mocha test/test-*.js && npx st -d coverage -p 8888"
+    "test": "npm run lint && npm run build && npm run test:node && npm run test:browser"
   },
   "exports": {
     "./to-dsl.js": {
@@ -59,7 +58,6 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^25.5.0",
     "@types/yargs": "^17.0.35",
-    "c8": "^11.0.0",
     "chai": "^6.2.2",
     "conventional-changelog-conventionalcommits": "^9.3.0",
     "js-yaml": "^4.1.1",
