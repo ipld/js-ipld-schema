@@ -73,7 +73,7 @@
   },
   "dependencies": {
     "get-stdin": "^10.0.0",
-    "multiformats": "^13.4.2",
+    "multiformats": "^14.0.0",
     "yargs": "^18.0.0"
   },
   "standard": {
