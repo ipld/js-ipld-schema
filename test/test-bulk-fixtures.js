@@ -1,8 +1,7 @@
 /* eslint-env mocha */
 
 import fs from 'fs'
-// @ts-ignore
-import yaml from 'js-yaml'
+import { load } from 'js-yaml'
 import { fromDSL } from '@ipld/schema/from-dsl.js'
 import { toDSL } from '@ipld/schema/to-dsl.js'
 import { assert } from 'chai'
@@ -46,7 +45,7 @@ describe('fixtures/bulk', () => {
  */
 async function loadFixture (file) {
   const yamlContent = await fs.promises.readFile(new URL(file, new URL('./fixtures/bulk/', import.meta.url)), 'utf8')
-  const { schema, expected, canonical } = /** @type {{ schema: string, expected: string, canonical?: string }} */ (yaml.load(yamlContent))
+  const { schema, expected, canonical } = /** @type {{ schema: string, expected: string, canonical?: string }} */ (load(yamlContent))
   const fixture = {
     schema,
     canonical,
