@@ -36,6 +36,7 @@ jobs:
         uses: actions/setup-node@v7.0.0
         with:
           node-version: lts/*
+          check-latest: true
       - name: Install dependencies
         run: |
           npm install --no-progress --no-package-lock --no-save
