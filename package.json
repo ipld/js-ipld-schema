@@ -59,7 +59,7 @@
     "@types/node": "^26.0.0",
     "@types/yargs": "^17.0.35",
     "chai": "^6.2.2",
-    "conventional-changelog-conventionalcommits": "^10.0.0",
+    "conventional-changelog-conventionalcommits": "^9.3.1",
     "js-yaml": "^5.0.0",
     "mocha": "^11.7.5",
     "polendina": "^3.2.20",
@@ -142,6 +142,30 @@
                 "section": "Bug Fixes"
               },
               {
+                "type": "perf",
+                "section": "Performance Improvements"
+              },
+              {
+                "type": "revert",
+                "section": "Reverts"
+              },
+              {
+                "type": "refactor",
+                "section": "Code Refactoring"
+              },
+              {
+                "type": "test",
+                "section": "Tests"
+              },
+              {
+                "type": "build",
+                "section": "Trivial Changes"
+              },
+              {
+                "type": "ci",
+                "section": "Trivial Changes"
+              },
+              {
                 "type": "chore",
                 "section": "Trivial Changes"
               },
@@ -150,8 +174,8 @@
                 "section": "Trivial Changes"
               },
               {
-                "type": "test",
-                "section": "Tests"
+                "type": "style",
+                "section": "Trivial Changes"
               }
             ]
           }
